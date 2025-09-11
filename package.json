@@ -1,0 +1,33 @@
+{
+  "name": "bijonai",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@fortawesome/free-brands-svg-icons": "^7.0.0",
+    "@fortawesome/free-regular-svg-icons": "^7.0.0",
+    "@fortawesome/free-solid-svg-icons": "^7.0.0",
+    "@fortawesome/vue-fontawesome": "^3.1.1",
+    "@nuxt/eslint": "1.9.0",
+    "@nuxt/fonts": "0.11.4",
+    "@nuxt/icon": "2.0.0",
+    "@unocss/reset": "^66.5.1",
+    "eslint": "^9.35.0",
+    "nuxt": "^4.1.1",
+    "sciux": "^0.0.7",
+    "vue": "^3.5.21",
+    "vue-router": "^4.5.1",
+    "xsai": "0.4.0-beta.3"
+  },
+  "devDependencies": {
+    "@unocss/nuxt": "^66.5.1",
+    "unocss": "^66.5.1"
+  }
+}
