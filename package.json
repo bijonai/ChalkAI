@@ -7,7 +7,10 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
@@ -19,15 +22,21 @@
     "@nuxt/fonts": "0.11.4",
     "@nuxt/icon": "2.0.0",
     "@unocss/reset": "^66.5.1",
+    "dotenv": "^17.2.2",
+    "drizzle-orm": "^0.44.5",
     "eslint": "^9.35.0",
     "nuxt": "^4.1.1",
+    "pg": "^8.16.3",
     "sciux": "^0.0.7",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1",
     "xsai": "0.4.0-beta.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.15.5",
     "@unocss/nuxt": "^66.5.1",
+    "drizzle-kit": "^0.31.4",
+    "tsx": "^4.20.5",
     "unocss": "^66.5.1"
   }
 }
