@@ -1,1 +1,1 @@
-export * from './boards'
+export * from './classroom'

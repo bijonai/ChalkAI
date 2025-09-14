@@ -1,6 +1,6 @@
 import { pgTable, uuid, text, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core'
 
-export const boardsTable = pgTable('boards', {
+export const classroomTable = pgTable('classroom', {
   // Basic fields
   id: uuid('id').primaryKey().defaultRandom(),
   title: text('title').notNull(),
@@ -14,5 +14,5 @@ export const boardsTable = pgTable('boards', {
   status: text('status').notNull().default('pending'),
 
   // Result fields
-  result: jsonb('result')
+  result: jsonb('result').notNull().default('{}')
 })

@@ -11,5 +11,7 @@ export default defineNuxtConfig({
 
   css: [
     '@/assets/css/common.css'
-  ]
+  ],
+
+  serverDir: 'server',
 })
