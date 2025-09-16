@@ -1,8 +1,8 @@
 import { classroomTable } from "./schema";
 import { eq } from "drizzle-orm";
 import { db } from ".";
-import { Message } from "xsai";
-import { Board } from "../shared";
+import type { Message } from "xsai";
+import type { Board } from "../board";
 
 export enum ClassroomStatus {
   Pending = 'pending',

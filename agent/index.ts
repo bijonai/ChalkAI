@@ -1,6 +1,8 @@
-import type { Message } from 'xsai'
-import { message } from 'xsai'
+import type { Message, Tool } from 'xsai'
+import { generateText, message } from 'xsai'
 import * as prompts from './prompts'
+import { createEmptyBoard, type Board } from '#shared/board'
+import toolsGenerator from './tools'
 
 export interface AgentParams {
   apiKey: string
@@ -16,5 +18,18 @@ export function createAgent(params: AgentParams) {
     )
   }
 
-  return async (input: string) => {}
+  return async (input: string, board: Board = createEmptyBoard()) => {
+    const tools = await toolsGenerator({}) satisfies Tool[]
+    const { messages } = await generateText({
+      model: params.model,
+      apiKey: params.apiKey,
+      baseURL: params.baseURL,
+      messages: params.messages,
+      tools,
+      maxSteps: 100,
+    })
+    params.messages.length = 0
+    params.messages.push(...messages)
+    return board
+  }
 }
