@@ -3,7 +3,7 @@ import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 
 export function createBox(components: Component<string>[], root: string = 'Root') {
-  const { getActiveContext, setActiveContext, clearActiveContext, withContext } = createContext(reactive({}))
+  const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
 
   const renderComponent = (element: BaseChalkElement<string>) => {
@@ -40,7 +40,7 @@ export function createBox(components: Component<string>[], root: string = 'Root'
         return null
       }
     }
-    const children = element.children.map(renderElement).filter(child => child !== null && child !== undefined)
+    const children = element.children.map(renderNode).filter(child => child !== null && child !== undefined)
     const node = generator(toProps(element.attrs, getActiveContext()), () => children)
     effect(() => {
       const newNode = generator(toProps(element.attrs, getActiveContext()), () => children)
@@ -100,5 +100,7 @@ export function createBox(components: Component<string>[], root: string = 'Root'
     getActiveContext,
     setActiveContext,
     clearActiveContext,
+    setValue,
+    getValue,
   }
 }

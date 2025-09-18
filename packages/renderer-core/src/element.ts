@@ -11,5 +11,5 @@ export type BaseChalkElement<
   attrs: Attrs
   events: Record<string, EventValue>
   statements: Record<string, StatementValue>
-  children: BaseChalkElement<string>[]
+  children: (BaseChalkElement<string> | string)[]
 }

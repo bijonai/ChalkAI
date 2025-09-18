@@ -22,11 +22,19 @@ export const createContext = (context: Context) => {
     setActiveContext(previousContext)
     return result
   }
+  const setValue = (key: string, value: unknown) => {
+    context[key] = value
+  }
+  const getValue = (key: string) => {
+    return context[key]
+  }
 
   return {
     getActiveContext,
     setActiveContext,
     clearActiveContext,
     withContext,
+    setValue,
+    getValue,
   }
 }
