@@ -1,0 +1,13 @@
+{
+  "name": "@chalk-dsl/renderer-core",
+  "version": "0.0.0",
+  "main": "index.js",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {},
+  "packageManager": "pnpm@10.8.1",
+  "dependencies": {
+    "alien-signals": "^2.0.7"
+  }
+}

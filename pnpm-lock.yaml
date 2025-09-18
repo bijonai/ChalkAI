@@ -79,6 +79,20 @@ importers:
         specifier: ^66.5.1
         version: 66.5.1(@unocss/webpack@66.5.1(webpack@5.101.3(esbuild@0.25.9)))(postcss@8.5.6)(vite@7.1.5(@types/node@24.3.1)(jiti@2.5.1)(terser@5.44.0)(tsx@4.20.5)(yaml@2.8.1))
 
+  packages/compiler:
+    devDependencies:
+      '@chalk-dsl/shared':
+        specifier: workspace:*
+        version: link:../shared
+
+  packages/pkg: {}
+
+  packages/shared:
+    dependencies:
+      alien-signals:
+        specifier: ^2.0.7
+        version: 2.0.7
+
 packages:
 
   '@antfu/install-pkg@1.1.0':
