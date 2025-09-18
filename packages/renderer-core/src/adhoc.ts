@@ -1,19 +1,19 @@
-import { Context, getActiveContext, rawContext } from "./context"
+import { Context } from "./context"
 import { AttributeValue, ComputedAttributeValue } from "./element"
 
-export function createAdhoc(context: Context = getActiveContext()) {
+export function createAdhoc(context: Context) {
   return (src: string, o?: Context) => {
     return new Function(`return (function($__ctx){with($__ctx){return (${src});}});`)()({
-      ...rawContext(o ?? context),
+      ...(o ?? context),
     })
   }
 }
 
-export function toProp(source: AttributeValue, context: Context = getActiveContext()) {
+export function toProp(source: AttributeValue, context: Context) {
   const _computed = (source: ComputedAttributeValue) => {
     const [, _] = source.split('{{')
     const [key, ..._rest] = _.split('}}')
-    return createAdhoc()(key, context)
+    return createAdhoc(context)(key)
   }
   const _string = (source: string) => {
     return /{{.+}}/.test(source) ? _computed(source as ComputedAttributeValue) : source
@@ -30,4 +30,8 @@ export function toProp(source: AttributeValue, context: Context = getActiveConte
   typeMap.set('array', _array)
   typeMap.set('object', _object)
   return typeMap.get(typeof source)?.(source)
+}
+
+export function toProps(attrs: Record<string, AttributeValue>, context: Context) {
+  return Object.fromEntries(Object.entries(attrs).map(([key, value]) => [key, toProp(value, context)]))
 }

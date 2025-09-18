@@ -8,6 +8,7 @@
   "scripts": {},
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
+    "@vue/reactivity": "^3.5.21",
     "alien-signals": "^2.0.7"
   }
 }
