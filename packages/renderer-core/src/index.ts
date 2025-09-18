@@ -1,3 +1,5 @@
 export * from './context'
-export * from './component'
+export * from './prefab'
 export * from './reactivity'
+export * from './element'
+export * from './adhoc'
