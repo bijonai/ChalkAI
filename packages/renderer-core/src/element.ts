@@ -12,4 +12,5 @@ export type BaseChalkElement<
   events: Record<string, EventValue>
   statements: Record<string, StatementValue>
   children: (BaseChalkElement<string> | string)[]
+  id?: string
 }

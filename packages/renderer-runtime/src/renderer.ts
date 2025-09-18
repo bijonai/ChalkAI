@@ -78,7 +78,7 @@ export function createBox(components: Component<string>[], root: string = 'Root'
     if (!rootComp) {
       return null
     }
-    return renderNode(rootComp.root)
+    return renderNode(rootComp.root!)
   }
 
   const render = (element: HTMLElement) => {
