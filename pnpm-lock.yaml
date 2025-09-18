@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:packages/renderer-core
+      '@chalk-dsl/renderer-runtime':
+        specifier: workspace:*
+        version: link:packages/renderer-runtime
       '@fortawesome/fontawesome-svg-core':
         specifier: ^7.0.0
         version: 7.0.1

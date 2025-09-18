@@ -11,13 +11,18 @@ export type Prefab<
   > = (context: Ctx) => {
     name: Name
     validator?: PrefabValidator
-    generator?: PrefabGenerator<Props>
+    generator: PrefabGenerator<Props>
     provides?: Record<string | symbol, unknown>
     space?: PrefabNamespace
 }
+export const definePrefab = <
+  Name extends string,
+  Props extends RawContext = RawContext,
+  Ctx extends RawContext = RawContext,
+>(prefab: Prefab<Name, Props, Ctx>) => prefab
 
 const rootSpace: PrefabNamespace = new Map()
-export const registerPrefab = <T extends RawContext>(prefab: Prefab<string, T, T>) => {
-  rootSpace.set(prefab.name, prefab as Prefab<string, RawContext, RawContext>)
+export const registerPrefab = <T extends RawContext>(name: string, prefab: Prefab<string, T, T>) => {
+  rootSpace.set(name, prefab as Prefab<string, RawContext, RawContext>)
 }
 export const getRootSpace = () => rootSpace

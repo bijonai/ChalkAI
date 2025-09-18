@@ -1,5 +1,5 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive } from "@chalk-dsl/renderer-core"
-import { BoxError, createErrorContainer, ElementNotFoundError } from "./error"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace } from "@chalk-dsl/renderer-core"
+import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 
 export function createBox(components: Component<string>[], root: string = 'Root') {
@@ -19,6 +19,7 @@ export function createBox(components: Component<string>[], root: string = 'Root'
         mergeContext(getActiveContext(), attrs),
         () => {
           const newNode = renderElement(element)
+          if (!newNode) return
           patch(node, newNode)
           return newNode
         }
@@ -28,7 +29,25 @@ export function createBox(components: Component<string>[], root: string = 'Root'
   }
 
   const renderElement = (element: BaseChalkElement<string>) => {
-    return document.createElement('empty')
+    const pfbs = getRootSpace()
+    const pfb = pfbs.get(element.name)
+    if (!pfb) {
+      return renderComponent(element)
+    }
+    const { name, validator, generator, provides, space } = pfb(getActiveContext())
+    if (validator) {
+      if (!validator()) {
+        return null
+      }
+    }
+    const children = element.children.map(renderElement).filter(child => child !== null && child !== undefined)
+    const node = generator(toProps(element.attrs, getActiveContext()), () => children)
+    effect(() => {
+      const newNode = generator(toProps(element.attrs, getActiveContext()), () => children)
+      patch(node, newNode)
+      return newNode
+    })
+    return node
   }
   
   const renderValue = (source: string) => {
@@ -47,9 +66,39 @@ export function createBox(components: Component<string>[], root: string = 'Root'
     return /{{.+}}/.test(source) ? renderValue(source) : document.createTextNode(source)
   }
 
-  const render = () => { }
+  const renderNode = (element: BaseChalkElement<string> | string) => {
+    if (typeof element === 'string') {
+      return renderText(element)
+    }
+    return renderElement(element)
+  }
+
+  const renderRoot = () => {
+    const rootComp = components.find((component) => component.name === root)
+    if (!rootComp) {
+      return null
+    }
+    return renderNode(rootComp.root)
+  }
+
+  const render = (element: HTMLElement) => {
+    (Array.from(element.children)).forEach(child => child.remove())
+    const root = renderRoot()
+    if (!root) return
+    element.appendChild(root)
+  }
   
   return {
     ...errors,
+    render,
+    renderRoot,
+    renderElement,
+    renderComponent,
+    renderNode,
+    renderText,
+    renderValue,
+    getActiveContext,
+    setActiveContext,
+    clearActiveContext,
   }
 }
