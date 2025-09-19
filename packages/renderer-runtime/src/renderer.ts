@@ -2,7 +2,7 @@ import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeC
 import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 
-export function createBox(components: Component<string>[], root: string = 'Root') {
+export function createBox(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
 
@@ -73,7 +73,7 @@ export function createBox(components: Component<string>[], root: string = 'Root'
     return renderElement(element)
   }
 
-  const renderRoot = () => {
+  const renderRoot = (root: string) => {
     const rootComp = components.find((component) => component.name === root)
     if (!rootComp) {
       return null
@@ -81,9 +81,9 @@ export function createBox(components: Component<string>[], root: string = 'Root'
     return renderNode(rootComp.root!)
   }
 
-  const render = (element: HTMLElement) => {
-    (Array.from(element.children)).forEach(child => child.remove())
-    const root = renderRoot()
+  const render = (rootName: string, element: HTMLElement) => {
+    (Array.from(element.children ?? [])).forEach(child => child.remove())
+    const root = renderRoot(rootName)
     if (!root) return
     element.appendChild(root)
   }

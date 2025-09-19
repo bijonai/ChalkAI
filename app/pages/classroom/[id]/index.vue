@@ -1,63 +1,61 @@
 <script setup lang="ts">
-import { createBox, registerPrefab, definePrefab } from '@chalk-dsl/renderer-runtime'
+import { registerPrefab, definePrefab } from '@chalk-dsl/renderer-runtime'
+const { currentStep, loadBoard, next } = useBoard()
+const pages = ref<Ref<HTMLElement | null>[]>([])
 
-registerPrefab('prefab1', definePrefab<'prefab1'>((context) => {
-  return {
-    name: 'prefab1',
-    validator: () => true,
-    generator: (props, children) => {
-      const ele = document.createElement('div')
-      ele.appendChild(document.createTextNode(props.n.toString()))
-      ele.append(...children())
-      return ele
-    },
+registerPrefab('text', definePrefab<'text', { text: string }>((ctx) => ({
+  name: 'text',
+  generator: (props, children) => {
+    return document.createTextNode(props.text)
   }
-}))
+})))
 
-const { render, onError, setActiveContext, getActiveContext } = createBox([
-  {
-    name: 'Root',
-    props: [],
-    root: {
-      name: 'prefab1',
-      attrs: {
-        n: '{{x}}'
-      },
-      children: [
-        {
-          name: 'prefab1',
-          attrs: {
-            n: '{{x}}'
-          },
-          children: [],
-          events: {},
-          statements: {},
-        }
-      ],
-      events: {},
-      statements: {},
+// fetch('').then(async (res) => {
+//   const [_pages, render] = loadBoard(await res.json())
+//   pages.value = _pages
+//   onMounted(() => {
+//     render()
+//   })
+// })
+
+const [_pages, render] = loadBoard({
+  steps: [{ component: 'Page-1', description: 'Page 1' }, { component: 'Page-2', description: 'Page 2' }],
+  components: [
+    {
+      name: 'Page-1',
+      props: [],
+      root: {
+        name: 'text',
+        attrs: { text: 'Page 1' },
+        events: {},
+        statements: {},
+        children: [],
+      }
     },
-  }
-])
-
-onError((error) => {
-  console.error(error)
+    {
+      name: 'Page-2',
+      props: [],
+      root: {
+        name: 'text',
+        attrs: { text: 'Page 2' },
+        events: {},
+        statements: {},
+        children: [],
+      }
+    }
+  ]
 })
-
-const root = ref<HTMLElement>()
-
+pages.value = _pages
 onMounted(() => {
-  if (!root.value) return
-  setActiveContext({
-    x: 0
-  })
-  render(root.value)
-  setInterval(() => {
-    getActiveContext().x += 1
-  }, 1000)
+  render()
+  setTimeout(() => {
+    next()
+  }, 2000)
 })
 </script>
 
 <template>
-  <div ref="root"></div>
+  <div class="flex flex-col">
+    <div v-for="(page, index) in pages" :key="index" :ref="page" class="min-h-screen min-w-screen max-h-screen max-w-screen"></div>
+  </div>
 </template>
