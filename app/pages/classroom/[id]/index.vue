@@ -55,7 +55,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <div v-for="(page, index) in pages" :key="index" :ref="page" class="min-h-screen min-w-screen max-h-screen max-w-screen"></div>
+  <div class="flex flex-col w-full h-full">
+    <div v-for="(page, index) in pages" :key="index" :ref="page" class="flex w-full"></div>
   </div>
 </template>
