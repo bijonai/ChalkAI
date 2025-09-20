@@ -1,0 +1,62 @@
+/* Background */
+:root {
+  --chalk-background: #24292F;
+  --chalk-background-accent: #181C20;
+}
+
+/* Base Color Palette */
+:root {
+  --chalk-primary: #FFFFFF;
+  --chalk-note: #C7EDCC;
+  --chalk-warning: #F7B051;
+  --chalk-accent: #F5F779;
+  --chalk-alert: #F76E67;
+  --chalk-info: #4DDEF6;
+  --chalk-success: #66ECDD;
+  --chalk-creative: #CCB8E4;
+}
+
+/* Transparent Marker Colors */
+:root {
+  --chalk-highlight-primary: var(--chalk-highlight-key);
+  --chalk-highlight-key: rgba(var(--chalk-accent), 0.5);
+  --chalk-highlight-support: rgba(var(--chalk-success), 0.5);
+  --chalk-highlight-creative: rgba(var(--chalk-creative), 0.5);
+  --chalk-highlight-caution: rgba(var(--chalk-warning), 0.5);
+  --chalk-highlight-info: rgba(var(--chalk-info), 0.5);
+}
+
+/* Size Table */
+:root {
+  --chalk-size-primary: 16px;
+  --chalk-size-6xs: 6px;
+  --chalk-size-5xs: 8px;
+  --chalk-size-4xs: 10px;
+  --chalk-size-3xs: 12px;
+  --chalk-size-2xs: 14px;
+  --chalk-size-xs: 16px;
+  --chalk-size-sm: 18px;
+  --chalk-size-md: 20px;
+  --chalk-size-lg: 24px;
+  --chalk-size-xl: 32px;
+  --chalk-size-2xl: 40px;
+  --chalk-size-3xl: 48px;
+  --chalk-size-4xl: 56px;
+  --chalk-size-5xl: 64px;
+  --chalk-size-6xl: 72px;
+}
+
+/* Font */
+:root {
+  --chalk-font-primary: 'Inter', sans-serif;
+  --chalk-font-comic: 'Comic Sans MS', cursive;
+  --chalk-font-code: 'JetBrains Mono', monospace;
+  --chalk-font-math: 'Times New Roman', serif;
+}
+
+/* Dash Array */
+:root {
+  --chalk-dasharray-solid: 0 0;
+  --chalk-dasharray-dashed: 10 5;
+  --chalk-dasharray-dotted: 2 2;
+}
