@@ -1,7 +1,7 @@
 import { tool } from "xsai";
-import { Board } from "../../shared";
+import type { Board } from "../../shared";
 import { z } from "zod";
-import { BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
+import type { BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
 
 const element = z.object({
   id: z.string().describe('The only-one id of the element instance.'),
@@ -22,6 +22,10 @@ export const findElement = (component: Component<string>, id: string) => {
   return resolve(component.root)
 }
 
+const findComponent = (board: Board, comp: string) => {
+  return board.components.find(component => component.name === comp)
+}
+
 export async function setComponentRoot(board: Board) {
   return await tool({
     name: 'set-component-root',
@@ -31,7 +35,13 @@ export async function setComponentRoot(board: Board) {
       element: element.describe('The element to set as the root.'),
     }),
     execute: async ({ component, element }) => {
-      board.components[component].root = element as BaseChalkElement<string>
+      const target = findComponent(board, component)!
+      if (!target) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      target.root = element as BaseChalkElement<string>
       return {
         success: true,
         component,
@@ -50,7 +60,18 @@ export async function addChildren(board: Board) {
       children: z.array(element).describe('The children to add.'),
     }),
     execute: async ({ component, element, children }) => {
-      board.components[component].root!.children.push(...children)
+      const target = findComponent(board, component)!
+      if (!target) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      if (!target.root) return {
+        success: false,
+        component,
+        error: 'Component root not found',
+      }
+      target.root.children!.push(...children as BaseChalkElement<string>[])
       return {
         success: true,
         component,
@@ -72,7 +93,13 @@ export async function setEvents(board: Board) {
       })).describe('The events to add.'),
     }),
     execute: async ({ component, element, events }) => {
-      const target = findElement(board.components[component], element.id)
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element.id)
       if (!target) return {
         success: false,
         component,
@@ -101,7 +128,13 @@ export async function setAttrs(board: Board) {
       })).describe('The attributes to set.'),
     }),
     execute: async ({ component, element, attrs }) => {
-      const target = findElement(board.components[component], element.id)
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element.id)
       if (!target) return {
         success: false,
         component,
@@ -126,7 +159,13 @@ export async function remove(board: Board) {
       element: element.describe('The element only-one id to remove.'),
     }),
     execute: async ({ component, element }) => {
-      const target = findElement(board.components[component], element.id)
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element.id)
       if (!target) return {
         success: false,
         component,
@@ -153,7 +192,13 @@ export async function removeEvents(board: Board) {
       events: z.array(z.string()).describe('The events to remove.'),
     }),
     execute: async ({ component, element, events }) => {
-      const target = findElement(board.components[component], element.id)
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element.id)
       if (!target) return {
         success: false,
         component,
@@ -180,7 +225,13 @@ export async function removeAttrs(board: Board) {
       attrs: z.array(z.string()).describe('The attrs to remove.'),
     }),
     execute: async ({ component, element, attrs }) => {
-      const target = findElement(board.components[component], element.id)
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element.id)
       if (!target) return {
         success: false,
         component,
