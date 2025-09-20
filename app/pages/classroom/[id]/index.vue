@@ -6,7 +6,9 @@ const pages = ref<Ref<HTMLElement | null>[]>([])
 registerPrefab('text', definePrefab<'text', { text: string }>((ctx) => ({
   name: 'text',
   generator: (props, children) => {
-    return document.createTextNode(props.text)
+    const div = document.createElement('div')
+    div.textContent = props.text
+    return div
   }
 })))
 
@@ -27,7 +29,9 @@ const [_pages, render] = loadBoard({
       root: {
         name: 'text',
         attrs: { text: 'Page 1' },
-        events: {},
+        events: {
+          click: 'console.log("click")',
+        },
         statements: {},
         children: [],
       }

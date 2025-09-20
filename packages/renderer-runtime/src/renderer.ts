@@ -1,6 +1,7 @@
 import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace } from "@chalk-dsl/renderer-core"
 import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
+import { createDelegate } from "./delegate"
 
 export function createBox(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
@@ -41,9 +42,18 @@ export function createBox(components: Component<string>[]) {
       }
     }
     const children = element.children.map(renderNode).filter(child => child !== null && child !== undefined)
+    const delegate = (node: Node, events: Record<string, string>) => {
+      const _delegate = createDelegate(node, getActiveContext())
+      Object.entries(events).forEach(([event, handler]) => {
+        _delegate(event, handler)
+      })
+      return _delegate
+    }
     const node = generator(toProps(element.attrs, getActiveContext()), () => children)
+    delegate(node, element.events)
     effect(() => {
       const newNode = generator(toProps(element.attrs, getActiveContext()), () => children)
+      delegate(newNode, element.events)
       patch(node, newNode)
       return newNode
     })

@@ -1,6 +1,6 @@
 export type AttributeValue = string | number | boolean | null | undefined | object | ComputedAttributeValue | AttributeValue[]
 export type ComputedAttributeValue = `{{${string}}}`
-export type EventValue = string | string[]
+export type EventValue = string
 export type StatementValue = string
 
 export type BaseChalkElement<
