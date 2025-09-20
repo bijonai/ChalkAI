@@ -8,9 +8,9 @@ export type BaseChalkElement<
   Attrs extends Record<string, AttributeValue> = Record<string, AttributeValue>,
   > = {
   name: Name
-  attrs: Attrs
-  events: Record<string, EventValue>
-  statements: Record<string, StatementValue>
-  children: (BaseChalkElement<string> | string)[]
+  attrs?: Attrs
+  events?: Record<string, EventValue>
+  statements?: Record<string, StatementValue>
+  children?: (BaseChalkElement<string> | string)[]
   id?: string
 }

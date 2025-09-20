@@ -26,11 +26,14 @@ const [_pages, render] = loadBoard({
     {
       name: 'Page-1',
       props: [],
+      refs: {
+        num: '2222'
+      },
       root: {
         name: 'text',
-        attrs: { text: 'Page 1' },
+        attrs: { text: '{{ num }}' },
         events: {
-          click: 'console.log("click")',
+          click: 'console.log(num += 1)',
         },
         statements: {},
         children: [],

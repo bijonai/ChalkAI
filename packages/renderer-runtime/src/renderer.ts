@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, watch, computed, pauseTracking, resetTracking } from "@chalk-dsl/renderer-core"
 import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 import { createDelegate } from "./delegate"
@@ -7,29 +7,39 @@ export function createBox(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
 
-  const renderComponent = (element: BaseChalkElement<string>) => {
+  const renderComponent = (element: BaseChalkElement<string>): Node | null => {
     const component = components.find((component) => component.name === element.name)
     if (!component) {
       errors.addError({ name: "Element Not Found", message: `Element ${element.name} not found`, element } satisfies ElementNotFoundError)
-      return
+      return null
     }
-    const node = document.createElement('fragment')
-    effect(() => {
-      const attrs = toProps(element.attrs, getActiveContext())
-      withContext(
-        mergeContext(getActiveContext(), attrs),
-        () => {
-          const newNode = renderElement(element)
-          if (!newNode) return
-          patch(node, newNode)
-          return newNode
-        }
-      )
-    })
-    return node
+    if (!component.root) {
+      return document.createTextNode('')
+    }
+
+    for (const reflection of Object.entries(component.refs ?? {})) {
+      const [key, value] = reflection
+      const _ref = ref()
+      setValue(key, _ref)
+      effect(() => {
+        _ref.value = createAdhoc(getActiveContext())(value)
+      })
+    }
+
+    // Set up default values to prevent undefined access
+    component.root.attrs ??= {}
+    component.root.events ??= {}
+    component.root.statements ??= {}
+    component.root.children ??= []
+
+    const attrs = toProps(component.root.attrs, getActiveContext())
+    return withContext(
+      mergeContext(getActiveContext(), attrs),
+      (): Node | null => renderElement(component.root!)
+    )
   }
 
-  const renderElement = (element: BaseChalkElement<string>) => {
+  const renderElement = (element: BaseChalkElement<string>): Node | null => {
     const pfbs = getRootSpace()
     const pfb = pfbs.get(element.name)
     if (!pfb) {
@@ -41,6 +51,13 @@ export function createBox(components: Component<string>[]) {
         return null
       }
     }
+
+    // Set up default values to prevent undefined access
+    element.attrs ??= {}
+    element.events ??= {}
+    element.statements ??= {}
+    element.children ??= []
+
     const children = element.children.map(renderNode).filter(child => child !== null && child !== undefined)
     const delegate = (node: Node, events: Record<string, string>) => {
       const _delegate = createDelegate(node, getActiveContext())
@@ -49,14 +66,21 @@ export function createBox(components: Component<string>[]) {
       })
       return _delegate
     }
+
     const node = generator(toProps(element.attrs, getActiveContext()), () => children)
     delegate(node, element.events)
+
     effect(() => {
-      const newNode = generator(toProps(element.attrs, getActiveContext()), () => children)
+      element.attrs ??= {}
+      element.events ??= {}
+      element.children ??= []
+      const attrs = toProps(element.attrs, getActiveContext())
+      const newNode = generator(attrs, () => children)
       delegate(newNode, element.events)
       patch(node, newNode)
       return newNode
     })
+
     return node
   }
   
@@ -88,7 +112,15 @@ export function createBox(components: Component<string>[]) {
     if (!rootComp) {
       return null
     }
-    return renderNode(rootComp.root!)
+    // Create a fake element to pass to renderComponent
+    const fakeElement: BaseChalkElement<string> = {
+      name: rootComp.name,
+      attrs: {},
+      events: {},
+      statements: {},
+      children: []
+    }
+    return renderComponent(fakeElement)
   }
 
   const render = (rootName: string, element: HTMLElement) => {

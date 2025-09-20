@@ -3,9 +3,7 @@ import { AttributeValue, ComputedAttributeValue } from "./element"
 
 export function createAdhoc(context: Context) {
   return (src: string, o?: Context) => {
-    return new Function(`return (function($__ctx){with($__ctx){return (${src});}});`)()({
-      ...(o ?? context),
-    })
+    return new Function(`return (function($__ctx){with($__ctx){return (${src});}});`)()(o ?? context)
   }
 }
 

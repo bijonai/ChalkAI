@@ -16,6 +16,7 @@ export const findElement = (component: Component<string>, id: string) => {
   if (!component.root) return null
   const resolve = (element: BaseChalkElement<string>): BaseChalkElement<string> | null => {
     if (element.id === id) return element
+    element.children ??= []
     return element.children.find(child => typeof child === 'string' ? null : resolve(child)) as BaseChalkElement<string> | null
   }
   return resolve(component.root)
@@ -131,6 +132,7 @@ export async function remove(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.children ??= []
       target.children = target.children.filter(child => typeof child === 'string' ? child !== element.id : child.id !== element.id)
       return {
         success: true,
@@ -157,6 +159,7 @@ export async function removeEvents(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.events ??= {}
       target.events = Object.fromEntries(Object.entries(target.events).filter(([event]) => !events.includes(event)))
       return {
         success: true,
@@ -183,6 +186,7 @@ export async function removeAttrs(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.attrs ??= {}
       target.attrs = Object.fromEntries(Object.entries(target.attrs).filter(([attr]) => !attrs.includes(attr)))
       return {
         success: true,
