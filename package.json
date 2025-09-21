@@ -15,6 +15,9 @@
   "dependencies": {
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/renderer-runtime": "workspace:*",
+    "@chalk-dsl/knowledge": "workspace:*",
+    "@chalk-dsl/theme-default": "workspace:*",
+    "@chalk-dsl/utils-theme": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-regular-svg-icons": "^7.0.0",

@@ -1,6 +1,6 @@
 import { tool } from "xsai";
 import { z } from "zod";
-import { Board } from "../../shared";
+import type { Board } from "../../shared";
 
 
 export default async function (board: Board) {

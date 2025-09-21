@@ -8,12 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@chalk-dsl/knowledge':
+        specifier: workspace:*
+        version: link:packages/knowledge
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:packages/renderer-core
       '@chalk-dsl/renderer-runtime':
         specifier: workspace:*
         version: link:packages/renderer-runtime
+      '@chalk-dsl/theme-default':
+        specifier: workspace:*
+        version: link:packages/theme-default
+      '@chalk-dsl/utils-theme':
+        specifier: workspace:*
+        version: link:packages/utils-theme
       '@fortawesome/fontawesome-svg-core':
         specifier: ^7.0.0
         version: 7.0.1
