@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "main": "index.js",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./default": "./src/defaults.ts",
+    "./embedding": "./src/embedding.ts"
   },
   "scripts": {
   },
