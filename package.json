@@ -10,12 +10,13 @@
     "postinstall": "nuxt prepare",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "knowledge:embedding": "tsup build scripts/embedding.ts && node dist/embedding.js"
   },
   "dependencies": {
+    "@chalk-dsl/knowledge": "workspace:*",
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/renderer-runtime": "workspace:*",
-    "@chalk-dsl/knowledge": "workspace:*",
     "@chalk-dsl/theme-default": "workspace:*",
     "@chalk-dsl/utils-theme": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
@@ -28,7 +29,7 @@
     "@nuxt/icon": "2.0.0",
     "@unocss/reset": "^66.5.1",
     "dotenv": "^17.2.2",
-    "drizzle-orm": "^0.44.5",
+    "drizzle-orm": "^0.43.0",
     "nuxt": "^4.1.1",
     "pg": "^8.16.3",
     "sciux": "^0.0.7",
@@ -43,6 +44,7 @@
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.35.0",
     "eslint-plugin-vue": "^10.4.0",
+    "tsup": "^8.5.0",
     "tsx": "^4.20.5",
     "typescript-eslint": "^8.44.0",
     "unocss": "^66.5.1",
