@@ -2,7 +2,7 @@ import { index, jsonb, pgTable, text, uuid, vector } from "drizzle-orm/pg-core";
 
 export const prefabKnowledgeTable = pgTable('prefab_knowledge', {
   id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
+  name: text('name').unique().notNull(),
   description: text('description').notNull(),
   tags: text('tags').array().notNull(),
   props: jsonb('props').notNull(),

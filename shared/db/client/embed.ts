@@ -14,7 +14,7 @@ export function createQuery<T extends TableConfig>(table: PgTable<T>) {
   return async (embedding: number[], params: QueryParams = {}) => {
     const similarity = similar(embedding)
     return await db
-      .select({ similarity })
+      .select({ similarity, ...(table as any) })
       .from(table)
       .where(gt(similar(embedding), params.similarity ?? 0.5))
       .orderBy(t => desc(t.similarity))
