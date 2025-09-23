@@ -5,10 +5,16 @@ import createComponent from "./create-component"
 import { setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs } from "./element"
 import type { Knowledge } from "@chalk-dsl/knowledge"
 import { getTags, getPrefabDocumentByTag } from "./dictionary"
+import { search } from "./search"
 
 export interface ToolsGeneratorParams {
   board: Board
   knowledge: Knowledge
+  embedding: {
+    model: string
+    apiKey: string
+    baseURL: string
+  }
 }
 
 export default async function (params: ToolsGeneratorParams) {
@@ -27,5 +33,8 @@ export default async function (params: ToolsGeneratorParams) {
     // Dictionary
     getTags(params.knowledge),
     getPrefabDocumentByTag(params.knowledge),
+
+    // Search
+    search(params.embedding),
   ])
 }

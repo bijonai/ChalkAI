@@ -9,6 +9,11 @@ export interface AgentParams {
   apiKey: string
   baseURL: string
   model: string
+  embedding: {
+    model: string
+    apiKey: string
+    baseURL: string
+  }
   messages: Message[]
   knowledge: Knowledge
 }
@@ -21,7 +26,7 @@ export function createAgent(params: AgentParams) {
   }
 
   return async (input: string, board: Board = createEmptyBoard()) => {
-    const tools = await toolsGenerator({ board, knowledge: params.knowledge }) satisfies Tool[]
+    const tools = await toolsGenerator({ board, knowledge: params.knowledge, embedding: params.embedding }) satisfies Tool[]
     const { messages } = await generateText({
       model: params.model,
       apiKey: params.apiKey,
