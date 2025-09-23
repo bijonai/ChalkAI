@@ -1,75 +1,34 @@
-# Nuxt Minimal Starter
+<div align="center">
+  <h1>ChalkAI</h1>
+  <p>AI-powered interactive lesson generator, to make your creative classroom.</p>
+</div>
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Quick Start
 
-## Setup
+### Environment
 
-Make sure to install dependencies:
+- Node.js >= 20
+- PgVector
+- NPM / PNPM / Yarn
+
+### Environment Variables
 
 ```bash
-# npm
+cp .env.example .env
+```
+
+Fill your config in `.env` file.
+
+### Initialize
+
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+npm run db:push # Init
+npm run knowledge:embedding # Embedding knowledges
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+### Run
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
