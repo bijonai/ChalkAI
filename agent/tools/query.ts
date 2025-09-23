@@ -3,13 +3,13 @@ import { createQuery } from "../../shared/db/client"
 import { z } from "zod"
 import { prefabKnowledgeTable } from "../../shared/db/schema"
 
-export async function search({ model, apiKey, baseURL }: {
+export async function query({ model, apiKey, baseURL }: {
   model: string
   apiKey: string
   baseURL: string
 }) {
   return await tool({
-    name: 'search',
+    name: 'query',
     description: 'Search the knowledge with Embedding.',
     parameters: z.object({
       input: z.string().describe('The query to search the knowledge.'),

@@ -2,10 +2,10 @@ import type { Board } from "../../shared"
 import newStep from "./new-step"
 import setStep from "./set-step"
 import createComponent from "./create-component"
-import { setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations } from "./element"
+import { addChildren, setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations } from "./element"
 import type { Knowledge } from "@chalk-dsl/knowledge"
 import { getTags, getPrefabDocumentByTag } from "./dictionary"
-import { search } from "./search"
+import { query } from "./query"
 import { createRef } from "./refs"
 
 export interface ToolsGeneratorParams {
@@ -25,6 +25,7 @@ export default async function (params: ToolsGeneratorParams) {
     setStep(params.board),
     createComponent(params.board),
     setComponentRoot(params.board),
+    addChildren(params.board),
     setEvents(params.board),
     setAttrs(params.board),
     setAnimations(params.board),
@@ -41,6 +42,6 @@ export default async function (params: ToolsGeneratorParams) {
     getPrefabDocumentByTag(params.knowledge),
 
     // Search
-    search(params.embedding),
+    query(params.embedding),
   ])
 }

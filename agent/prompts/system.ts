@@ -149,7 +149,7 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
 
 #### RAG
 
-- \`search(params)\`: Search the knowledge with Embedding.
+- \`query(params)\`: Search the knowledge with Embedding.
   + param \`input\`: The query to search the knowledge.
   + return \`result\`: The result of the search.
 

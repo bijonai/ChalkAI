@@ -31,7 +31,7 @@ const agent = createAgent({
 const board = createEmptyBoard()
 
 const result = await agent('设计一个三角函数的课程', board)
-writeFileSync('result.json', JSON.stringify({
+writeFileSync(`result-${Date.now()}.json`, JSON.stringify({
   context: messages,
   result: result,
 }, null, 2))

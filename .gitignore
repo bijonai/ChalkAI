@@ -22,3 +22,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# Test results
+result-*.json
