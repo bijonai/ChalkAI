@@ -5,8 +5,8 @@ export function createDelegate(node: Node, context: Context) {
   const wrap = (handlerSource: string) => {
     return `(function() { ${handlerSource} })`
   }
-  return (event: string, handlerSource: string) => {
-    const handler = adhoc(wrap(handlerSource))
-    node.addEventListener(event, handler)
+  return (event: string, handler: string | Function) => {
+    const handlerFunction = typeof handler === 'string' ? adhoc(wrap(handler)) : handler
+    node.addEventListener(event, handlerFunction)
   }
 }

@@ -1,11 +1,13 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, watch, computed, pauseTracking, resetTracking } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, watch, computed, pauseTracking, resetTracking, AnimationItem } from "@chalk-dsl/renderer-core"
 import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 import { createDelegate } from "./delegate"
+import { createAnimate } from "./animation"
 
 export function createBox(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
+  const beginAnimations: (() => void)[] = []
 
   const renderComponent = (element: BaseChalkElement<string>): Node | null => {
     const component = components.find((component) => component.name === element.name)
@@ -59,7 +61,7 @@ export function createBox(components: Component<string>[]) {
     element.children ??= []
 
     const children = element.children.map(renderNode).filter(child => child !== null && child !== undefined)
-    const delegate = (node: Node, events: Record<string, string>) => {
+    const delegate = (node: Node, events: Record<string, string | Function>) => {
       const _delegate = createDelegate(node, getActiveContext())
       Object.entries(events).forEach(([event, handler]) => {
         _delegate(event, handler)
@@ -68,7 +70,21 @@ export function createBox(components: Component<string>[]) {
     }
 
     const node = generator(toProps(element.attrs, getActiveContext()), () => children)
+    const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
+      const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
+      for (const [key, value] of Object.entries(animations)) {
+        const animate = () => createAnimate(getActiveContext(), { node, prefab: key })(value)
+        if (key === '$start') {
+          beginAnimations.push(animate)
+          break
+        }
+        results[key as keyof T] = animate
+      }
+      return results
+    }
+
     delegate(node, element.events)
+    delegate(node, resolveAnimations(element.animations ?? {}))
 
     effect(() => {
       element.attrs ??= {}
@@ -77,6 +93,7 @@ export function createBox(components: Component<string>[]) {
       const attrs = toProps(element.attrs, getActiveContext())
       const newNode = generator(attrs, () => children)
       delegate(newNode, element.events)
+      delegate(newNode, resolveAnimations(element.animations ?? {}))
       patch(node, newNode)
       return newNode
     })

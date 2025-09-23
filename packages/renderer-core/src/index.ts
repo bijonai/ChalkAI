@@ -3,5 +3,6 @@ export * from './prefab'
 export * from './element'
 export * from './adhoc'
 export * from './component'
+export * from './animation'
 
 export * from '@vue/reactivity'
