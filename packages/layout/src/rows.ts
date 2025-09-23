@@ -30,5 +30,12 @@ registerPrefab('row', row)
 // ------
 
 addPrefabKnowledge(
-  definePrefabKnowledge((utils) => {})
+  definePrefabKnowledge((utils) => {
+    utils.name('row')
+    utils.description('A row of elements')
+    utils.tag('layout')
+    utils.prop('gap')
+      .describe('The gap between the elements')
+      .type('string | number').optional('0')
+  })
 )

@@ -21,21 +21,38 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
   let _description = ''
   const tags: string[] = []
 
-  const prop = <K extends keyof T>(name: K) => {
-    const result: PrefabKnowledgeProp = { name: name.toString(), description: '', type: '', required: true }
-    const describe = (description: string) => result.description = description
-    const type = (type: string) => result.type = type
+  const prop = <K extends keyof T>(key: K) => {
+    const result: PrefabKnowledgeProp = { name: key.toString(), description: '', type: '', required: true }
+    const describe = (description: string) => {
+      result.description = description
+      return utils
+    }
+    const type = (type: string) => {
+      result.type = type
+      return utils
+    }
     const optional = (defaultValue?: string) => {
       result.required = false
       result.default = defaultValue
+      return utils
     }
     props.push(result)
-    return { describe, type, optional }
+    const utils = { describe, type, optional }
+    return utils
   }
 
-  const name = (name: string) => _name = name
-  const description = (description: string) => _description = description
-  const tag = (tag: string) => tags.push(tag)
+  const name = (name: string) => {
+    _name = name
+    return utils
+  }
+  const description = (description: string) => {
+    _description = description
+    return utils
+  }
+  const tag = (tag: string) => {
+    tags.push(tag)
+    return utils
+  }
 
   const toKnowledge = (): PrefabKnowledge => ({
     name: _name,
@@ -44,13 +61,15 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
     props,
   })
 
-  return {
+  const utils = {
     prop,
-    tag,
     name,
     description,
+    tag,
     toKnowledge,
   }
+
+  return utils
 }
 
 export const definePrefabKnowledge = <Props extends RawContext>(
