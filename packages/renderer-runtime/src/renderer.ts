@@ -47,7 +47,7 @@ export function createBox(components: Component<string>[]) {
     if (!pfb) {
       return renderComponent(element)
     }
-    const { name, validator, generator, provides, space } = pfb(getActiveContext())
+    const { name, validator, generator, provides, space, defaults } = pfb(getActiveContext())
     if (validator) {
       if (!validator()) {
         return null
@@ -60,7 +60,10 @@ export function createBox(components: Component<string>[]) {
     element.statements ??= {}
     element.children ??= []
 
-    const children = element.children.map(renderNode).filter(child => child !== null && child !== undefined)
+    const children = withContext(
+      mergeContext(getActiveContext(), provides ?? {}),
+      () => (element.children ?? []).map(renderNode).filter(child => child !== null && child !== undefined)
+    )
     const delegate = (node: Node, events: Record<string, string | Function>) => {
       const _delegate = createDelegate(node, getActiveContext())
       Object.entries(events).forEach(([event, handler]) => {
@@ -69,11 +72,13 @@ export function createBox(components: Component<string>[]) {
       return _delegate
     }
 
-    const node = generator(toProps(element.attrs, getActiveContext()), () => children)
+    const node = generator(
+      {...defaults, ...toProps(element.attrs, getActiveContext())},
+      () => children)
     const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
       const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
       for (const [key, value] of Object.entries(animations)) {
-        const animate = () => createAnimate(getActiveContext(), { node, prefab: key })(value)
+        const animate = () => createAnimate(getActiveContext(), { node, prefab: name })(value)
         if (key === '$start') {
           beginAnimations.push(animate)
           break
@@ -91,7 +96,7 @@ export function createBox(components: Component<string>[]) {
       element.events ??= {}
       element.children ??= []
       const attrs = toProps(element.attrs, getActiveContext())
-      const newNode = generator(attrs, () => children)
+      const newNode = generator({...defaults, ...attrs}, () => children)
       delegate(newNode, element.events)
       delegate(newNode, resolveAnimations(element.animations ?? {}))
       patch(node, newNode)
