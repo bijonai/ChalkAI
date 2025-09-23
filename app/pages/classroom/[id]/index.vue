@@ -45,7 +45,10 @@ const [_pages, render] = loadBoard({
         statements: {},
         children: [],
         animations: {
-          $start: [{ preset: 'move', params: { }, duration: 1000 }]
+          $start: [
+            { preset: 'move', params: {}, duration: 1000 },
+            { preset: 'num', params: { from: 0, to: 100 }, duration: 1000 }
+          ]
         }
       }
     },

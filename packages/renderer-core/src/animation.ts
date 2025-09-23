@@ -19,6 +19,7 @@ export type AnimationPresetContext<Ctx extends RawContext = RawContext> = {
   delay: number
   easing: string
   prefab?: string
+  preset: string
 }
 export type AnimationPresetGenerator = 
   (progress: number) => boolean | void

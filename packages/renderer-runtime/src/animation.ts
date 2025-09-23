@@ -1,4 +1,4 @@
-import { Context, createAdhoc, AnimationItem, AnimationPreset, getAnimationPreset, toProps, Animation, AnimationPresetContext } from "@chalk-dsl/renderer-core";
+import { Context, createAdhoc, AnimationItem, AnimationPreset, getAnimationPreset, toProps, Animation, AnimationPresetContext, defineAnimationPreset, RawContext } from "@chalk-dsl/renderer-core";
 
 export interface AnimateParams {
   node?: Node
@@ -8,11 +8,32 @@ export interface AnimateParams {
 export function createAnimate(context: Context, { node, prefab }: AnimateParams) {
   const adhoc = createAdhoc(context)
 
-  const animateVariable = (item: Animation) => {
-    return new Promise((resolve) => {
-      // resolve()
-    })
+  const runRaf = (callback: (progress: number) => void, duration: number, resolve: (value: unknown) => void) => {
+    let start = performance.now()
+    const loop = (id: number) => {
+      const now = performance.now()
+      const elapsed = now - start
+      const progress = elapsed / duration
+      callback(progress)
+      if (progress < 1) requestAnimationFrame(loop)
+      else {
+        cancelAnimationFrame(id)
+        resolve(void 0)
+      }
+    }
+    requestAnimationFrame(loop)
   }
+
+  const variableAnimation = defineAnimationPreset<{
+    from?: number
+    to: number
+  }, {}>((params, { preset }) => {
+    const from = params.from ?? context[preset] as number
+    return (progress: number) => {
+      const value = from + (params.to - from) * progress
+      context[preset] = value > params.to ? params.to : value
+    }
+  })
 
   const animatePreset = (item: Animation, presets: AnimationPreset[]) => {
     const ctx: AnimationPresetContext = {
@@ -22,8 +43,11 @@ export function createAnimate(context: Context, { node, prefab }: AnimateParams)
       duration: item.duration,
       easing: item.easing ?? 'linear',
       context,
+      preset: item.preset,
     }
-    if (presets.length === 0) return animateVariable(item)
+    if (presets.length === 0) {
+      presets.push(<AnimationPreset<RawContext, RawContext>>variableAnimation)
+    }
     return new Promise((resolve) => {
       for (const preset of presets) {
         const callback = preset(
@@ -32,19 +56,7 @@ export function createAnimate(context: Context, { node, prefab }: AnimateParams)
         )
         if (typeof callback === 'boolean' && !callback) continue
         if (typeof callback === 'function') {
-          let start = performance.now()
-          const loop = (id: number) => {
-            const now = performance.now()
-            const elapsed = now - start
-            const progress = elapsed / ctx.duration
-            callback(progress)
-            if (progress < 1) requestAnimationFrame(loop)
-            else {
-              cancelAnimationFrame(id)
-              resolve(void 0)
-            }
-          }
-          requestAnimationFrame(loop)
+          runRaf(callback, ctx.duration, resolve)
         }
         else resolve(void 0)
       }
@@ -64,8 +76,8 @@ export function createAnimate(context: Context, { node, prefab }: AnimateParams)
   }
   
   return async (animations: AnimationItem[]) => {
-    for (const task of animations.map(animateItem)) {
-      await task
+    for await (const task of animations) {
+      await animateItem(task)
     }
   }
 }
