@@ -6,6 +6,7 @@ import { setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttr
 import type { Knowledge } from "@chalk-dsl/knowledge"
 import { getTags, getPrefabDocumentByTag } from "./dictionary"
 import { search } from "./search"
+import { createRef } from "./refs"
 
 export interface ToolsGeneratorParams {
   board: Board
@@ -31,6 +32,10 @@ export default async function (params: ToolsGeneratorParams) {
     removeEvents(params.board),
     removeAttrs(params.board),
     removeAnimations(params.board),
+
+    // Refs
+    createRef(params.board),
+
     // Dictionary
     getTags(params.knowledge),
     getPrefabDocumentByTag(params.knowledge),

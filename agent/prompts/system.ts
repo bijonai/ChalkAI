@@ -31,6 +31,7 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
     * \`EASING\`: The easing of the animation. (optional)
     * \`DELAY\`: The delay of the animation in milliseconds.
 - \`TEXT\`: A text node, which is a string, rendered as a pure text.
+- \`REF\`: A reflection variable, can be used in \`ATTRIBUTE\`, \`EVENT\` or \`PARAMS\` of \`ANIMATION\`. When \`REF\` changes, \`ELEMENT\` will be automatically updated.
 
 ### Tools
 - \`new-step(params)\`: create a step with a \`COMPONENT\`.
@@ -93,6 +94,12 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
   + param \`events\`: The events to remove. (\`string[]\`)
   + return \`component\`: The name of the \`COMPONENT\`.
   + return \`element\`: The \`ID\` of the \`ELEMENT\`.
+- \`create-ref(params)\`: create a new reflection variable.
+  + param \`component\`: The name of the target \`COMPONENT\`.
+  + param \`name\`: The name of the reflection variable.
+  + param \`value\`: The JavaScript expression of the reflection variable.
+  + return \`name\`: The name of the reflection variable.
+  + return \`component\`: The name of the target \`COMPONENT\`.
 
 ### Syntax
 - Value of \`ATTRIBUTE\`:
@@ -115,6 +122,10 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
   + Each \`ANIMATION\` could be a single animation or a list of animations. Single animation will executed in order, list of animations will executed in parallel.
     * example \`[A, [B, C]]\`, A will be executed first, then B and C will be executed in parallel.
   + \`PARAMS\` of \`ANIMATION\` also has the same rules as \`ATTRIBUTE\` of \`ELEMENT\`.
+  + \`PRESET\` can be a name of \`REF\`, with params \`from\` and \`to\`
+    * example \`preset=num, params={ from: 0, to: 100 }, duration=1000\`, \`num\` will be from 0 to 100 in 1000ms.
+- Reactivity
+  + When \`REF\` changes, \`ELEMENT\` will be automatically updated.
 
 ### Rules
 - An \`COMPONENT\` can only have one root \`ELEMENT\`.
