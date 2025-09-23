@@ -11,7 +11,8 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "knowledge:embedding": "tsup build scripts/embedding.ts && node dist/embedding.js"
+    "knowledge:embedding": "tsup build scripts/embedding.ts && node dist/embedding.js",
+    "test:agent": "tsup build agent/test/main.test.ts && node dist/main.test.js"
   },
   "dependencies": {
     "@chalk-dsl/knowledge": "workspace:*",

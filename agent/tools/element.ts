@@ -3,13 +3,40 @@ import type { Board } from "../../shared";
 import { z } from "zod";
 import type { BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
 
+const animation = z.object({
+  preset: z.string().describe('The preset of the animation.'),
+  params: z.record(z.string(), z.any()).describe('The params of the animation.'),
+  duration: z.number().describe('The duration of the animation.'),
+  easing: z.string().describe('The easing of the animation.').optional(),
+  delay: z.number().describe('The delay of the animation.').optional(),
+})
+const animationItem = z.union([animation, z.array(animation)]).describe('Single animation will executed in order, animation list will executed in parallel.')
+const animations = z.object({
+  event: z.string().describe('Animate when event is triggered, if not set, animate when component is mounted.').optional(),
+  animations: z.array(animationItem).describe('The animations of the element.'),
+})
+
 const element = z.object({
   id: z.string().describe('The only-one id of the element instance.'),
   name: z.string().describe('The name of the element.'),
-  attrs: z.record(z.string(), z.any()).describe('The attributes of the element.'),
-  events: z.record(z.string(), z.any()).describe('The events of the element.'),
-  statements: z.record(z.string(), z.any()).describe('The statements of the element.'),
+  attrs: z.record(z.string(), z.any()).describe('The attributes of the element.').optional(),
+  events: z.record(z.string(), z.any()).describe('The events of the element.').optional(),
+  statements: z.record(z.string(), z.any()).describe('The statements of the element.').optional(),
   children: z.array(z.union([z.object(), z.string()])).describe('The children of the element.').optional(),
+  animations: z.array(animations).describe('The animations of the element.').optional(),
+})
+
+const convertAnimation = (ani: z.infer<typeof animations>[]) => Object.fromEntries(
+  ani.map(ani => [ani.event ?? '$start', ani.animations])
+)
+const convert = (ele: z.infer<typeof element>): BaseChalkElement<string> => ({
+  name: ele.name,
+  attrs: ele.attrs,
+  events: ele.events,
+  statements: ele.statements,
+  children: ele.children as (BaseChalkElement<string> | string)[],
+  animations: convertAnimation(ele.animations ?? []),
+  id: ele.id,
 })
 
 export const findElement = (component: Component<string>, id: string) => {
@@ -41,7 +68,7 @@ export async function setComponentRoot(board: Board) {
         component,
         error: 'Component not found',
       }
-      target.root = element as BaseChalkElement<string>
+      target.root = convert(element)
       return {
         success: true,
         component,
@@ -71,7 +98,7 @@ export async function addChildren(board: Board) {
         component,
         error: 'Component root not found',
       }
-      target.root.children!.push(...children as BaseChalkElement<string>[])
+      target.root.children!.push(...children.map(convert))
       return {
         success: true,
         component,
@@ -86,7 +113,7 @@ export async function setEvents(board: Board) {
     description: 'set events to an element or add if not exists.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: element.describe('The element only-one id to add the events to.'),
+      element: z.string().describe('The element only-one id to add the events to.'),
       events: z.array(z.object({
         event: z.string().describe('The event name to set.'),
         handler: z.string().describe('The handler of the event by JavaScript.'),
@@ -99,7 +126,7 @@ export async function setEvents(board: Board) {
         component,
         error: 'Component not found',
       }
-      const target = findElement(comp, element.id)
+      const target = findElement(comp, element)
       if (!target) return {
         success: false,
         component,
@@ -109,7 +136,7 @@ export async function setEvents(board: Board) {
       return {
         success: true,
         component,
-        element: element.id,
+        element,
       }
     },
   })
@@ -121,7 +148,7 @@ export async function setAttrs(board: Board) {
     description: 'set attributes to an element or add if not exists.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: element.describe('The element only-one id to add the attributes to.'),
+      element: z.string().describe('The element only-one id to add the attributes to.'),
       attrs: z.array(z.object({
         key: z.string().describe('The attribute name to set.'),
         value: z.any().describe('The value of the attribute.'),
@@ -134,7 +161,7 @@ export async function setAttrs(board: Board) {
         component,
         error: 'Component not found',
       }
-      const target = findElement(comp, element.id)
+      const target = findElement(comp, element)
       if (!target) return {
         success: false,
         component,
@@ -144,7 +171,39 @@ export async function setAttrs(board: Board) {
       return {
         success: true,
         component,
-        element: element.id,
+        element,
+      }
+    },
+  })
+}
+
+export async function setAnimations(board: Board) {
+  return await tool({
+    name: 'set-animations',
+    description: 'set animations to an element or add if not exists.',
+    parameters: z.object({
+      component: z.string().describe('The name of the target component.'),
+      element: z.string().describe('The element only-one id to add the animations to.'),
+      animations: z.array(animations).describe('The animations to set.'),
+    }),
+    execute: async ({ component, element, animations }) => {
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element)
+      if (!target) return {
+        success: false,
+        component,
+        error: 'Element not found',
+      }
+      target.animations = { ...target.animations, ...convertAnimation(animations) }
+      return {
+        success: true,
+        component,
+        element,
       }
     },
   })
@@ -156,7 +215,7 @@ export async function remove(board: Board) {
     description: 'remove an element.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: element.describe('The element only-one id to remove.'),
+      element: z.string().describe('The element only-one id to remove.'),
     }),
     execute: async ({ component, element }) => {
       const comp = findComponent(board, component)
@@ -165,18 +224,18 @@ export async function remove(board: Board) {
         component,
         error: 'Component not found',
       }
-      const target = findElement(comp, element.id)
+      const target = findElement(comp, element)
       if (!target) return {
         success: false,
         component,
         error: 'Element not found',
       }
       target.children ??= []
-      target.children = target.children.filter(child => typeof child === 'string' ? child !== element.id : child.id !== element.id)
+      target.children = target.children.filter(child => typeof child === 'string' ? child !== element : child.id !== element)
       return {
         success: true,
         component,
-        element: element.id,
+        element,
       }
     },
   })
@@ -188,7 +247,7 @@ export async function removeEvents(board: Board) {
     description: 'remove events of an element.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: element.describe('The element only-one id to remove the events from.'),
+      element: z.string().describe('The element only-one id to remove the events from.'),
       events: z.array(z.string()).describe('The events to remove.'),
     }),
     execute: async ({ component, element, events }) => {
@@ -198,7 +257,7 @@ export async function removeEvents(board: Board) {
         component,
         error: 'Component not found',
       }
-      const target = findElement(comp, element.id)
+      const target = findElement(comp, element)
       if (!target) return {
         success: false,
         component,
@@ -209,7 +268,7 @@ export async function removeEvents(board: Board) {
       return {
         success: true,
         component,
-        element: element.id,
+        element,
       }
     },
   })
@@ -221,7 +280,7 @@ export async function removeAttrs(board: Board) {
     description: 'remove attrs of an element.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: element.describe('The element only-one id to remove the attrs from.'),
+      element: z.string().describe('The element only-one id to remove the attrs from.'),
       attrs: z.array(z.string()).describe('The attrs to remove.'),
     }),
     execute: async ({ component, element, attrs }) => {
@@ -231,7 +290,7 @@ export async function removeAttrs(board: Board) {
         component,
         error: 'Component not found',
       }
-      const target = findElement(comp, element.id)
+      const target = findElement(comp, element)
       if (!target) return {
         success: false,
         component,
@@ -242,7 +301,44 @@ export async function removeAttrs(board: Board) {
       return {
         success: true,
         component,
-        element: element.id,
+        element,
+      }
+    },
+  })
+}
+
+export async function removeAnimations(board: Board) {
+  return await tool({
+    name: 'remove-animations',
+    description: 'remove animations of an element.',
+    parameters: z.object({
+      component: z.string().describe('The name of the target component.'),
+      element: z.string().describe('The element only-one id to remove the animations from.'),
+      animations: z.array(z.string()).describe('The animations to remove, if not set, remove animation when component is mounted.').optional(),
+    }),
+    execute: async ({ component, element, animations }) => {
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element)
+      if (!target) return {
+        success: false,
+        component,
+        error: 'Element not found',
+      }
+      target.animations ??= {}
+      if (!animations) {
+        target.animations['$start'] = []
+      } else {
+        target.animations = Object.fromEntries(Object.entries(target.animations).filter(([key]) => !animations.includes(key)))
+      }
+      return {
+        success: true,
+        component,
+        element,
       }
     },
   })

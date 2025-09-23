@@ -1,7 +1,7 @@
 import type { Message, Tool } from 'xsai'
 import { generateText, message } from 'xsai'
 import * as prompts from './prompts'
-import { createEmptyBoard, type Board } from '#shared/board'
+import { createEmptyBoard, type Board } from '../shared'
 import toolsGenerator from './tools'
 import type { Knowledge } from '@chalk-dsl/knowledge'
 
@@ -16,16 +16,20 @@ export interface AgentParams {
   }
   messages: Message[]
   knowledge: Knowledge
+  dev?: string
 }
 
 export function createAgent(params: AgentParams) {
   if (params.messages.length === 0) {
     params.messages.push(
-      message.system(prompts.system())
+      message.system(prompts.system(params.dev))
     )
   }
 
   return async (input: string, board: Board = createEmptyBoard()) => {
+    params.messages.push(
+      message.user(input),
+    )
     const tools = await toolsGenerator({ board, knowledge: params.knowledge, embedding: params.embedding }) satisfies Tool[]
     const { messages } = await generateText({
       model: params.model,

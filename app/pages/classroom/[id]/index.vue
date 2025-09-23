@@ -8,6 +8,7 @@ registerPrefab('text', definePrefab<'text', { text: string }>((ctx) => ({
   generator: (props, children) => {
     const div = document.createElement('div')
     div.textContent = props.text
+    div.style.fontSize = '100px'
     return div
   }
 })))
