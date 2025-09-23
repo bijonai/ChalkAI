@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     return failure('classroom id is required')
   }
-  const info = await client.getClassroomInfo(id)
+  const info = await client.classroom.getClassroomInfo(id)
   if (!info) {
     return failure('classroom id not found')
   }
