@@ -31,8 +31,12 @@ export type AnimationPreset<
   Params extends RawContext = RawContext,
   Ctx extends RawContext = RawContext,
 > = (params: Params, context: AnimationPresetContext<Ctx>)
-  => AnimationPresetGenerator | void | boolean
+    => AnimationPresetGenerator | void | boolean
   
+export const defineAnimationPreset = <Params extends RawContext, Ctx extends RawContext>(preset: AnimationPreset<Params, Ctx>) => {
+  return preset
+}
+
 export type AnimationPresetSpace = Map<string, AnimationPreset[]>
 const animationPresets: AnimationPresetSpace = new Map()
 export const registerAnimationPreset = <T extends RawContext>(name: string, preset: AnimationPreset<T, T>) => {

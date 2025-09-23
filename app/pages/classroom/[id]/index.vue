@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { registerPrefab, definePrefab } from '@chalk-dsl/renderer-runtime'
+import { registerPrefab, definePrefab, registerAnimationPreset, defineAnimationPreset } from '@chalk-dsl/renderer-runtime'
 const { currentStep, loadBoard, next } = useBoard()
 const pages = ref<Ref<HTMLElement | null>[]>([])
 
@@ -11,6 +11,12 @@ registerPrefab('text', definePrefab<'text', { text: string }>((ctx) => ({
     return div
   }
 })))
+
+registerAnimationPreset('move', defineAnimationPreset((params, { node }) => {
+  return (progress) => {
+    node!.style.transform = `rotate(${progress * 1000}deg)`
+  }
+}))
 
 // fetch('').then(async (res) => {
 //   const [_pages, render] = loadBoard(await res.json())
@@ -37,6 +43,9 @@ const [_pages, render] = loadBoard({
         },
         statements: {},
         children: [],
+        animations: {
+          $start: [{ preset: 'move', params: { }, duration: 1000 }]
+        }
       }
     },
     {

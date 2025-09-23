@@ -161,5 +161,6 @@ export function createBox(components: Component<string>[]) {
     clearActiveContext,
     setValue,
     getValue,
+    beginAnimations,
   }
 }
