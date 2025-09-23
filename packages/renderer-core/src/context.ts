@@ -1,7 +1,7 @@
 // import { signal } from "alien-signals"
 import { isRef, Reactive, reactive, shallowReactive } from "@vue/reactivity"
 
-export type RawContext = Record<string | symbol, unknown>
+export type RawContext = Record<string, any>
 export type Context = Reactive<RawContext>
 export const mergeContext = (target: Context, source: Context) => {
   return reactive(Object.assign(target, source));

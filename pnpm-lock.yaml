@@ -115,6 +115,15 @@ importers:
         specifier: workspace:*
         version: link:../renderer-core
 
+  packages/layout:
+    dependencies:
+      '@chalk-dsl/knowledge':
+        specifier: workspace:*
+        version: link:../knowledge
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:../renderer-core
+
   packages/pkg: {}
 
   packages/renderer-core:
