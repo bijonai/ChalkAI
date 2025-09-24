@@ -7,7 +7,7 @@ export const prefabKnowledgeTable = pgTable('prefab_knowledge', {
   tags: text('tags').array().notNull(),
   props: jsonb('props').notNull(),
 
-  embedding: vector('vector', { dimensions: parseInt(process.env.VECTOR_SIZE!) }).notNull(),
+  embedding: vector('embedding', { dimensions: parseInt(process.env.VECTOR_SIZE!) }).notNull(),
 }, (table) => [
   index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
 ])
