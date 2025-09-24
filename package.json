@@ -20,6 +20,7 @@
     "@chalk-dsl/renderer-runtime": "workspace:*",
     "@chalk-dsl/theme-default": "workspace:*",
     "@chalk-dsl/utils-theme": "workspace:*",
+    "@chalk-dsl/layout": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-regular-svg-icons": "^7.0.0",

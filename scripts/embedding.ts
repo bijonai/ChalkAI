@@ -4,6 +4,8 @@ import type { PrefabKnowledge } from '@chalk-dsl/knowledge'
 import { embed } from 'xsai'
 import 'dotenv/config'
 
+import '@chalk-dsl/layout'
+
 const getEmbeddings = async (input: string) => {
   const { embedding } = await embed({
     model: process.env.DEFAULT_EMBED_MODEL!,

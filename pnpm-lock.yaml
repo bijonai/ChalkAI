@@ -11,6 +11,9 @@ importers:
       '@chalk-dsl/knowledge':
         specifier: workspace:*
         version: link:packages/knowledge
+      '@chalk-dsl/layout':
+        specifier: workspace:*
+        version: link:packages/layout
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:packages/renderer-core
