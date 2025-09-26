@@ -126,6 +126,9 @@ importers:
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:../renderer-core
+      '@chalk-dsl/theme-default':
+        specifier: workspace:*
+        version: link:../theme-default
 
   packages/pkg: {}
 

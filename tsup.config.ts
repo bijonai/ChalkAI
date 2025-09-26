@@ -7,7 +7,9 @@ export default defineConfig({
     '@chalk-dsl/renderer-core',
     '@chalk-dsl/renderer-runtime',
     '@chalk-dsl/knowledge',
-    '@chalk-dsl/layout'
+    '@chalk-dsl/theme-default',
+    '@chalk-dsl/utils-theme',
+    '@chalk-dsl/layout',
   ],
   env: {
     NODE_ENV: 'dev',

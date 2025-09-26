@@ -54,6 +54,16 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
     return utils
   }
 
+  const extend = (knowledge: PrefabKnowledge) => {
+    const propSet = new Set([...props, ...knowledge.props])
+    props.length = 0
+    props.push(...propSet)
+    const tagSet = new Set([...tags, ...knowledge.tags])
+    tags.length = 0
+    tags.push(...tagSet)
+    return utils
+  }
+
   const toKnowledge = (): PrefabKnowledge => ({
     name: _name,
     description: _description,
@@ -66,6 +76,7 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
     name,
     description,
     tag,
+    extend,
     toKnowledge,
   }
 
