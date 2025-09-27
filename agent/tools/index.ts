@@ -4,7 +4,7 @@ import setStep from "./set-step"
 import createComponent from "./create-component"
 import { addChildren, setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations } from "./element"
 import type { Knowledge } from "@chalk-dsl/knowledge"
-import { getTags, getPrefabDocumentByTag } from "./dictionary"
+import { getTags, getPrefabDocumentByTag, getPrefab, getCalculator, getCalculators } from "./dictionary"
 import { query } from "./query"
 import { createRef } from "./refs"
 
@@ -40,6 +40,9 @@ export default async function (params: ToolsGeneratorParams) {
     // Dictionary
     getTags(params.knowledge),
     getPrefabDocumentByTag(params.knowledge),
+    getPrefab(params.knowledge),
+    getCalculators(params.knowledge),
+    getCalculator(params.knowledge),
 
     // Search
     query(params.embedding),

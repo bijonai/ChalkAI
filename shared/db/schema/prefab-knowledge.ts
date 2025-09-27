@@ -9,5 +9,5 @@ export const prefabKnowledgeTable = pgTable('prefab_knowledge', {
 
   embedding: vector('embedding', { dimensions: parseInt(process.env.VECTOR_SIZE!) }).notNull(),
 }, (table) => [
-  index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
+  index('embeddingKnowledge').using('hnsw', table.embedding.op('vector_cosine_ops')),
 ])

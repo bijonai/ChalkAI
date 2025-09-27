@@ -83,7 +83,7 @@ export async function addChildren(board: Board) {
     description: 'Add a child to an element.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: element.describe('The element only-one id to add the child to.'),
+      element: z.string().describe('The element only-one id to add the child to.'),
       children: z.array(element).describe('The children to add.'),
     }),
     execute: async ({ component, element, children }) => {
@@ -98,7 +98,13 @@ export async function addChildren(board: Board) {
         component,
         error: 'Component root not found',
       }
-      target.root.children!.push(...children.map(convert))
+      const elementTarget = findElement(target, element)
+      if (!elementTarget) return {
+        success: false,
+        component,
+        error: 'Element not found',
+      }
+      elementTarget.children!.push(...children.map(convert))
       return {
         success: true,
         component,
