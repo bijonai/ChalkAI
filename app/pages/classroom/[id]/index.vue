@@ -38,7 +38,7 @@ const [_pages, render] = loadBoard({
       },
       root: {
         name: 'text',
-        attrs: { text: '{{ num }}' },
+        attrs: { text: '{{ num + test() }}' },
         events: {
           click: 'console.log(num += 1)',
         },

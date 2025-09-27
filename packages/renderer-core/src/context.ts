@@ -1,5 +1,7 @@
+/* eslint-disable vue/prefer-import-from-vue */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { signal } from "alien-signals"
-import { isRef, Reactive, reactive, shallowReactive } from "@vue/reactivity"
+import { Reactive, reactive } from "@vue/reactivity"
 
 export type RawContext = Record<string, any>
 export type Context = Reactive<RawContext>

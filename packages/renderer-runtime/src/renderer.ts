@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, watch, computed, pauseTracking, resetTracking, AnimationItem } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem } from "@chalk-dsl/renderer-core"
 import { createErrorContainer, ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 import { createDelegate } from "./delegate"
@@ -47,7 +47,7 @@ export function createBox(components: Component<string>[]) {
     if (!pfb) {
       return renderComponent(element)
     }
-    const { name, validator, generator, provides, space, defaults } = pfb(getActiveContext())
+    const { name, validator, generator, provides, defaults } = pfb(getActiveContext())
     if (validator) {
       if (!validator()) {
         return null
@@ -64,7 +64,7 @@ export function createBox(components: Component<string>[]) {
       mergeContext(getActiveContext(), provides ?? {}),
       () => (element.children ?? []).map(renderNode).filter(child => child !== null && child !== undefined)
     )
-    const delegate = (node: Node, events: Record<string, string | Function>) => {
+    const delegate = (node: Node, events: Record<string, string | (() => void)>) => {
       const _delegate = createDelegate(node, getActiveContext())
       Object.entries(events).forEach(([event, handler]) => {
         _delegate(event, handler)
@@ -108,7 +108,7 @@ export function createBox(components: Component<string>[]) {
   
   const renderValue = (source: string) => {
     const [, _] = source.split('{{')
-    const [key, ..._rest] = _.split('}}')
+    const [key] = _.split('}}')
     return _renderValue(key)
   }
 

@@ -1,4 +1,4 @@
-import { Context, createAdhoc, AnimationItem, AnimationPreset, getAnimationPreset, toProps, Animation, AnimationPresetContext, defineAnimationPreset, RawContext } from "@chalk-dsl/renderer-core";
+import { Context, AnimationItem, AnimationPreset, getAnimationPreset, toProps, Animation, AnimationPresetContext, defineAnimationPreset, RawContext } from "@chalk-dsl/renderer-core";
 
 export interface AnimateParams {
   node?: Node
@@ -6,10 +6,9 @@ export interface AnimateParams {
 }
 
 export function createAnimate(context: Context, { node, prefab }: AnimateParams) {
-  const adhoc = createAdhoc(context)
 
   const runRaf = (callback: (progress: number) => void, duration: number, resolve: (value: unknown) => void) => {
-    let start = performance.now()
+    const start = performance.now()
     const loop = (id: number) => {
       const now = performance.now()
       const elapsed = now - start
@@ -27,7 +26,7 @@ export function createAnimate(context: Context, { node, prefab }: AnimateParams)
   const variableAnimation = defineAnimationPreset<{
     from?: number
     to: number
-  }, {}>((params, { preset }) => {
+  }, object>((params, { preset }) => {
     const from = params.from ?? context[preset] as number
     return (progress: number) => {
       const value = from + (params.to - from) * progress

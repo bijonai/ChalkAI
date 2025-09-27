@@ -1,8 +1,14 @@
+import { calculators } from "./calculator"
 import { Context } from "./context"
 import { AttributeValue, ComputedAttributeValue } from "./element"
 
 export function createAdhoc(context: Context) {
   return (src: string, o?: Context) => {
+    calculators.entries().map(([name, calculator]) => {
+      return [name, calculator(context)]
+    }).forEach((t) => {
+      (o ?? context)[t[0] as string] = t[1]
+    })
     return new Function(`return (function($__ctx){with($__ctx){return (${src});}});`)()(o ?? context)
   }
 }
@@ -10,7 +16,7 @@ export function createAdhoc(context: Context) {
 export function toProp(source: AttributeValue, context: Context) {
   const _computed = (source: ComputedAttributeValue) => {
     const [, _] = source.split('{{')
-    const [key, ..._rest] = _.split('}}')
+    const [key] = _.split('}}')
     return createAdhoc(context)(key)
   }
   const _string = (source: string) => {
@@ -19,6 +25,7 @@ export function toProp(source: AttributeValue, context: Context) {
   const _common = (source: number | boolean | null | undefined) => source
   const _array = (sources: AttributeValue[]) => sources.map((source) => toProp(source, context))
   const _object = (source: Record<string, AttributeValue>) => Object.fromEntries(Object.entries(source).map(([key, value]) => [key, toProp(value, context)]))
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const typeMap = new Map<string, (source: any) => unknown>()
   typeMap.set('string', _string)
   typeMap.set('number', _common)
