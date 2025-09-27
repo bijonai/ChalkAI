@@ -45,6 +45,8 @@ export default async function (params: ToolsGeneratorParams) {
     getCalculator(params.knowledge),
 
     // Search
-    query(params.embedding),
+    query({ ...params.embedding, types: ['prefab'] }),
+    query({ ...params.embedding, types: ['calculator'] }),
+    query({ ...params.embedding, types: ['prefab', 'calculator'] }),
   ])
 }

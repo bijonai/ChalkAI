@@ -3,13 +3,23 @@ import { createQuery } from "../../shared/db/client"
 import { z } from "zod"
 import { prefabKnowledgeTable } from "../../shared/db/schema"
 
-export async function query({ model, apiKey, baseURL }: {
+export async function query({ model, apiKey, baseURL, types }: {
   model: string
   apiKey: string
   baseURL: string
+  types: ('prefab' | 'calculator')[]
 }) {
+  const havePrefab = types.includes('prefab')
+  const haveCalculator = types.includes('calculator')
+  const name = () => haveCalculator && havePrefab
+    ? 'query'
+    : haveCalculator
+      ? 'query-calculator'
+      : havePrefab
+        ? 'query-prefab'
+        : 'query'
   return await tool({
-    name: 'query',
+    name: name(),
     description: 'Search the knowledge with Embedding.',
     parameters: z.object({
       input: z.string().describe('The query to search the knowledge.'),
