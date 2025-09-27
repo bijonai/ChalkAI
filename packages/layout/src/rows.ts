@@ -20,7 +20,6 @@ const rows = definePrefab<'rows', RowAttributes>((context) => {
         ? props.rows.map((r) => `${r}fr`).join(' ')
         : kids.map(() => '1fr').join(' ')
       row.style.gap = props.gap.toString()
-      row.append(...kids)
       return row
     },
     defaults: {
