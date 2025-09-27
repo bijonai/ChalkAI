@@ -1,4 +1,4 @@
-import type { CalculatorKnowledge, PrefabKnowledge } from "@chalk-dsl/knowledge";
+import type { CalculatorKnowledge, CalculatorKnowledgeArgument, Knowledge, PrefabKnowledge, PrefabKnowledgeProp } from "@chalk-dsl/knowledge";
 import { db } from "..";
 import { prefabCalculatorTable, prefabKnowledgeTable } from "../schema";
 
@@ -31,6 +31,7 @@ export const setCalculatorKnowledge = async (calculator: CalculatorKnowledge, em
       description: calculator.description,
       args: calculator.args,
       return: calculator.return,
+      raw: calculator.raw,
       embedding,
     })
     .onConflictDoUpdate({
@@ -39,8 +40,37 @@ export const setCalculatorKnowledge = async (calculator: CalculatorKnowledge, em
         description: calculator.description,
         args: calculator.args,
         return: calculator.return,
+        raw: calculator.raw,
         embedding,
       },
     })
     .returning({ id: prefabCalculatorTable.id, name: prefabCalculatorTable.name })
+}
+
+export const getToKnowledges = async (): Promise<Knowledge> => {
+  const prefabQuery = await db.select()
+    .from(prefabKnowledgeTable)
+  const prefabs: PrefabKnowledge[] = prefabQuery.map(r => {
+    return {
+      name: r.name,
+      description: r.description,
+      tags: r.tags,
+      props: r.props as PrefabKnowledgeProp[],
+    }
+  })
+  const calculatorQuery = await db.select()
+    .from(prefabCalculatorTable)
+  const calculators: CalculatorKnowledge[] = calculatorQuery.map(r => {
+    return {
+      name: r.name,
+      description: r.description,
+      args: r.args as CalculatorKnowledgeArgument[],
+      return: r.return as [string, string?],
+      raw: r.raw,
+    }
+  })
+  return {
+    prefabs,
+    calculators,
+  } satisfies Knowledge
 }

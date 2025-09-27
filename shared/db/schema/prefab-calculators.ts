@@ -6,6 +6,7 @@ export const prefabCalculatorTable = pgTable('prefab_calculator', {
   description: text('description').notNull(),
   args: jsonb('args').notNull(),
   return: jsonb('return').notNull(),
+  raw: text('raw').notNull(),
 
   embedding: vector('embedding', { dimensions: parseInt(process.env.VECTOR_SIZE!) }).notNull(),
 }, (table) => [

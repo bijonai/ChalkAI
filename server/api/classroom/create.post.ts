@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
   }>(event)
   const context = body.id ? await client.classroom.getContext(body.id) ?? [] : [] satisfies Message[]
   const board = body.id ? await client.classroom.getResult(body.id) ?? createEmptyBoard() : createEmptyBoard()
+  const knowledge = await client.knowledge.getToKnowledges()
   const id = body.id ?? crypto.randomUUID()
   const agent = createAgent({
     apiKey: DEFAULT_API_KEY,
@@ -24,9 +25,7 @@ export default defineEventHandler(async (event) => {
       apiKey: DEFAULT_EMBED_API_KEY,
       baseURL: DEFAULT_EMBED_BASE_URL,
     },
-    knowledge: {
-      prefabs: [],
-    },
+    knowledge,
   })
   const generate = async () => {
     await client.classroom.updateClassroomInfo(id, {
@@ -39,7 +38,7 @@ export default defineEventHandler(async (event) => {
       status: ClassroomStatus.Completed,
     })
   }
-  event.waitUntil(generate().catch(async (error) => {
+  event.waitUntil(generate().catch(async () => {
     await client.classroom.updateClassroomInfo(id, {
       status: ClassroomStatus.Failed,
     })
