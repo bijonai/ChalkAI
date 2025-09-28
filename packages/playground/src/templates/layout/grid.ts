@@ -12,12 +12,20 @@ export const grid: Template = {
         rows: 3,
         gap: 10,
       },
-      children: Array.from({ length: 9 }, (_, i) => ({
-        name: 'block',
-        children: [
-          `Item ${i + 1}`,
-        ],
-      })),
+      children: [
+        {
+          name: 'block',
+          attrs: {
+            padding: '{{ i * 10 }}'
+          },
+          children: [
+            '{{ "Item " + i }}'
+          ],
+          statements: {
+            for: 'i in [1, 2]',
+          }
+        }
+      ],
     },
   },
 }

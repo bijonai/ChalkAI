@@ -1,15 +1,17 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
+
+export const toArray = <T>(value: T | T[]): T[] => Array.isArray(value) ? value : [value]
 
 export function createBox(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
   const beginAnimations: (() => void)[] = []
 
-  const renderComponent = (element: BaseChalkElement<string>): Node | null => {
+  const renderComponent = (element: BaseChalkElement<string>): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
     if (!component) {
       errors.addError({ name: "Element Not Found", message: `Element ${element.name} not found`, element } satisfies ElementNotFoundError)
@@ -37,11 +39,11 @@ export function createBox(components: Component<string>[]) {
     const attrs = toProps(component.root.attrs, getActiveContext())
     return withContext(
       mergeContext(getActiveContext(), attrs),
-      (): Node | null => renderElement(component.root!)
+      (): Node | Node[] | null => renderElement(component.root!)
     )
   }
 
-  const renderElement = (element: BaseChalkElement<string>): Node | null => {
+  const renderElement = (element: BaseChalkElement<string>): Node | Node[] | null => {
     const pfbs = getRootSpace()
     console.log(pfbs)
     const pfb = pfbs.get(element.name)
@@ -61,10 +63,6 @@ export function createBox(components: Component<string>[]) {
     element.statements ??= {}
     element.children ??= []
 
-    const children = withContext(
-      mergeContext(getActiveContext(), provides ?? {}),
-      () => (element.children ?? []).map(renderNode).filter(child => child !== null && child !== undefined)
-    )
     const delegate = (node: Node, events: Record<string, string | (() => void)>) => {
       const _delegate = createDelegate(node, getActiveContext())
       Object.entries(events).forEach(([event, handler]) => {
@@ -72,6 +70,33 @@ export function createBox(components: Component<string>[]) {
       })
       return _delegate
     }
+    const statementResolvers: { pre?: StatementPreGenerator, post?: StatementPostGenerator }[]
+      = Object.entries(element.statements ?? {}).map(([key, value]) => {
+        const statement = getStatement(key)! // TODO: Handle errors
+        return statement(value)
+      }).filter(Boolean)
+    element.statements = {}
+
+    for (const { pre } of statementResolvers) {
+      if (!pre) continue
+      const newElement = pre(getActiveContext(), element)
+      Object.assign(element, newElement)
+    }
+
+    for (const { post } of statementResolvers) {
+      if (!post) continue
+      return post(getActiveContext(), element, (element, contextOverride) => {
+        if (contextOverride) {
+          return withContext(contextOverride, () => renderNode(element))
+        }
+        return renderNode(element)
+      })
+    }
+
+    const children = withContext(
+      mergeContext(getActiveContext(), provides ?? {}),
+      () => (element.children ?? []).flatMap(renderNode).filter(child => child !== null && child !== undefined)
+    )
 
     const node = generator(
       {...defaults, ...toProps(element.attrs, getActiveContext())},
@@ -114,8 +139,9 @@ export function createBox(components: Component<string>[]) {
   }
 
   const _renderValue = (source: string) => {
+    const adhoc = createAdhoc(getActiveContext())
     const text = document.createTextNode('')
-    effect(() => text.nodeValue = createAdhoc(getActiveContext())(source).toString())
+    effect(() => text.nodeValue = adhoc(source).toString())
     return text
   }
 
@@ -127,6 +153,7 @@ export function createBox(components: Component<string>[]) {
     if (typeof element === 'string') {
       return renderText(element)
     }
+    console.log(element, getActiveContext())
     return renderElement(element)
   }
 
@@ -150,7 +177,7 @@ export function createBox(components: Component<string>[]) {
     (Array.from(element.children ?? [])).forEach(child => child.remove())
     const root = renderRoot(rootName)
     if (!root) return
-    element.appendChild(root)
+    element.append(...toArray(root))
   }
   
   return {
