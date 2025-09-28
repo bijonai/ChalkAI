@@ -35,10 +35,12 @@ const tabIcon = (tab: Tab) => {
 
 const container = ref<HTMLElement | null>(null)
 
-const { render, getErrors } = createBox([template.value?.content!])
 const errors = ref<BoxError<string>[]>([])
 
 const _render = () => {
+  console.log(template.value?.content)
+  if (!template.value?.content) return
+  const { render, getErrors } = createBox([template.value?.content!])
   render(template.value?.content!.name!, container.value!)
   nextTick(() => {
     console.log(getErrors())
