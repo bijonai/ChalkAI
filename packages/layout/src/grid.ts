@@ -11,11 +11,11 @@ export interface GridAttributes extends BlockAttributes {
   gapY?: string | number
 }
 
-const grid = definePrefab<'grid', GridAttributes>((context) => {
+const grid = definePrefab<'grid', GridAttributes>((context, _) => {
   return {
     name: 'grid',
     generator: (props, children) => {
-      const grid = <HTMLDivElement>block(context).generator(props, children)
+      const grid = <HTMLDivElement>block(context, _).generator(props, children)
       grid.style.display = 'grid'
       grid.style.width = '100%'
       const kids = children()

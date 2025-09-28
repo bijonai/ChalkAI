@@ -68,6 +68,7 @@ export async function setComponentRoot(board: Board) {
         component,
         error: 'Component not found',
       }
+      target.root ??= null
       target.root = convert(element)
       return {
         success: true,
@@ -104,6 +105,7 @@ export async function addChildren(board: Board) {
         component,
         error: 'Element not found',
       }
+      elementTarget.children ??= []
       elementTarget.children!.push(...children.map(convert))
       return {
         success: true,
@@ -138,6 +140,7 @@ export async function setEvents(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.events ??= {}
       target.events = { ...target.events, ...Object.fromEntries(events.map(event => [event.event, event.handler])) }
       return {
         success: true,
@@ -173,6 +176,7 @@ export async function setAttrs(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.attrs ??= {}
       target.attrs = { ...target.attrs, ...Object.fromEntries(attrs.map(attr => [attr.key, attr.value])) }
       return {
         success: true,
@@ -205,6 +209,7 @@ export async function setAnimations(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.animations ??= {}
       target.animations = { ...target.animations, ...convertAnimation(animations) }
       return {
         success: true,
@@ -240,6 +245,7 @@ export async function setStatements(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.statements ??= {}
       target.statements = { ...target.statements, ...Object.fromEntries(statements.map(statement => [statement.key, statement.value])) }
       return {
         success: true,
@@ -407,6 +413,7 @@ export async function removeStatements(board: Board) {
         component,
         error: 'Element not found',
       }
+      target.statements ??= {}
       target.statements = Object.fromEntries(Object.entries(target.statements).filter(([key]) => !statements.includes(key)))
       return {
         success: true,

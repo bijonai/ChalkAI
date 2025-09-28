@@ -7,3 +7,9 @@
 .container-interactive:hover {
   background-color: #e7e7e7;
 }
+
+.preview {
+  background-color: var(--chalk-background);
+  color: var(--chalk-primary);
+  padding: 6px;
+}

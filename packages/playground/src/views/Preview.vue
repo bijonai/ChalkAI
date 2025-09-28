@@ -70,13 +70,10 @@ onMounted(() => {
     <Files v-show="tab === 'list'"/>
     <Errors v-show="tab === 'errors'" :errors="errors"/>
     <div class="container-common w-3/4 overflow-y-auto p-0">
-      <div class="w-full bg" ref="container"></div>
+      <div class="w-full preview" ref="container"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.bg {
-  background-color: var(--chalk-background);
-}
 </style>

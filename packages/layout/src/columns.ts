@@ -5,19 +5,22 @@ import block, { BlockAttributes, knowledge as blockKnowledge } from "./block"
 
 export interface ColumnAttributes extends BlockAttributes {
   gap: string | number
-  columns?: number[]
+  columns?: number[] | number
 }
 
-export const columns = definePrefab<'columns', ColumnAttributes>((context) => {
+export const columns = definePrefab<'columns', ColumnAttributes>((context, _) => {
   return {
     name: 'columns',
     generator: (props, children) => {
-      const column = <HTMLDivElement>block(context).generator(props, children)
+      const column = <HTMLDivElement>block(context, _).generator(props, children)
       column.style.display = 'grid'
       column.style.width = '100%'
       const kids = children()
-      column.style.gridTemplateRows = props.columns
-        ? props.columns.map((c) => `${c}fr`).join(' ')
+      column.style.gridTemplateRows =
+        Array.isArray(props.columns)
+        ? props.columns
+          ? props.columns.map((c) => `${c}fr`).join(' ')
+          : `${props.columns}fr`
         : kids.map(() => '1fr').join(' ')
       column.style.gap = props.gap.toString()
       return column

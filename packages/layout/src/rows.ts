@@ -8,17 +8,20 @@ export interface RowAttributes extends BlockAttributes {
   rows?: number[]
 }
 
-const rows = definePrefab<'rows', RowAttributes>((context) => {
+const rows = definePrefab<'rows', RowAttributes>((context, _) => {
   return {
     name: 'rows',
     generator: (props, children) => {
-      const row = <HTMLDivElement>block(context).generator(props, children)
+      const row = <HTMLDivElement>block(context, _).generator(props, children)
       row.style.display = 'grid'
       row.style.width = '100%'
       const kids = children()
-      row.style.gridTemplateColumns = props.rows
-        ? props.rows.map((r) => `${r}fr`).join(' ')
-        : kids.map(() => '1fr').join(' ')
+      row.style.gridTemplateColumns =
+        Array.isArray(props.rows)
+          ? props.rows
+            ? props.rows.map((r) => `${r}fr`).join(' ')
+            : `${props.rows}fr`
+          : kids.map(() => '1fr').join(' ')
       row.style.gap = props.gap.toString()
       return row
     },

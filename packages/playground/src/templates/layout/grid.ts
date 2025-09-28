@@ -19,10 +19,10 @@ export const grid: Template = {
             padding: '{{ i * 10 }}'
           },
           children: [
-            '{{ "Item " + i }}'
+            '{{ "Item " + (i + 1) }}'
           ],
           statements: {
-            for: 'i in [1, 2]',
+            for: 'i in Array.from({ length: 9 }, (_, i) => i)',
           }
         }
       ],

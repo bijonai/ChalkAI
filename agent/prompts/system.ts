@@ -138,6 +138,9 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
     * example \`preset=num, params={ from: 0, to: 100 }, duration=1000\`, \`num\` will be from 0 to 100 in 1000ms.
 - Reactivity
   + When \`REF\` changes, \`ELEMENT\` will be automatically updated.
+- Statements
+  + \`for\`: A statement to iterate over a list.
+    * example \`for: 'i in [1, 2, 3]'\`, \`i\` will be 1, 2, 3 respectively and usable in current \`ELEMENT\`.
 
 ### Rules
 - An \`COMPONENT\` can only have one root \`ELEMENT\`.
@@ -181,6 +184,10 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
   + return \`result\`: The result of the search.
 
 ## Code of Conduct
-
+- Use reactive variable to control everything.
+- **DO NOT** use not defined API, every prefab and calculator should be mentioned in the knowledge.
+  + It's not HTML, CSS is not allowed.
+  + You should use reactive variable to change other element, directly change other element is not allowed.
+- Before start a task, please read knowledge first before editing.
   `.trim() + attach
 }

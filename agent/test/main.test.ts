@@ -8,11 +8,11 @@ import { layoutPractice1 } from './layout'
 import '@chalk-dsl/layout'
 
 const dev = `
-Now you don't need to search or query any knowledge,
+You are under development mode, you need to follow the instructions:
 
-there is no knowledge now :(
+This is just a test, you need not design a lesson,
 
-Just imagine you have know many api, do not care about if it is exist.
+You just need to design single component as short as possible.
 `.trim()
 
 const messages = []
@@ -27,7 +27,7 @@ const agent = createAgent({
   },
   messages,
   knowledge: knowledges,
-  // dev: layoutPractice1,
+  dev,
 })
 
 const board = createEmptyBoard()

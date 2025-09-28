@@ -23,7 +23,7 @@ export function toProp(source: AttributeValue, context: Context) {
     return /{{.+}}/.test(source) ? _computed(source as ComputedAttributeValue) : source
   }
   const _common = (source: number | boolean | null | undefined) => source
-  const _array = (sources: AttributeValue[]) => sources.map((source) => toProp(source, context))
+  const _array = (sources: AttributeValue[]) => [...sources.map((source) => toProp(source, context))]
   const _object = (source: Record<string, AttributeValue>) => Object.fromEntries(Object.entries(source).map(([key, value]) => [key, toProp(value, context)]))
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const typeMap = new Map<string, (source: any) => unknown>()
