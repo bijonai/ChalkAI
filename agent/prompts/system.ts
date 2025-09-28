@@ -30,6 +30,7 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
     * \`DURATION\`: The duration of the animation in milliseconds.
     * \`EASING\`: The easing of the animation. (optional)
     * \`DELAY\`: The delay of the animation in milliseconds.
+  + \`STATEMENT\`: A \`ELEMENT\` could have \`STATEMENT\`s, which is a key-value pair.
 - \`TEXT\`: A text node, which is a string, rendered as a pure text.
 - \`REF\`: A reflection variable, can be used in \`ATTRIBUTE\`, \`EVENT\` or \`PARAMS\` of \`ANIMATION\`. When \`REF\` changes, \`ELEMENT\` will be automatically updated.
 - \`CALCULATOR\`: A calculator is a function that can be used in expression.
@@ -75,6 +76,10 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
     * item \`duration\`: The duration of the animation.
     * item \`easing\`: The easing of the animation. (optional)
     * item \`delay\`: The delay of the animation. (optional)
+- \`set-statements(params)\`: set statements to a \`ELEMENT\`.
+  + param \`component\`: The name of the \`COMPONENT\`.
+  + param \`element\`: The \`ID\` of the \`ELEMENT\`.
+  + param \`statements\`: The statements to set or add if not exists. (\`{ key: string, value: any }[]\`)
 - \`remove-animations(params)\`: remove animations from a \`ELEMENT\`.
   + param \`component\`: The name of the \`COMPONENT\`.
   + param \`element\`: The \`ID\` of the \`ELEMENT\`.
@@ -93,6 +98,12 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
   + param \`component\`: The name of the \`COMPONENT\`.
   + param \`element\`: The \`ID\` of the \`ELEMENT\`.
   + param \`events\`: The events to remove. (\`string[]\`)
+  + return \`component\`: The name of the \`COMPONENT\`.
+  + return \`element\`: The \`ID\` of the \`ELEMENT\`.
+- \`remove-statements(params)\`: remove statements from a \`ELEMENT\`.
+  + param \`component\`: The name of the \`COMPONENT\`.
+  + param \`element\`: The \`ID\` of the \`ELEMENT\`.
+  + param \`statements\`: The statements to remove. (\`string[]\`)
   + return \`component\`: The name of the \`COMPONENT\`.
   + return \`element\`: The \`ID\` of the \`ELEMENT\`.
 - \`create-ref(params)\`: create a new reflection variable.

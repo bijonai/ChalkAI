@@ -2,7 +2,7 @@ import type { Board } from "../../shared"
 import newStep from "./new-step"
 import setStep from "./set-step"
 import createComponent from "./create-component"
-import { addChildren, setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations } from "./element"
+import { addChildren, setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations, setStatements, removeStatements } from "./element"
 import type { Knowledge } from "@chalk-dsl/knowledge"
 import { getTags, getPrefabDocumentByTag, getPrefab, getCalculator, getCalculators } from "./dictionary"
 import { query } from "./query"
@@ -29,11 +29,12 @@ export default async function (params: ToolsGeneratorParams) {
     setEvents(params.board),
     setAttrs(params.board),
     setAnimations(params.board),
+    setStatements(params.board),
     remove(params.board),
     removeEvents(params.board),
     removeAttrs(params.board),
     removeAnimations(params.board),
-
+    removeStatements(params.board),
     // Refs
     createRef(params.board),
 

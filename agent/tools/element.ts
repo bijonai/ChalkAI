@@ -215,6 +215,41 @@ export async function setAnimations(board: Board) {
   })
 }
 
+export async function setStatements(board: Board) {
+  return await tool({
+    name: 'set-statements',
+    description: 'set statements to an element or add if not exists.',
+    parameters: z.object({
+      component: z.string().describe('The name of the target component.'),
+      element: z.string().describe('The element only-one id to add the statements to.'),
+      statements: z.array(z.object({
+        key: z.string().describe('The statement name to set.'),
+        value: z.any().describe('The value of the statement.'),
+      })).describe('The statements to set.'),
+    }),
+    execute: async ({ component, element, statements }) => {
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element)
+      if (!target) return {
+        success: false,
+        component,
+        error: 'Element not found',
+      }
+      target.statements = { ...target.statements, ...Object.fromEntries(statements.map(statement => [statement.key, statement.value])) }
+      return {
+        success: true,
+        component,
+        element,
+      }
+    }
+  })
+}
+
 export async function remove(board: Board) {
   return await tool({
     name: 'remove',
@@ -347,6 +382,38 @@ export async function removeAnimations(board: Board) {
         element,
       }
     },
+  })
+}
+
+export async function removeStatements(board: Board) {
+  return await tool({
+    name: 'remove-statements',
+    description: 'remove statements of an element.',
+    parameters: z.object({
+      component: z.string().describe('The name of the target component.'),
+      element: z.string().describe('The element only-one id to remove the statements from.'),
+      statements: z.array(z.string()).describe('The statements to remove.'),
+    }),
+    execute: async ({ component, element, statements }) => {
+      const comp = findComponent(board, component)
+      if (!comp) return {
+        success: false,
+        component,
+        error: 'Component not found',
+      }
+      const target = findElement(comp, element)
+      if (!target) return {
+        success: false,
+        component,
+        error: 'Element not found',
+      }
+      target.statements = Object.fromEntries(Object.entries(target.statements).filter(([key]) => !statements.includes(key)))
+      return {
+        success: true,
+        component,
+        element,
+      }
+    }
   })
 }
 
