@@ -3,6 +3,7 @@ import { ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
+import { createMarkdown } from "./builtins/markdown"
 
 export const toArray = <T>(value: T | T[]): T[] => Array.isArray(value) ? value : [value]
 
@@ -10,6 +11,7 @@ export function createBox(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
   const beginAnimations: (() => void)[] = []
+  const markdown = createMarkdown()
 
   const renderComponent = (element: BaseChalkElement<string>): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
@@ -140,13 +142,17 @@ export function createBox(components: Component<string>[]) {
 
   const _renderValue = (source: string) => {
     const adhoc = createAdhoc(getActiveContext())
-    const text = document.createTextNode('')
-    effect(() => text.nodeValue = adhoc(source).toString())
+    const text = document.createElement('span')
+    effect(() => text.innerHTML = markdown(adhoc(source).toString()))
     return text
   }
 
   const renderText = (source: string) => {
-    return /{{.+}}/.test(source) ? renderValue(source) : document.createTextNode(source)
+    return /{{.+}}/.test(source) ? renderValue(source) : (() => {
+      const text = document.createElement('span')
+      effect(() => text.innerHTML = markdown(source))
+      return text
+    })()
   }
 
   const renderNode = (element: BaseChalkElement<string> | string) => {

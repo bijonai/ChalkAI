@@ -17,9 +17,11 @@ export const columns: Template = {
             {
               name: 'rows',
               children: [
-                { name: 'block', children: ['Item 1'] },
-                { name: 'block', children: ['Item 2'] },
-                { name: 'block', children: ['Item 3'] },
+                { name: 'block', children: ['**Item 1**'] },
+                {
+                  name: 'block', children: ['- item1 \n - item2 \n - item3']
+                },
+                { name: 'block', children: ['| a | b | \n | - | - | \n | c | d |'] },
               ],
             }
           ]
@@ -30,8 +32,8 @@ export const columns: Template = {
             {
               name: 'rows',
               children: [
-                { name: 'block', children: ['Item 1'] },
-                { name: 'block', children: ['Item 2'] },
+                { name: 'block', children: ['**Item 1**'] },
+                { name: 'block', children: ['_Item 2_'] },
               ],
             }
           ]
@@ -39,7 +41,7 @@ export const columns: Template = {
         {
           name: 'block',
           children: [
-            { name: 'rows', children: [{ name: 'block', children: ['Item 3'] }] },
+            { name: 'rows', children: [{ name: 'block', children: ['**Item 3**'] }] },
           ],
         },
       ],
