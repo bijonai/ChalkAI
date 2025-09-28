@@ -6,5 +6,6 @@ export * from './adhoc'
 export * from './component'
 export * from './animation'
 export * from './calculator'
+export * from './error'
 
 export * from '@vue/reactivity'

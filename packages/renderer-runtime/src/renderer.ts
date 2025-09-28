@@ -1,5 +1,5 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem } from "@chalk-dsl/renderer-core"
-import { createErrorContainer, ElementNotFoundError } from "./error"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer } from "@chalk-dsl/renderer-core"
+import { ElementNotFoundError } from "./error"
 import patch from 'morphdom'
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
@@ -48,7 +48,7 @@ export function createBox(components: Component<string>[]) {
     if (!pfb) {
       return renderComponent(element)
     }
-    const { name, validator, generator, provides, defaults } = pfb(getActiveContext())
+    const { name, validator, generator, provides, defaults } = pfb(getActiveContext(), errors.addError)
     if (validator) {
       if (!validator()) {
         return null
