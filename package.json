@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "playground": "pnpm --filter playground dev",
-    "playground:build": "pnpm --filter playground build",
+    "playground:build": "pnpm --filter playground build --outDir=../../dist",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
