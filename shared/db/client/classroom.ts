@@ -93,3 +93,22 @@ export const updateResult = async (id: string, result: Board) => {
     .returning({ id: classroomTable.id })
     .then(r => r.at(0)!)
 }
+
+export const listClassrooms = async (
+  limit: number = 10,
+  offset: number = 0,
+) => {
+  return await db
+    .select({
+      id: classroomTable.id,
+      title: classroomTable.title,
+      createdAt: classroomTable.createdAt,
+      updatedAt: classroomTable.updatedAt,
+      createdBy: classroomTable.createdBy,
+      public: classroomTable.public,
+      status: classroomTable.status,
+    })
+    .from(classroomTable)
+    .limit(limit)
+    .offset(offset)
+}
