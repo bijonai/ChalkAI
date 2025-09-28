@@ -1,0 +1,12 @@
+<script setup lang="ts">
+</script>
+
+<template>
+  <div class="w-full h-screen max-h-screen p-3 font-mono">
+    <RouterView />
+  </div>
+</template>
+
+<style scoped>
+
+</style>

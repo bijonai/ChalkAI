@@ -1,0 +1,31 @@
+{
+  "name": "playground",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "shiki": "^3.13.0",
+    "vue": "^3.5.21",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@chalk-dsl/knowledge": "workspace:*",
+    "@chalk-dsl/layout": "workspace:*",
+    "@chalk-dsl/renderer-core": "workspace:*",
+    "@chalk-dsl/renderer-runtime": "workspace:*",
+    "@chalk-dsl/theme-default": "workspace:*",
+    "@chalk-dsl/utils-theme": "workspace:*",
+    "@unocss/preset-wind4": "^66.5.2",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.8.3",
+    "unocss": "^66.5.1",
+    "vite": "^7.1.7",
+    "vue-tsc": "^3.0.7"
+  }
+}

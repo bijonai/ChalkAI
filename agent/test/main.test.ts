@@ -2,6 +2,10 @@ import 'dotenv/config'
 import { createAgent } from '../index'
 import { createEmptyBoard } from '../../shared'
 import { writeFileSync } from 'node:fs'
+import knowledges from '@chalk-dsl/knowledge/default'
+import { layoutPractice1 } from './layout'
+
+import '@chalk-dsl/layout'
 
 const dev = `
 Now you don't need to search or query any knowledge,
@@ -22,15 +26,15 @@ const agent = createAgent({
     baseURL: process.env.DEFAULT_EMBED_BASE_URL!,
   },
   messages,
-  knowledge: {
-    prefabs: [],
-  },
-  dev,
+  knowledge: knowledges,
+  // dev: layoutPractice1,
 })
 
 const board = createEmptyBoard()
 
-const result = await agent('设计一个三角函数的课程', board)
+console.log(knowledges)
+
+const result = await agent(layoutPractice1, board)
 writeFileSync(`result-${Date.now()}.json`, JSON.stringify({
   context: messages,
   result: result,
