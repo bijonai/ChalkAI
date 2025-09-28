@@ -36,7 +36,10 @@ export async function query({ model, apiKey, baseURL, types }: {
       ])
       return {
         success: true,
-        result: results.flat(),
+        result: results.flat().map(result => {
+          result.embedding = undefined
+          return result
+        }),
       }
     }
   })
