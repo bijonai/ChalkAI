@@ -43,6 +43,7 @@ export function createBox(components: Component<string>[]) {
 
   const renderElement = (element: BaseChalkElement<string>): Node | null => {
     const pfbs = getRootSpace()
+    console.log(pfbs)
     const pfb = pfbs.get(element.name)
     if (!pfb) {
       return renderComponent(element)

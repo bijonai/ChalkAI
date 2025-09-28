@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import templates, { type Template } from '../templates';
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import templates from '../templates';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { createBox, type BoxError } from '@chalk-dsl/renderer-runtime';
 import Files from '../components/Files.vue';
 import Errors from '../components/Errors.vue';
 
 const router = useRouter()
-const route = useRoute()
 
-const type = route.params.type as string
-const id = route.params.id as string | undefined
-
-const template = ref<Template | null>(null)
-const set = templates.find(template => template.id === type) ?? null
-if (set?.templates) {
-  template.value = set.templates.find(template => template.id === id) ?? null
-} else {
-  template.value = set ?? null
-}
+const template = computed(() => {
+  const type = router.currentRoute.value.params.type as string
+  const id = router.currentRoute.value.params.id as string | undefined
+  const set = templates.find(template => template.id === type) ?? null
+  if (set?.templates) {
+    return set.templates.find(template => template.id === id) ?? null
+  } else {
+    return set ?? null
+  }
+})
 
 type Tab = 'list' | 'errors'
 const tab = ref<Tab>('list')
@@ -35,15 +34,22 @@ const tabIcon = (tab: Tab) => {
 // ------
 
 const container = ref<HTMLElement | null>(null)
+
 const { render, getErrors } = createBox([template.value?.content!])
 const errors = ref<BoxError<string>[]>([])
 
-onMounted(() => {
-  render(template.value?.content!.root!.name!, container.value!)
+const _render = () => {
+  render(template.value?.content!.name!, container.value!)
   nextTick(() => {
     console.log(getErrors())
     errors.value = getErrors()
   })
+}
+
+watch(template, _render)
+
+onMounted(() => {
+  _render()
 })
 </script>
 
@@ -61,12 +67,14 @@ onMounted(() => {
     </div>
     <Files v-show="tab === 'list'"/>
     <Errors v-show="tab === 'errors'" :errors="errors"/>
-    <div class="container-common w-3/4 overflow-y-auto">
-      <div class="w-full" ref="container"></div>
+    <div class="container-common w-3/4 overflow-y-auto p-0">
+      <div class="w-full bg" ref="container"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
+.bg {
+  background-color: var(--chalk-background);
+}
 </style>

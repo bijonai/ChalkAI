@@ -22,12 +22,12 @@ const grid = definePrefab<'grid', GridAttributes>((context) => {
       grid.style.gridTemplateColumns = props.columns
         ? Array.isArray(props.columns)
           ? props.columns.map((c) => `${c}fr`).join(' ')
-          : `${props.columns}fr`
+          : Array.from({ length: props.columns }, () => '1fr').join(' ')
         : kids.map(() => '1fr').join(' ')
       grid.style.gridTemplateRows = props.rows
         ? Array.isArray(props.rows)
           ? props.rows.map((r) => `${r}fr`).join(' ')
-          : `${props.rows}fr`
+          : Array.from({ length: props.rows }, () => '1fr').join(' ')
         : kids.map(() => '1fr').join(' ')
       grid.style.gap = props.gap?.toString() ?? '0'
       grid.style.rowGap = props.gapX?.toString() ?? '0'

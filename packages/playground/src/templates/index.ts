@@ -1,4 +1,5 @@
-import type { Component } from "@chalk-dsl/renderer-core"
+import type { Component } from "@chalk-dsl/renderer-runtime"
+import { grid } from "./layout/grid"
 
 export type Template = {
   id: string
@@ -8,27 +9,9 @@ export type Template = {
 
 export default [
   {
-    id: 'text',
-    content: {
-      name: 'text',
-      props: [],
-      root: {
-        name: 'text',
-        attrs: { text: 'Hello, world!' },
-      },
-    },
+    id: 'layout',
     templates: [
-      {
-        id: 'text-2',
-        content: {
-          name: 'root',
-          props: [],
-          root: {
-            name: 'text',
-            attrs: { text: 'Hello, world!' },
-          },
-        },
-      },
-    ],
-  },
+      grid,
+    ]
+  }
 ] as Template[]
