@@ -23,13 +23,31 @@ export function createBox(components: Component<string>[]) {
       return document.createTextNode('')
     }
 
-    for (const reflection of Object.entries(component.refs ?? {})) {
-      const [key, value] = reflection
+    const refs = Object.entries(component.refs ?? {})
+    const retryWaitlist: string[] = []
+    const resolve = (key: string, value: string, retrying: boolean = false) => {
       const _ref = ref()
       setValue(key, _ref)
       effect(() => {
-        _ref.value = createAdhoc(getActiveContext())(value)
+        try {
+          _ref.value = createAdhoc(getActiveContext())(value)
+          if (retryWaitlist.includes(key)) {
+            retryWaitlist.splice(retryWaitlist.indexOf(key), 1)
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          if (retrying) return
+          retryWaitlist.push(key)
+        }
+        if (retrying) return
+        for (const key of retryWaitlist) {
+          resolve(key, component.refs![key], true)
+        }
       })
+    }
+    for (const reflection of refs) {
+      const [key, value] = reflection
+      resolve(key, value)
     }
 
     // Set up default values to prevent undefined access
@@ -148,7 +166,10 @@ export function createBox(components: Component<string>[]) {
   const renderText = (source: string) => {
     const text = document.createElement('span')
     effect(() => {
-      const value = source.replace(/{{.+}}/, _renderValue)
+      const value = source.replace(/{{(.*?)}}/g, (match, key) => {
+        // 去除首尾空格
+        return _renderValue(key.trim())
+      })
       text.innerHTML = markdown(value)
     })
     return text
