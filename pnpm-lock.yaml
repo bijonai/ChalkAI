@@ -76,10 +76,13 @@ importers:
         version: 4.5.1(vue@3.5.21(typescript@5.9.2))
       xsai:
         specifier: 0.4.0-beta.3
-        version: 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+        version: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
       zod:
         specifier: ^4.1.9
         version: 4.1.9
+      zod-to-json-schema:
+        specifier: ^3.24.6
+        version: 3.24.6(zod@4.1.9)
     devDependencies:
       '@types/pg':
         specifier: ^8.15.5
@@ -5447,6 +5450,11 @@ packages:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
 
+  zod-to-json-schema@3.24.6:
+    resolution: {integrity: sha512-h/z3PKvcTcTetyjl1fkj79MHNEjm+HpD6NXheWjzOekY7kV+lwDYnHw+ivHkijnCSMz1yJaWBD9vu/Fcmk+vEg==}
+    peerDependencies:
+      zod: ^3.24.1
+
   zod@4.1.9:
     resolution: {integrity: sha512-HI32jTq0AUAC125z30E8bQNz0RQ+9Uc+4J7V97gLYjZVKRjeydPgGt6dvQzFrav7MYOUGFqqOGiHpA/fdbd0cQ==}
 
@@ -7764,10 +7772,10 @@ snapshots:
     dependencies:
       '@xsai/shared': 0.4.0-beta.3
 
-  '@xsai/generate-object@0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)':
+  '@xsai/generate-object@0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)':
     dependencies:
       '@xsai/generate-text': 0.4.0-beta.3
-      xsschema: 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+      xsschema: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
     transitivePeerDependencies:
       - '@valibot/to-json-schema'
       - arktype
@@ -7799,10 +7807,10 @@ snapshots:
 
   '@xsai/shared@0.4.0-beta.3': {}
 
-  '@xsai/stream-object@0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)':
+  '@xsai/stream-object@0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)':
     dependencies:
       '@xsai/stream-text': 0.4.0-beta.3
-      xsschema: 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+      xsschema: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
     transitivePeerDependencies:
       - '@valibot/to-json-schema'
       - arktype
@@ -7815,11 +7823,11 @@ snapshots:
     dependencies:
       '@xsai/shared-chat': 0.4.0-beta.3
 
-  '@xsai/tool@0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)':
+  '@xsai/tool@0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)':
     dependencies:
       '@xsai/shared': 0.4.0-beta.3
       '@xsai/shared-chat': 0.4.0-beta.3
-      xsschema: 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+      xsschema: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
     transitivePeerDependencies:
       - '@valibot/to-json-schema'
       - arktype
@@ -11510,20 +11518,20 @@ snapshots:
 
   xpath@0.0.34: {}
 
-  xsai@0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9):
+  xsai@0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9):
     dependencies:
       '@xsai/embed': 0.4.0-beta.3
       '@xsai/generate-image': 0.4.0-beta.3
-      '@xsai/generate-object': 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+      '@xsai/generate-object': 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
       '@xsai/generate-speech': 0.4.0-beta.3
       '@xsai/generate-text': 0.4.0-beta.3
       '@xsai/generate-transcription': 0.4.0-beta.3
       '@xsai/model': 0.4.0-beta.3
       '@xsai/shared': 0.4.0-beta.3
       '@xsai/shared-chat': 0.4.0-beta.3
-      '@xsai/stream-object': 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+      '@xsai/stream-object': 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
       '@xsai/stream-text': 0.4.0-beta.3
-      '@xsai/tool': 0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9)
+      '@xsai/tool': 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
       '@xsai/utils-chat': 0.4.0-beta.3
       '@xsai/utils-reasoning': 0.4.0-beta.3
       '@xsai/utils-stream': 0.4.0-beta.3
@@ -11535,10 +11543,11 @@ snapshots:
       - zod
       - zod-to-json-schema
 
-  xsschema@0.4.0-beta.3(arktype@2.1.22)(zod@4.1.9):
+  xsschema@0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9):
     optionalDependencies:
       arktype: 2.1.22
       zod: 4.1.9
+      zod-to-json-schema: 3.24.6(zod@4.1.9)
 
   xtend@4.0.2: {}
 
@@ -11584,6 +11593,10 @@ snapshots:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
       readable-stream: 4.7.0
+
+  zod-to-json-schema@3.24.6(zod@4.1.9):
+    dependencies:
+      zod: 4.1.9
 
   zod@4.1.9: {}
 

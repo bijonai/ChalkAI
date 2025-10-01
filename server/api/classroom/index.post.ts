@@ -2,19 +2,31 @@ import { client } from '#shared/db'
 import { createAgent } from '../../../agent'
 import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, DEFAULT_MODEL, DEFAULT_EMBED_BASE_URL } from '#shared/env'
 import { Message } from 'xsai'
-import { response } from '#shared/server/response'
+import { failure, response } from '#shared/server/response'
 import { ClassroomStatus } from '#shared/db/client/classroom'
 import { createEmptyBoard } from '~~/shared'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     id?: string
+    title?: string
     input: string
   }>(event)
   const context = body.id ? await client.classroom.getContext(body.id) ?? [] : [] satisfies Message[]
   const board = body.id ? await client.classroom.getResult(body.id) ?? createEmptyBoard() : createEmptyBoard()
   const knowledge = await client.knowledge.getToKnowledges()
-  const id = body.id ?? crypto.randomUUID()
+  let id: string = ''
+  if (!body.id) {
+    const classroom = await client.classroom.createClassroom()
+    if (classroom) {
+      id = classroom.id
+    }
+  } else {
+    return failure('classroom id is required')
+  }
+  await client.classroom.updateClassroomInfo(id, {
+    title: body.title ?? 'Untitled',
+  })
   const agent = createAgent({
     apiKey: DEFAULT_API_KEY,
     baseURL: DEFAULT_BASE_URL,
@@ -43,5 +55,13 @@ export default defineEventHandler(async (event) => {
       status: ClassroomStatus.Failed,
     })
   }))
-  return response({ id })
+  return response({
+    id,
+    title: body.title ?? 'Untitled',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    createdBy: 'system',
+    public: false,
+    status: ClassroomStatus.Running,
+  })
 })

@@ -2,14 +2,16 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCalendar, faUser, faLock, faBook } from '@fortawesome/free-solid-svg-icons';
 
-const props = defineProps<{
+export interface ClassroomCardProps   {
   title: string
-  date: Date
+  date: string
   status?: string
   createdBy: string
   public: boolean
   id: string
-}>()
+}
+
+const props = defineProps<ClassroomCardProps>()
 </script>
 
 <template>

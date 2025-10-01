@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@chalk-dsl/knowledge": "workspace:*",
+    "@chalk-dsl/layout": "workspace:*",
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/renderer-runtime": "workspace:*",
     "@chalk-dsl/theme-default": "workspace:*",
     "@chalk-dsl/utils-theme": "workspace:*",
-    "@chalk-dsl/layout": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-regular-svg-icons": "^7.0.0",
@@ -40,7 +40,8 @@
     "vue": "^3.5.21",
     "vue-router": "^4.5.1",
     "xsai": "0.4.0-beta.3",
-    "zod": "^4.1.9"
+    "zod": "^4.1.9",
+    "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
     "@types/pg": "^8.15.5",
