@@ -58,13 +58,15 @@ export const getContext = async (id: string) => {
 }
 
 export const getResult = async (id: string) => {
-  return await db
+  const result = await db
     .select({
       result: classroomTable.result,
     })
     .from(classroomTable)
     .where(eq(classroomTable.id, id))
-    .then(r => r.at(0) ?? null) as Board | null
+    .then(r => r.at(0) ?? null)
+  if (!result) return null
+  return result.result as Board
 }
 
 export const updateClassroomInfo = async (id: string, info: Partial<ClassroomInfo>) => {

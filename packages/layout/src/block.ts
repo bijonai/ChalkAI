@@ -1,6 +1,6 @@
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default"
-import { definePrefab } from "@chalk-dsl/renderer-core"
+import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core"
 import { theme } from "@chalk-dsl/utils-theme"
 
 interface Direction {
@@ -52,6 +52,8 @@ export const block = definePrefab<'block', BlockAttributes>(() => {
     }
   }
 })
+
+registerPrefab('block', block)
 
 export default block
 

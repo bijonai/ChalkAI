@@ -1,81 +1,38 @@
 <script setup lang="ts">
-import { registerPrefab, definePrefab, registerAnimationPreset, defineAnimationPreset } from '@chalk-dsl/renderer-runtime'
+import type { Board } from '~~/shared'
+
+const containers = ref<Ref<HTMLElement | null>[]>([])
+const id = useRoute().params.id as string
+
+const board = ref<Board | null>(null)
+
+const getInfo = async () => {
+  const result = await $fetch(`/api/classroom/${id}/result`)
+  console.log(result)
+  if (result.success) {
+    board.value = result.data.result
+  }
+}
+
 const { currentStep, loadBoard, next } = useBoard()
-const pages = ref<Ref<HTMLElement | null>[]>([])
 
-registerPrefab('text', definePrefab<'text', { text: string }>((ctx) => ({
-  name: 'text',
-  generator: (props, children) => {
-    const div = document.createElement('div')
-    div.textContent = props.text
-    div.style.fontSize = '100px'
-    return div
-  }
-})))
-
-registerAnimationPreset('move', defineAnimationPreset((params, { node }) => {
-  return (progress) => {
-    node!.style.transform = `rotate(${progress * 1000}deg)`
-  }
-}))
-
-// fetch('').then(async (res) => {
-//   const [_pages, render] = loadBoard(await res.json())
-//   pages.value = _pages
-//   onMounted(() => {
-//     render()
-//   })
-// })
-
-const [_pages, render] = loadBoard({
-  steps: [{ component: 'Page-1', description: 'Page 1' }, { component: 'Page-2', description: 'Page 2' }],
-  components: [
-    {
-      name: 'Page-1',
-      props: [],
-      refs: {
-        num: '2222'
-      },
-      root: {
-        name: 'text',
-        attrs: { text: '{{ num + test() }}' },
-        events: {
-          click: 'console.log(num += 1)',
-        },
-        statements: {},
-        children: [],
-        animations: {
-          $start: [
-            { preset: 'move', params: {}, duration: 1000 },
-            { preset: 'num', params: { from: 0, to: 100 }, duration: 1000 }
-          ]
-        }
-      }
-    },
-    {
-      name: 'Page-2',
-      props: [],
-      root: {
-        name: 'text',
-        attrs: { text: 'Page 2' },
-        events: {},
-        statements: {},
-        children: [],
-      }
-    }
-  ]
-})
-pages.value = _pages
-onMounted(() => {
-  render()
-  setTimeout(() => {
+onMounted(async () => {
+  await getInfo()
+  if (!board.value) return
+  console.log(board.value.result)
+  const [steps, _render] = loadBoard(board.value!)
+  containers.value.push(...steps)
+  nextTick(() => _render())
+  for (let i = 0; i < steps.length; i++) {
     next()
-  }, 2000)
+  }
 })
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-full">
-    <div v-for="(page, index) in pages" :key="index" :ref="page" class="flex w-full"></div>
+  <div class="size-full flex">
+    <div class="max-w-full overflow-y-auto w-full">
+      <div v-for="container in containers" :key="container.id" :ref="container" class="w-full"></div>
+    </div>
   </div>
 </template>

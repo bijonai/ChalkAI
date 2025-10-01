@@ -142,17 +142,16 @@ export function createBox(components: Component<string>[]) {
 
   const _renderValue = (source: string) => {
     const adhoc = createAdhoc(getActiveContext())
-    const text = document.createElement('span')
-    effect(() => text.innerHTML = markdown(adhoc(source).toString()))
-    return text
+    return adhoc(source).toString()
   }
 
   const renderText = (source: string) => {
-    return /{{.+}}/.test(source) ? renderValue(source) : (() => {
-      const text = document.createElement('span')
-      effect(() => text.innerHTML = markdown(source))
-      return text
-    })()
+    const text = document.createElement('span')
+    effect(() => {
+      const value = source.replace(/{{.+}}/, _renderValue)
+      text.innerHTML = markdown(value)
+    })
+    return text
   }
 
   const renderNode = (element: BaseChalkElement<string> | string) => {
