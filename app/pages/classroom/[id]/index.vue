@@ -31,7 +31,7 @@ onMounted(async () => {
 
 <template>
   <div class="size-full flex">
-    <div class="max-w-full overflow-y-auto w-full">
+    <div class="max-w-full overflow-y-auto w-full chalk">
       <div v-for="container in containers" :key="container.id" :ref="container" class="w-full"></div>
     </div>
   </div>

@@ -10,7 +10,8 @@ export default defineNuxtConfig({
   ],
 
   css: [
-    '@/assets/css/common.css'
+    '@/assets/css/common.css',
+    '@/assets/css/chalk.css'
   ],
 
   serverDir: 'server',
