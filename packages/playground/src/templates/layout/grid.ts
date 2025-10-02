@@ -5,6 +5,9 @@ export const grid: Template = {
   content: {
     name: 'root',
     props: [],
+    refs: {
+      items: 'Array.from({ length: 8 }, (_, i) => i)',
+    },
     root: {
       name: 'grid',
       attrs: {
@@ -16,13 +19,16 @@ export const grid: Template = {
         {
           name: 'block',
           attrs: {
-            padding: '{{ i * 10 }}'
+            // padding: '{{ i * 10 }}'
           },
           children: [
             '{{ "Item " + (i + 1) }}'
           ],
+          events: {
+            'click': 'items.push(233)'
+          },
           statements: {
-            for: 'i in Array.from({ length: 9 }, (_, i) => i)',
+            for: 'i in items',
           }
         }
       ],

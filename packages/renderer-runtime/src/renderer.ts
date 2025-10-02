@@ -1,9 +1,9 @@
 import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
-import patch from 'morphdom'
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
 import { createMarkdown } from "./builtins/markdown"
+import patch from 'morphdom'
 
 export const toArray = <T>(value: T | T[]): T[] => Array.isArray(value) ? value : [value]
 
@@ -12,6 +12,14 @@ export function createBox(components: Component<string>[]) {
   const errors = createErrorContainer()
   const beginAnimations: (() => void)[] = []
   const markdown = createMarkdown()
+
+  const preprocessElement = (element: BaseChalkElement<string>, parent?: BaseChalkElement<string>) => {
+    for (const child of element.children ?? []) {
+      if (typeof child === 'string') continue
+      preprocessElement(child, element)
+    }
+    element.parent = parent
+  }
 
   const renderComponent = (element: BaseChalkElement<string>): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
@@ -22,6 +30,7 @@ export function createBox(components: Component<string>[]) {
     if (!component.root) {
       return document.createTextNode('')
     }
+    preprocessElement(component.root!)
 
     const refs = Object.entries(component.refs ?? {})
     const retryWaitlist: string[] = []
@@ -92,15 +101,21 @@ export function createBox(components: Component<string>[]) {
     }
     const statementResolvers: { pre?: StatementPreGenerator, post?: StatementPostGenerator }[]
       = Object.entries(element.statements ?? {}).map(([key, value]) => {
-        const statement = getStatement(key)! // TODO: Handle errors
+        const statement = getStatement(key)
+        if (!statement) {
+          errors.addError({ name: "Statement Not Found", message: `Statement ${key} not found`, element })
+          return null
+        }
         return statement(value)
-      }).filter(Boolean)
+      }).filter(Boolean) as { pre?: StatementPreGenerator, post?: StatementPostGenerator }[]
     element.statements = {}
 
     for (const { pre } of statementResolvers) {
       if (!pre) continue
-      const newElement = pre(getActiveContext(), element)
-      Object.assign(element, newElement)
+      const origin = pre(getActiveContext(), element)
+      if (!origin) return null
+      const node = renderNode(origin)
+      return node
     }
 
     for (const { post } of statementResolvers) {
@@ -160,7 +175,8 @@ export function createBox(components: Component<string>[]) {
 
   const _renderValue = (source: string) => {
     const adhoc = createAdhoc(getActiveContext())
-    return adhoc(source).toString()
+    console.log(source, adhoc(source))
+    return adhoc(source)
   }
 
   const renderText = (source: string) => {

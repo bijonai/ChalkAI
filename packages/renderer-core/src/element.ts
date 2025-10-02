@@ -16,4 +16,5 @@ export type BaseChalkElement<
   children?: (BaseChalkElement<string> | string)[]
   animations?: Record<string, AnimationItem[]>
   id?: string
+  parent?: BaseChalkElement<string>
 }
