@@ -29,21 +29,33 @@ const element = z.object({
 const convertAnimation = (ani: z.infer<typeof animations>[]) => Object.fromEntries(
   ani.map(ani => [ani.event ?? '$start', ani.animations])
 )
-const convert = (ele: z.infer<typeof element>): BaseChalkElement<string> => ({
-  name: ele.name,
-  attrs: ele.attrs,
-  events: ele.events,
-  statements: ele.statements,
-  children: ele.children as (BaseChalkElement<string> | string)[],
-  animations: convertAnimation(ele.animations ?? []),
-  id: ele.id,
-})
+const convert = (ele: z.infer<typeof element>): BaseChalkElement<string> => {
+  const result: BaseChalkElement<string> = {
+    name: ele.name,
+    id: ele.id,
+  }
+
+  if (ele.attrs) result.attrs = ele.attrs
+  if (ele.events) result.events = ele.events
+  if (ele.statements) result.statements = ele.statements
+  if (ele.children && ele.children.length > 0) {
+    result.children = ele.children as (BaseChalkElement<string> | string)[]
+  }
+  if (ele.animations && ele.animations.length > 0) {
+    const convertedAnimations = convertAnimation(ele.animations)
+    if (Object.keys(convertedAnimations).length > 0) {
+      result.animations = convertedAnimations
+    }
+  }
+
+  return result
+}
 
 export const findElement = (component: Component<string>, id: string) => {
   if (!component.root) return null
   const resolve = (element: BaseChalkElement<string>): BaseChalkElement<string> | null => {
     if (element.id === id) return element
-    element.children ??= []
+    if (!element.children) return null
     return element.children.find(child => typeof child === 'string' ? null : resolve(child)) as BaseChalkElement<string> | null
   }
   return resolve(component.root)
@@ -68,7 +80,6 @@ export async function setComponentRoot(board: Board) {
         component,
         error: 'Component not found',
       }
-      target.root ??= null
       target.root = convert(element)
       return {
         success: true,
@@ -105,8 +116,10 @@ export async function addChildren(board: Board) {
         component,
         error: 'Element not found',
       }
-      elementTarget.children ??= []
-      elementTarget.children!.push(...children.map(convert))
+      if (!elementTarget.children) {
+        elementTarget.children = []
+      }
+      elementTarget.children.push(...children.map(convert))
       return {
         success: true,
         component,
@@ -140,7 +153,9 @@ export async function setEvents(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.events ??= {}
+      if (!target.events) {
+        target.events = {}
+      }
       target.events = { ...target.events, ...Object.fromEntries(events.map(event => [event.event, event.handler])) }
       return {
         success: true,
@@ -176,7 +191,9 @@ export async function setAttrs(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.attrs ??= {}
+      if (!target.attrs) {
+        target.attrs = {}
+      }
       target.attrs = { ...target.attrs, ...Object.fromEntries(attrs.map(attr => [attr.key, attr.value])) }
       return {
         success: true,
@@ -209,7 +226,9 @@ export async function setAnimations(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.animations ??= {}
+      if (!target.animations) {
+        target.animations = {}
+      }
       target.animations = { ...target.animations, ...convertAnimation(animations) }
       return {
         success: true,
@@ -245,7 +264,9 @@ export async function setStatements(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.statements ??= {}
+      if (!target.statements) {
+        target.statements = {}
+      }
       target.statements = { ...target.statements, ...Object.fromEntries(statements.map(statement => [statement.key, statement.value])) }
       return {
         success: true,
@@ -277,8 +298,9 @@ export async function remove(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.children ??= []
-      target.children = target.children.filter(child => typeof child === 'string' ? child !== element : child.id !== element)
+      if (target.children) {
+        target.children = target.children.filter(child => typeof child === 'string' ? child !== element : child.id !== element)
+      }
       return {
         success: true,
         component,
@@ -310,8 +332,9 @@ export async function removeEvents(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.events ??= {}
-      target.events = Object.fromEntries(Object.entries(target.events).filter(([event]) => !events.includes(event)))
+      if (target.events) {
+        target.events = Object.fromEntries(Object.entries(target.events).filter(([event]) => !events.includes(event)))
+      }
       return {
         success: true,
         component,
@@ -343,8 +366,9 @@ export async function removeAttrs(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.attrs ??= {}
-      target.attrs = Object.fromEntries(Object.entries(target.attrs).filter(([attr]) => !attrs.includes(attr)))
+      if (target.attrs) {
+        target.attrs = Object.fromEntries(Object.entries(target.attrs).filter(([attr]) => !attrs.includes(attr)))
+      }
       return {
         success: true,
         component,
@@ -376,7 +400,9 @@ export async function removeAnimations(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.animations ??= {}
+      if (!target.animations) {
+        target.animations = {}
+      }
       if (!animations) {
         target.animations['$start'] = []
       } else {
@@ -413,8 +439,9 @@ export async function removeStatements(board: Board) {
         component,
         error: 'Element not found',
       }
-      target.statements ??= {}
-      target.statements = Object.fromEntries(Object.entries(target.statements).filter(([key]) => !statements.includes(key)))
+      if (target.statements) {
+        target.statements = Object.fromEntries(Object.entries(target.statements).filter(([key]) => !statements.includes(key)))
+      }
       return {
         success: true,
         component,
