@@ -146,6 +146,8 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
 - Statements
   + \`for\`: A statement to iterate over a list.
     * example \`for: 'i in [1, 2, 3]'\`, \`i\` will be 1, 2, 3 respectively and usable in current \`ELEMENT\`.
+  + \`if\`, \`elif\`, \`else\`: A statement to control the flow of the \`ELEMENT\`.
+    * example \`if: 'counter > 5'\`
 
 ### Rules
 - An \`COMPONENT\` can only have one root \`ELEMENT\`.
