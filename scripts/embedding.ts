@@ -5,6 +5,7 @@ import { embed } from 'xsai'
 import 'dotenv/config'
 
 import '@chalk-dsl/layout'
+import '@chalk-dsl/form'
 
 const getEmbeddings = async (input: string) => {
   const { embedding } = await embed({

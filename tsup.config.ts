@@ -10,6 +10,7 @@ export default defineConfig({
     '@chalk-dsl/theme-default',
     '@chalk-dsl/utils-theme',
     '@chalk-dsl/layout',
+    '@chalk-dsl/form',
   ],
   env: {
     NODE_ENV: 'dev',

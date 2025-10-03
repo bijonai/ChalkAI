@@ -1,6 +1,8 @@
-import { definePrefab, registerPrefab, Ref } from "@chalk-dsl/renderer-core";
-import { FormModelAttributes, parseModel } from ".";
+import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
+import { FormModelAttributes, modelKnowledge, parseModel } from "./shared";
 import { theme } from "@chalk-dsl/utils-theme";
+import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 
 export interface InputAttributes extends FormModelAttributes {
   width?: number | string
@@ -30,3 +32,20 @@ const input = definePrefab<'input', InputAttributes>((context) => {
 export default input
 
 registerPrefab('input', input)
+
+// ------
+
+export const knowledge = definePrefabKnowledge((utils) => {
+  utils.extend(modelKnowledge)
+  utils.name('input')
+  utils.description('A input form element')
+  utils.prop('width')
+    .describe('The width of the input')
+    .type('string | number').optional()
+  utils.prop('placeholder')
+    .describe('The placeholder of the input')
+    .type('string').optional()
+  return utils.toKnowledge()
+})
+
+addPrefabKnowledge(knowledge)

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@chalk-dsl/form':
+        specifier: workspace:*
+        version: link:packages/form
       '@chalk-dsl/knowledge':
         specifier: workspace:*
         version: link:packages/knowledge
