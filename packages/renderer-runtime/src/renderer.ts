@@ -109,7 +109,6 @@ export function createBox(components: Component<string>[]) {
         }
         return statement(value)
       }).filter(Boolean) as { pre?: StatementPreGenerator, post?: StatementPostGenerator }[]
-    element.statements = {}
 
     for (const { pre } of statementResolvers) {
       if (!pre) continue

@@ -23,8 +23,11 @@ export const forStatement = defineStatement((source) => {
   return {
     pre(context, element, res) {
       const [v, iterableSource] = source.split(' in ')
+      console.log('v', v, iterableSource, source)
       const iterable = createAdhoc(context)(iterableSource) as Iterable<unknown>
+      delete element.statements['for']
 
+      console.log(element)
       const target: Node[] = resolve(iterable, v, element, res, context)
       effect(() => {
         const nodes = resolve(iterable, v, element, res, context)
