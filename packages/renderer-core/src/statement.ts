@@ -1,8 +1,12 @@
 import { Context } from "./context"
 import { BaseChalkElement } from "./element"
 
-export type StatementPreGenerator = (context: Context, element: BaseChalkElement<string>) => BaseChalkElement<string> | null
 export type StatementPostGenerator = (
+  context: Context,
+  element: BaseChalkElement<string>,
+  node: Node
+) => Node
+export type StatementPreGenerator = (
   context: Context,
   element: BaseChalkElement<string>,
   resolve: (element: BaseChalkElement<string> | string, contextOverride?: Context) => Node | Node[] | null

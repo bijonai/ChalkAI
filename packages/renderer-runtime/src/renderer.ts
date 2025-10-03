@@ -103,6 +103,7 @@ export function createBox(components: Component<string>[]) {
       = Object.entries(element.statements ?? {}).map(([key, value]) => {
         const statement = getStatement(key)
         if (!statement) {
+          if (key.startsWith('#')) return null
           errors.addError({ name: "Statement Not Found", message: `Statement ${key} not found`, element })
           return null
         }
@@ -112,15 +113,7 @@ export function createBox(components: Component<string>[]) {
 
     for (const { pre } of statementResolvers) {
       if (!pre) continue
-      const origin = pre(getActiveContext(), element)
-      if (!origin) return null
-      const node = renderNode(origin)
-      return node
-    }
-
-    for (const { post } of statementResolvers) {
-      if (!post) continue
-      return post(getActiveContext(), element, (element, contextOverride) => {
+      return pre(getActiveContext(), element, (element, contextOverride) => {
         if (contextOverride) {
           return withContext(contextOverride, () => renderNode(element))
         }
@@ -147,6 +140,10 @@ export function createBox(components: Component<string>[]) {
         results[key as keyof T] = animate
       }
       return results
+    }
+    for (const { post } of statementResolvers) {
+      if (!post) continue
+      return post(getActiveContext(), element, node)
     }
 
     delegate(node, element.events)

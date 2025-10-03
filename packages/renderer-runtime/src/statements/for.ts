@@ -21,7 +21,7 @@ export const forStatement = defineStatement((source) => {
   ).filter(child => child !== null && child !== undefined)
 
   return {
-    post(context, element, res) {
+    pre(context, element, res) {
       const [v, iterableSource] = source.split(' in ')
       const iterable = createAdhoc(context)(iterableSource) as Iterable<unknown>
 
