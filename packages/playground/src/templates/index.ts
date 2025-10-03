@@ -3,6 +3,7 @@ import { grid } from "./layout/grid"
 import { columns } from "./layout/col-row"
 import { test1 } from "./tests/test1"
 import { conditionTest } from "./tests/condition-test"
+import { input } from "./form/input"
 
 export type Template = {
   id: string
@@ -23,6 +24,12 @@ export default [
     templates: [
       test1,
       conditionTest,
+    ]
+  },
+  {
+    id: 'form',
+    templates: [
+      input,
     ]
   }
 ] as Template[]

@@ -66,13 +66,27 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
     return utils
   }
 
-  const extend = (knowledge: PrefabKnowledge) => {
+  const extend = (knowledge: PrefabKnowledge, includes: ('props' | 'tags' | 'examples' | 'rules')[] = ['props', 'tags', 'examples', 'rules']) => {
     const propSet = new Set([...props, ...knowledge.props])
-    props.length = 0
-    props.push(...propSet)
-    const tagSet = new Set([...tags, ...knowledge.tags])
-    tags.length = 0
-    tags.push(...tagSet)
+    if (includes.includes('props')) {
+      props.length = 0
+      props.push(...propSet)
+    }
+    if (includes.includes('tags')) {
+      const tagSet = new Set([...tags, ...knowledge.tags])
+      tags.length = 0
+      tags.push(...tagSet)
+    }
+    const exampleSet = new Set([...examples, ...knowledge.examples])
+    if (includes.includes('examples')) {
+      examples.length = 0
+      examples.push(...exampleSet)
+    }
+    const ruleSet = new Set([...rules, ...knowledge.rules])
+    if (includes.includes('rules')) {
+      rules.length = 0
+      rules.push(...ruleSet)
+    }
     return utils
   }
 

@@ -4,6 +4,7 @@ import App from './App.vue'
 import 'virtual:uno.css'
 import router from './router'
 import '@chalk-dsl/theme-default/styles/main.css'
+import '@chalk-dsl/form'
 import { block } from '@chalk-dsl/layout'
 import { registerPrefab } from '@chalk-dsl/renderer-core'
 
