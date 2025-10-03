@@ -1,19 +1,19 @@
 import { BaseChalkElement } from "./element"
 
-export interface BoxError<T extends string> {
+export interface ChalkError<T extends string> {
   name: T
   message: string
   element: BaseChalkElement<string>
 }
 
 export function createErrorContainer<T extends string>() {
-  const errors: BoxError<T>[] = []
-  let errorHandler: (error: BoxError<T>) => void = () => { }
-  const addError = (error: BoxError<T>) => {
+  const errors: ChalkError<T>[] = []
+  let errorHandler: (error: ChalkError<T>) => void = () => { }
+  const addError = (error: ChalkError<T>) => {
     errors.push(error)
     errorHandler(error)
   }
-  const onError = (handler: (error: BoxError<T>) => void) => {
+  const onError = (handler: (error: ChalkError<T>) => void) => {
     errorHandler = handler
   }
   const getErrors = () => errors

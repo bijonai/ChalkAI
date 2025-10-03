@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router';
 import templates from '../templates';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { createBox, type BoxError } from '@chalk-dsl/renderer-runtime';
+import { createBox, type ChalkError } from '@chalk-dsl/renderer-runtime';
 import Files from '../components/Files.vue';
 import Errors from '../components/Errors.vue';
 
@@ -35,7 +35,7 @@ const tabIcon = (tab: Tab) => {
 
 const container = ref<HTMLElement | null>(null)
 
-const errors = ref<BoxError<string>[]>([])
+const errors = ref<ChalkError<string>[]>([])
 
 const _render = () => {
   console.log(template.value?.content)

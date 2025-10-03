@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { BoxError } from '@chalk-dsl/renderer-runtime';
+import type { ChalkError } from '@chalk-dsl/renderer-runtime';
 
 const props = defineProps<{
-  errors: BoxError<string>[]
+  errors: ChalkError<string>[]
 }>()
 </script>
 

@@ -1,5 +1,5 @@
 import type { RawContext } from "./context"
-import { BoxError } from "./error"
+import { ChalkError } from "./error"
 
 export type PrefabNamespace = Map<string, Prefab<string, RawContext, RawContext>>
 export type PrefabChildrenGetter = () => Node[]
@@ -10,7 +10,7 @@ export type Prefab<
   Name extends string,
   Props extends RawContext = RawContext,
   Ctx extends RawContext = RawContext,
-> = (context: Ctx, unexpected: (error: BoxError<string>) => void) => {
+  > = (context: Ctx, unexpected: (error: ChalkError<string>) => void) => {
     name: Name
     validator?: PrefabValidator
     generator: PrefabGenerator<Props>

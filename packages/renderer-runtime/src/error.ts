@@ -1,4 +1,4 @@
-import { BoxError } from "@chalk-dsl/renderer-core";
+import { ChalkError } from "@chalk-dsl/renderer-core";
 
-export type ElementNotFoundError = BoxError<"Element Not Found">
+export type ElementNotFoundError = ChalkError<"Element Not Found">
 
