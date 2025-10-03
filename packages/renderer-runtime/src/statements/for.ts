@@ -38,9 +38,12 @@ export const forStatement = defineStatement((source) => {
         if (target[0]!.parentElement) {
           const parent = target[0]!.parentElement
           for (const [index, node] of target.entries()) {
-            if (index < target.length) {
+            if (index < nodes.length) {
               morph(node, nodes[index])
-            } else { }
+            } else {
+              parent.removeChild(node)
+              target.splice(index, 1)
+            }
           }
           if (target.length < nodes.length) {
             nodes.slice(target.length, nodes.length).forEach(node => {

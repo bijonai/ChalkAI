@@ -8,7 +8,8 @@ export const conditionTest: Template = {
     "refs": {
       "showFirst": "true",
       "showSecond": "false",
-      "counter": "0"
+      "counter": "0",
+      "items": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
     },
     "root": {
       "name": "rows",
@@ -28,7 +29,7 @@ export const conditionTest: Template = {
           "animations": {},
           "id": "cell-3-1",
           statements: {
-            for: 'i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]',
+            for: 'i in items',
             if: 'i % 2 ===0'
           }
         }
