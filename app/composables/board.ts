@@ -16,16 +16,18 @@ export function useBoard() {
     const rendered: number[] = []
     const _render = () => {
       watch(currentStep, (step) => {
-        if (rendered.includes(step)) return
-        rendered.push(step)
-        const target = (steps[step - 1]!.value! as unknown as HTMLElement[])[0]!
-        target.innerHTML = ''
-        board.steps[step - 1]!.components.forEach((component) => {
-          const root = renderRoot(component)
-          if (!root) return
-          target.append(...(Array.isArray(root) ? root : [root]))
-        })
-        console.log(beginAnimations)
+        for (let i = 1; i <= step; i++) {
+          if (rendered.includes(i)) continue
+          rendered.push(i)
+          const target = (steps[i - 1]!.value! as unknown as HTMLElement[])[0]!
+          target.innerHTML = ''
+          board.steps[i - 1]!.components.forEach((component) => {
+            const root = renderRoot(component)
+            if (!root) return
+            target.append(...(Array.isArray(root) ? root : [root]))
+          })
+          console.log(beginAnimations)
+        }
       }, { immediate: true })
     }
     return [steps, _render]

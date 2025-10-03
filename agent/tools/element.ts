@@ -16,28 +16,38 @@ const animations = z.object({
   animations: z.array(animationItem).describe('The animations of the element.'),
 })
 
-const element = z.object({
+type ElementType = {
+  id: string
+  name: string
+  attrs?: Record<string, unknown>
+  events?: Record<string, unknown>
+  statements?: Record<string, unknown>
+  children?: (ElementType | string)[]
+  animations?: z.infer<typeof animations>[]
+}
+
+const element: z.ZodType<ElementType> = z.lazy(() => z.object({
   id: z.string().describe('The only-one id of the element instance.'),
   name: z.string().describe('The name of the element.'),
   attrs: z.record(z.string(), z.any()).describe('The attributes of the element.').optional(),
   events: z.record(z.string(), z.any()).describe('The events of the element.').optional(),
   statements: z.record(z.string(), z.any()).describe('The statements of the element.').optional(),
-  children: z.array(z.union([z.object(), z.string()])).describe('The children of the element.').optional(),
+  children: z.array(z.union([element, z.string()])).describe('The children of the element.').optional(),
   animations: z.array(animations).describe('The animations of the element.').optional(),
-})
+}))
 
 const convertAnimation = (ani: z.infer<typeof animations>[]) => Object.fromEntries(
   ani.map(ani => [ani.event ?? '$start', ani.animations])
 )
-const convert = (ele: z.infer<typeof element>): BaseChalkElement<string> => {
+const convert = (ele: ElementType): BaseChalkElement<string> => {
   const result: BaseChalkElement<string> = {
     name: ele.name,
     id: ele.id,
   }
 
-  if (ele.attrs) result.attrs = ele.attrs
-  if (ele.events) result.events = ele.events
-  if (ele.statements) result.statements = ele.statements
+  if (ele.attrs) result.attrs = ele.attrs as Record<string, import('@chalk-dsl/renderer-core').AttributeValue>
+  if (ele.events) result.events = ele.events as Record<string, string>
+  if (ele.statements) result.statements = ele.statements as Record<string, string>
   if (ele.children && ele.children.length > 0) {
     result.children = ele.children as (BaseChalkElement<string> | string)[]
   }
@@ -56,7 +66,12 @@ export const findElement = (component: Component<string>, id: string) => {
   const resolve = (element: BaseChalkElement<string>): BaseChalkElement<string> | null => {
     if (element.id === id) return element
     if (!element.children) return null
-    return element.children.find(child => typeof child === 'string' ? null : resolve(child)) as BaseChalkElement<string> | null
+    for (const child of element.children) {
+      if (typeof child === 'string') continue
+      const found = resolve(child)
+      if (found) return found
+    }
+    return null
   }
   return resolve(component.root)
 }
@@ -80,7 +95,7 @@ export async function setComponentRoot(board: Board) {
         component,
         error: 'Component not found',
       }
-      target.root = convert(element)
+      target.root = convert(element as ElementType)
       return {
         success: true,
         component,
@@ -91,12 +106,12 @@ export async function setComponentRoot(board: Board) {
 
 export async function addChildren(board: Board) {
   return await tool({
-    name: 'add-child',
-    description: 'Add a child to an element.',
+    name: 'add-children',
+    description: 'Add children to an element.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
       element: z.string().describe('The element only-one id to add the child to.'),
-      children: z.array(element).describe('The children to add.'),
+      children: z.array(z.union([element, z.string()])).describe('The children to add. Can be elements or text strings.'),
     }),
     execute: async ({ component, element, children }) => {
       const target = findComponent(board, component)!
@@ -119,7 +134,9 @@ export async function addChildren(board: Board) {
       if (!elementTarget.children) {
         elementTarget.children = []
       }
-      elementTarget.children.push(...children.map(convert))
+      elementTarget.children.push(...children.map(child =>
+        typeof child === 'string' ? child : convert(child as ElementType)
+      ))
       return {
         success: true,
         component,

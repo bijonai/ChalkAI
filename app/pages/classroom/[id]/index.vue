@@ -22,10 +22,12 @@ onMounted(async () => {
   console.log(board.value.result)
   const [steps, _render] = loadBoard(board.value!)
   containers.value.push(...steps)
-  nextTick(() => _render())
-  for (let i = 0; i < steps.length; i++) {
-    next()
-  }
+  nextTick(() => {
+    _render()
+    setInterval(() => {
+      next()
+    }, 100)
+  })
 })
 </script>
 
