@@ -1,7 +1,7 @@
 import type { Component } from "@chalk-dsl/renderer-core"
 
 export interface Step {
-  component: string
+  components: string[]
   description: string
 }
 export interface Board {

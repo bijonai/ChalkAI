@@ -1,6 +1,5 @@
 import type { Board } from "../../shared"
-import newStep from "./new-step"
-import setStep from "./set-step"
+import { newStep, addComponent } from "./step"
 import createComponent from "./create-component"
 import { addChildren, setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations, setStatements, removeStatements } from "./element"
 import type { Knowledge } from "@chalk-dsl/knowledge"
@@ -22,7 +21,7 @@ export default async function (params: ToolsGeneratorParams) {
   return await Promise.all([
     // Edition
     newStep(params.board),
-    setStep(params.board),
+    addComponent(params.board),
     createComponent(params.board),
     setComponentRoot(params.board),
     addChildren(params.board),
