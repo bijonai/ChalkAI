@@ -9,16 +9,22 @@ export function useBoard() {
   const next = () => currentStep.value < steps.length ? currentStep.value++ : currentStep.value
 
   const loadBoard = (board: Board): [Ref<HTMLElement | null>[], () => void] => {
-    const { render, setValue, beginAnimations } = createBox(board.components)
+    const { renderRoot, setValue, beginAnimations } = createBox(board.components)
     setValue('next', next)
     steps.length = 0
-    steps.push(...board.steps.map((step) => ref<HTMLElement | null>(null)))
+    steps.push(...board.steps.map(() => ref<HTMLElement | null>(null)))
     const rendered: number[] = []
     const _render = () => {
       watch(currentStep, (step) => {
         if (rendered.includes(step)) return
         rendered.push(step)
-        render(board.steps[step - 1]!.component, (steps[step - 1]!.value! as unknown as HTMLElement[])[0]!)
+        const target = (steps[step - 1]!.value! as unknown as HTMLElement[])[0]!
+        target.innerHTML = ''
+        board.steps[step - 1]!.components.forEach((component) => {
+          const root = renderRoot(component)
+          if (!root) return
+          target.append(...(Array.isArray(root) ? root : [root]))
+        })
         console.log(beginAnimations)
       }, { immediate: true })
     }
