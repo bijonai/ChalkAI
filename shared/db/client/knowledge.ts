@@ -1,6 +1,6 @@
 import type { CalculatorKnowledge, CalculatorKnowledgeArgument, Knowledge, PrefabKnowledge, PrefabKnowledgeProp } from "@chalk-dsl/knowledge";
 import { db } from "..";
-import { prefabCalculatorTable, prefabKnowledgeTable } from "../schema";
+import { calculatorKnowledgeTable, prefabKnowledgeTable } from "../schema";
 
 export const setPrefabKnowledge = async (prefab: PrefabKnowledge, embedding: number[]) => {
   // console.log(embedding.length)
@@ -25,7 +25,7 @@ export const setPrefabKnowledge = async (prefab: PrefabKnowledge, embedding: num
 }
 
 export const setCalculatorKnowledge = async (calculator: CalculatorKnowledge, embedding: number[]) => {
-  return await db.insert(prefabCalculatorTable)
+  return await db.insert(calculatorKnowledgeTable)
     .values({
       name: calculator.name,
       description: calculator.description,
@@ -35,7 +35,7 @@ export const setCalculatorKnowledge = async (calculator: CalculatorKnowledge, em
       embedding,
     })
     .onConflictDoUpdate({
-      target: prefabCalculatorTable.name,
+      target: calculatorKnowledgeTable.name,
       set: {
         description: calculator.description,
         args: calculator.args,
@@ -44,7 +44,7 @@ export const setCalculatorKnowledge = async (calculator: CalculatorKnowledge, em
         embedding,
       },
     })
-    .returning({ id: prefabCalculatorTable.id, name: prefabCalculatorTable.name })
+    .returning({ id: calculatorKnowledgeTable.id, name: calculatorKnowledgeTable.name })
 }
 
 export const getToKnowledges = async (): Promise<Knowledge> => {
@@ -59,7 +59,7 @@ export const getToKnowledges = async (): Promise<Knowledge> => {
     }
   })
   const calculatorQuery = await db.select()
-    .from(prefabCalculatorTable)
+    .from(calculatorKnowledgeTable)
   const calculators: CalculatorKnowledge[] = calculatorQuery.map(r => {
     return {
       name: r.name,

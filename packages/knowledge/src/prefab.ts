@@ -13,6 +13,8 @@ export type PrefabKnowledge = {
   description: string
   tags: string[]
   props: PrefabKnowledgeProp[]
+  examples: string[]
+  rules: string[]
 }
 
 const createPrefabKnowledgeUtils = <T extends RawContext>() => {
@@ -20,7 +22,17 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
   let _name = ''
   let _description = ''
   const tags: string[] = []
+  const examples: string[] = []
+  const rules: string[] = []
 
+  const example = (example: string) => {
+    examples.push(example)
+    return utils
+  }
+  const rule = (rule: string) => {
+    rules.push(rule)
+    return utils
+  }
   const prop = <K extends keyof T>(key: K) => {
     const result: PrefabKnowledgeProp = { name: key.toString(), description: '', type: '', required: true }
     const describe = (description: string) => {
@@ -69,9 +81,13 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
     description: _description,
     tags,
     props,
+    examples,
+    rules,
   })
 
   const utils = {
+    example,
+    rule,
     prop,
     name,
     description,

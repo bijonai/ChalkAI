@@ -1,6 +1,6 @@
 import { index, jsonb, pgTable, text, uuid, vector } from 'drizzle-orm/pg-core'
 
-export const prefabCalculatorTable = pgTable('prefab_calculator', {
+export const calculatorKnowledgeTable = pgTable('calculator_knowledge', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').unique().notNull(),
   description: text('description').notNull(),

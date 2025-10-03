@@ -1,7 +1,7 @@
 import { embed, tool } from "xsai"
 import { createQuery } from "../../shared/db/client"
 import { z } from "zod"
-import { prefabKnowledgeTable } from "../../shared/db/schema"
+import { calculatorKnowledgeTable, prefabKnowledgeTable } from "../../shared/db/schema"
 
 export async function query({ model, apiKey, baseURL, types }: {
   model: string
@@ -31,9 +31,10 @@ export async function query({ model, apiKey, baseURL, types }: {
         baseURL,
         input,
       })
-      const results = await Promise.all([
-        createQuery(prefabKnowledgeTable)(embedding),
-      ])
+      const queries = []
+      if (havePrefab) queries.push(createQuery(prefabKnowledgeTable)(embedding))
+      if (haveCalculator) queries.push(createQuery(calculatorKnowledgeTable)(embedding))
+      const results = await Promise.all(queries)
       return {
         success: true,
         result: results.flat().map(result => {
