@@ -55,7 +55,7 @@ onMounted(async () => {
 
 
 <template>
-  <div class="flex size-full p-18">
+  <div class="flex size-full p-18 overflow-y-auto">
     <div class="flex size-full flex-col gap-5">
       <h1 class="text-primary text-2xl">
         Tasks

@@ -98,7 +98,7 @@ type Element = {
   attrs: Record<string, Attribute>
   events: Record<string, string>
   statements: Record<string, string>
-  children: Element[] | Attribute // \`Attribute\` is a text node
+  children: (Element | Attribute)[] // \`Attribute\` is a text node
   animations: Record<string, Animation[]> // event name -> animations
 }
 
