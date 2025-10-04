@@ -11,7 +11,7 @@ export const createMarkdown = () => {
     .use(remarkGfm)
     .use(remarkMath)
     .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeStringify)
+    .use(rehypeStringify, { allowDangerousHtml: true })
   return (source: string) => {
     return processor.processSync(source).toString()
   }

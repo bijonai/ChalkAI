@@ -1,0 +1,49 @@
+.chalk-board {
+  background-color: var(--chalk-background);
+  color: var(--chalk-primary);
+  padding: 6px;
+  font-size: var(--chalk-size-sm);
+  font-family: var(--chalk-font-primary);
+}
+
+.chalk-board h1 {
+  font-size: var(--chalk-size-2xl);
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.chalk-board h2 {
+  font-size: var(--chalk-size-xl);
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.chalk-board h3 {
+  font-size: var(--chalk-size-lg);
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.chalk-board h4 {
+  font-size: var(--chalk-size-md);
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.chalk-board h5 {
+  font-size: var(--chalk-size-sm);
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.chalk-board h6 {
+  font-size: var(--chalk-size-xs);
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
