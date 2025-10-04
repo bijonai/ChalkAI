@@ -1,39 +1,22 @@
-import type { Board } from "../../shared"
-import { tool } from "xsai"
-import { z } from "zod"
+import { Board } from "../../shared";
+import { tool } from "xsai";
+import { z } from "zod";
 
-export async function newStep(board: Board) {
+export async function setSteps(board: Board) {
   return await tool({
-    name: 'new-step',
-    description: 'Create a new STEP and return the id.',
+    name: 'set-steps',
+    description: 'Set the steps of the course.',
     parameters: z.object({
-      description: z.string().describe('The description of the step.'),
-      components: z.string().array().describe('The names of the STEP COMPONENT.'),
+      steps: z.array(z.object({
+        description: z.string().describe('The description of the step.'),
+        components: z.array(z.string()).describe('The components of the step.'),
+      })).describe('The steps of the course in order.'),
     }),
-    execute: async ({ description, components }) => {
-      board.steps.push({ components, description })
+    execute: async ({ steps }) => {
+      board.steps = steps
       return {
         success: true,
-        id: board.steps.length,
       }
-    }
-  })
-}
-
-export async function addComponent(board: Board) {
-  return await tool({
-    name: 'add-component',
-    description: 'Add a component to a step.',
-    parameters: z.object({
-      step: z.number().describe('The id of the step.'),
-      component: z.string().describe('The name of the component.'),
-    }),
-    execute: async ({ step, component }) => {
-      board.steps[step - 1].components.push(component)
-      return {
-        success: true,
-        step,
-      }
-    }
+    },
   })
 }
