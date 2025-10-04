@@ -4,6 +4,7 @@ import * as prompts from './prompts'
 import { createEmptyBoard, type Board } from '../shared'
 import toolsGenerator from './tools'
 import type { Knowledge } from '@chalk-dsl/knowledge'
+import { createParser } from './parser'
 
 export interface AgentParams {
   apiKey: string
@@ -22,11 +23,12 @@ export interface AgentParams {
 export function createAgent(params: AgentParams) {
   if (params.messages.length === 0) {
     params.messages.push(
-      message.system(prompts.system(params.dev))
+      message.system(prompts.system(params.knowledge, params.dev))
     )
   }
 
   return async (input: string, board: Board = createEmptyBoard()) => {
+    const parse = createParser(board)
     params.messages.push(
       message.user(input),
     )
@@ -39,6 +41,11 @@ export function createAgent(params: AgentParams) {
       tools,
       maxSteps: 100,
     })
+    for (const message of messages) {
+      if (message.role === 'assistant' && typeof message.content === 'string') {
+        parse(message.content)
+      }
+    }
     params.messages.length = 0
     params.messages.push(...messages)
     return board

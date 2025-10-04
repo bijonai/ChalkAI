@@ -1,11 +1,7 @@
-import type { Board } from "../../shared"
-import { newStep, addComponent } from "./step"
-import createComponent from "./create-component"
-import { addChildren, setComponentRoot, setEvents, setAttrs, remove, removeEvents, removeAttrs, setAnimations, removeAnimations, setStatements, removeStatements } from "./element"
-import type { Knowledge } from "@chalk-dsl/knowledge"
-import { getTags, getPrefabDocumentByTag, getPrefab, getCalculator, getCalculators } from "./dictionary"
-import { query } from "./query"
-import { createRef } from "./refs"
+import { getDocuments } from "./get-documents"
+import { setSteps } from "./step"
+import type { Knowledge } from "~~/packages/knowledge/src"
+import type { Board } from "~~/shared"
 
 export interface ToolsGeneratorParams {
   board: Board
@@ -19,34 +15,7 @@ export interface ToolsGeneratorParams {
 
 export default async function (params: ToolsGeneratorParams) {
   return await Promise.all([
-    // Edition
-    newStep(params.board),
-    addComponent(params.board),
-    createComponent(params.board),
-    setComponentRoot(params.board),
-    addChildren(params.board),
-    setEvents(params.board),
-    setAttrs(params.board),
-    setAnimations(params.board),
-    setStatements(params.board),
-    remove(params.board),
-    removeEvents(params.board),
-    removeAttrs(params.board),
-    removeAnimations(params.board),
-    removeStatements(params.board),
-    // Refs
-    createRef(params.board),
-
-    // Dictionary
-    getTags(params.knowledge),
-    getPrefabDocumentByTag(params.knowledge),
-    getPrefab(params.knowledge),
-    getCalculators(params.knowledge),
-    getCalculator(params.knowledge),
-
-    // Search
-    query({ ...params.embedding, types: ['prefab'] }),
-    query({ ...params.embedding, types: ['calculator'] }),
-    query({ ...params.embedding, types: ['prefab', 'calculator'] }),
+    getDocuments(params.knowledge),
+    setSteps(params.board),
   ])
 }
