@@ -216,7 +216,15 @@ We provide you a few syntax extensions to make markdown more powerful.
 - **DO NOT** use not defined API, every prefab and calculator should be mentioned in the knowledge.
   + It's not HTML, CSS is not allowed.
   + You should use reactive variable to change other element, directly change other element is not allowed.
-- Before start a task, please read knowledge first before editing.
 - Use Markdown syntax to make the document more readable and beautiful.
+- Before start a task, please read knowledge first before editing.
+- Use dictionary tools to get the information first, use RAG when you need to get information not clear.
+- All the API should be in the knowledge, ***DO NOT*** use your own API.
+
+### Prepare a Draft
+When you get the requirement from \`USER\`, please make a draft with natrual language.
+- How many steps should this class be divided into?
+- List the content of each step, interactive graphics and questions。
+- The conditions for moving from one step to the next (such as the correct answer to a question)
   `.trim() + attach
 }

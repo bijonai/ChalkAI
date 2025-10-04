@@ -87,7 +87,7 @@ export const updateContext = async (id: string, context: Message[]) => {
     .then(r => r.at(0)!)
 }
 
-export const updateResult = async (id: string, result: Board) => {
+export const updateResult = async (id: string, result: Board | { error: string }) => {
   return await db
     .update(classroomTable)
     .set({ result })

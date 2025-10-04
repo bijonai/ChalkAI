@@ -51,7 +51,8 @@ export default defineEventHandler(async (event) => {
     })
   }
   event.waitUntil(generate().catch(async (error) => {
-    console.error(error)
+    await client.classroom.updateContext(id, context)
+    await client.classroom.updateResult(id, { error: error.message })
     await client.classroom.updateClassroomInfo(id, {
       status: ClassroomStatus.Failed,
     })
