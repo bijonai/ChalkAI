@@ -16,7 +16,7 @@ const animations = z.object({
   animations: z.array(animationItem).describe('The animations of the element.'),
 })
 
-type ElementType = {
+interface ElementType {
   id: string
   name: string
   attrs?: Record<string, unknown>
@@ -26,32 +26,48 @@ type ElementType = {
   animations?: z.infer<typeof animations>[]
 }
 
-const element: z.ZodType<ElementType> = z.lazy(() => z.object({
+const elementSchema: z.ZodType<ElementType> = z.lazy(() => z.object({
   id: z.string().describe('The only-one id of the element instance.'),
   name: z.string().describe('The name of the element.'),
   attrs: z.record(z.string(), z.any()).describe('The attributes of the element.').optional(),
   events: z.record(z.string(), z.any()).describe('The events of the element.').optional(),
   statements: z.record(z.string(), z.any()).describe('The statements of the element.').optional(),
-  children: z.array(z.union([element, z.string()])).describe('The children of the element.').optional(),
+  children: z.array(z.union([elementSchema, z.string()])).describe('The children of the element.').optional(),
   animations: z.array(animations).describe('The animations of the element.').optional(),
 }))
+
+const element = elementSchema
 
 const convertAnimation = (ani: z.infer<typeof animations>[]) => Object.fromEntries(
   ani.map(ani => [ani.event ?? '$start', ani.animations])
 )
 const convert = (ele: ElementType): BaseChalkElement<string> => {
+  // Add validation to ensure ele is a valid object
+  if (!ele || typeof ele !== 'object') {
+    throw new Error(`Invalid element passed to convert: ${JSON.stringify(ele)}`)
+  }
+
   const result: BaseChalkElement<string> = {
     name: ele.name,
     id: ele.id,
   }
 
-  if (ele.attrs) result.attrs = ele.attrs as Record<string, import('@chalk-dsl/renderer-core').AttributeValue>
-  if (ele.events) result.events = ele.events as Record<string, string>
-  if (ele.statements) result.statements = ele.statements as Record<string, string>
-  if (ele.children && ele.children.length > 0) {
-    result.children = ele.children as (BaseChalkElement<string> | string)[]
+  if (ele.attrs) result.attrs = ele.attrs as any // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (ele.events) result.events = ele.events as any // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (ele.statements) result.statements = ele.statements as any // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  if (ele.children) {
+    if (!Array.isArray(ele.children)) {
+      throw new Error(`Element children is not an array: ${JSON.stringify(ele.children)} for element ${ele.id}`)
+    }
+    if (ele.children.length > 0) {
+      result.children = ele.children.map((child: ElementType | string) =>
+        typeof child === 'string' ? child : convert(child)
+      )
+    }
   }
-  if (ele.animations && ele.animations.length > 0) {
+
+  if (ele.animations && Array.isArray(ele.animations) && ele.animations.length > 0) {
     const convertedAnimations = convertAnimation(ele.animations)
     if (Object.keys(convertedAnimations).length > 0) {
       result.animations = convertedAnimations
@@ -66,12 +82,7 @@ export const findElement = (component: Component<string>, id: string) => {
   const resolve = (element: BaseChalkElement<string>): BaseChalkElement<string> | null => {
     if (element.id === id) return element
     if (!element.children) return null
-    for (const child of element.children) {
-      if (typeof child === 'string') continue
-      const found = resolve(child)
-      if (found) return found
-    }
-    return null
+    return element.children.find(child => typeof child === 'string' ? null : resolve(child)) as BaseChalkElement<string> | null
   }
   return resolve(component.root)
 }
@@ -86,7 +97,7 @@ export async function setComponentRoot(board: Board) {
     description: 'Set the root element of a component.',
     parameters: z.object({
       component: z.string().describe('The name of the component.'),
-      element: element.describe('The element to set as the root.'),
+      element: z.union([element, z.string()]).describe('The element to set as the root.'),
     }),
     execute: async ({ component, element }) => {
       const target = findComponent(board, component)!
@@ -95,7 +106,26 @@ export async function setComponentRoot(board: Board) {
         component,
         error: 'Component not found',
       }
-      target.root = convert(element as ElementType)
+
+      // Handle string input by parsing it as JSON
+      let parsedElement: ElementType
+      if (typeof element === 'string') {
+        try {
+          const parsed = JSON.parse(element)
+          // Validate the parsed object against the element schema
+          parsedElement = elementSchema.parse(parsed)
+        } catch (error) {
+          return {
+            success: false,
+            component,
+            error: `Invalid JSON string for element: ${element}. Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          }
+        }
+      } else {
+        parsedElement = element as ElementType
+      }
+
+      target.root = convert(parsedElement)
       return {
         success: true,
         component,
@@ -110,8 +140,8 @@ export async function addChildren(board: Board) {
     description: 'Add children to an element.',
     parameters: z.object({
       component: z.string().describe('The name of the target component.'),
-      element: z.string().describe('The element only-one id to add the child to.'),
-      children: z.array(z.union([element, z.string()])).describe('The children to add. Can be elements or text strings.'),
+      element: z.string().describe('The element only-one id to add the children to.'),
+      children: z.array(z.union([element, z.string()])).describe('The children to add.'),
     }),
     execute: async ({ component, element, children }) => {
       const target = findComponent(board, component)!
@@ -134,7 +164,7 @@ export async function addChildren(board: Board) {
       if (!elementTarget.children) {
         elementTarget.children = []
       }
-      elementTarget.children.push(...children.map(child =>
+      elementTarget.children.push(...children.map(child => 
         typeof child === 'string' ? child : convert(child as ElementType)
       ))
       return {

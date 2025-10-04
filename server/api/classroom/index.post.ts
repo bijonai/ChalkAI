@@ -50,7 +50,8 @@ export default defineEventHandler(async (event) => {
       status: ClassroomStatus.Completed,
     })
   }
-  event.waitUntil(generate().catch(async () => {
+  event.waitUntil(generate().catch(async (error) => {
+    console.error(error)
     await client.classroom.updateClassroomInfo(id, {
       status: ClassroomStatus.Failed,
     })

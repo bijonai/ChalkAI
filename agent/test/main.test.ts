@@ -27,14 +27,14 @@ const agent = createAgent({
   },
   messages,
   knowledge: knowledges,
-  dev,
+  // dev,
 })
 
 const board = createEmptyBoard()
 
 console.log(knowledges)
 
-const result = await agent(layoutPractice1, board)
+const result = await agent('三角函数', board)
 writeFileSync(`result-${Date.now()}.json`, JSON.stringify({
   context: messages,
   result: result,

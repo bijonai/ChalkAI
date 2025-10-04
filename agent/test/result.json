@@ -1,0 +1,43 @@
+{
+  "steps": [
+    {
+      "components": [
+        "TrigIntro",
+        "RightTriangle",
+        "TrigPractice"
+      ],
+      "description": "介绍三角函数的基本概念和单位圆"
+    }
+  ],
+  "components": [
+    {
+      "name": "TrigIntro",
+      "refs": {
+        "angle": "45"
+      },
+      "root": {},
+      "props": []
+    },
+    {
+      "name": "RightTriangle",
+      "root": {},
+      "props": [
+        "angle",
+        "adjacent",
+        "opposite",
+        "hypotenuse"
+      ]
+    },
+    {
+      "name": "TrigPractice",
+      "refs": {
+        "isCorrect": "false",
+        "showResult": "false",
+        "userAnswer": "\"\"",
+        "questionAngle": "30"
+      },
+      "root": {},
+      "props": []
+    }
+  ]
+}
