@@ -4,6 +4,7 @@ import { columns } from "./layout/col-row"
 import { test1 } from "./tests/test1"
 import { conditionTest } from "./tests/condition-test"
 import { input } from "./form/input"
+import { chooser } from "./form/chooser"
 
 export type Template = {
   id: string
@@ -30,6 +31,7 @@ export default [
     id: 'form',
     templates: [
       input,
+      chooser,
     ]
   }
 ] as Template[]

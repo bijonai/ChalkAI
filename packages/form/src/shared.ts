@@ -11,6 +11,7 @@ export interface FormModelAttributes<T extends readonly string[] = []> {
 }
 
 export const parseModel = <T extends readonly string[] = []>(model: Model<T>) => {
+  if (!model) return { model: null, default: null }
   if (typeof model === 'string') {
     return {
       model,
