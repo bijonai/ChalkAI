@@ -12,6 +12,7 @@ export const setPrefabKnowledge = async (prefab: PrefabKnowledge, embedding: num
       props: prefab.props,
       examples: prefab.examples,
       rules: prefab.rules,
+      slots: prefab.slots,
       embedding,
     })
     .onConflictDoUpdate({
@@ -22,6 +23,7 @@ export const setPrefabKnowledge = async (prefab: PrefabKnowledge, embedding: num
         props: prefab.props,
         examples: prefab.examples,
         rules: prefab.rules,
+        slots: prefab.slots,
         embedding,
       },
     })
@@ -62,6 +64,7 @@ export const getToKnowledges = async (): Promise<Knowledge> => {
       props: r.props as PrefabKnowledgeProp[],
       examples: r.examples,
       rules: r.rules,
+      slots: r.slots as [string, string][],
     }
   })
   const calculatorQuery = await db.select()

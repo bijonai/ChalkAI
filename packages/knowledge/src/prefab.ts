@@ -15,6 +15,7 @@ export type PrefabKnowledge = {
   props: PrefabKnowledgeProp[]
   examples: string[]
   rules: string[]
+  slots: [string, string][]
 }
 
 const createPrefabKnowledgeUtils = <T extends RawContext>() => {
@@ -24,13 +25,17 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
   const tags: string[] = []
   const examples: string[] = []
   const rules: string[] = []
-
+  const slots: [string, string][] = []
   const example = (example: string) => {
     examples.push(example)
     return utils
   }
   const rule = (rule: string) => {
     rules.push(rule)
+    return utils
+  }
+  const slot = (slot: string, description: string) => {
+    slots.push([slot, description])
     return utils
   }
   const prop = <K extends keyof T>(key: K) => {
@@ -49,7 +54,7 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
       return utils
     }
     props.push(result)
-    const utils = { describe, type, optional }
+    const utils = { describe, type, optional, slot }
     return utils
   }
 
@@ -97,12 +102,14 @@ const createPrefabKnowledgeUtils = <T extends RawContext>() => {
     props,
     examples,
     rules,
+    slots,
   })
 
   const utils = {
     example,
     rule,
     prop,
+    slot,
     name,
     description,
     tag,

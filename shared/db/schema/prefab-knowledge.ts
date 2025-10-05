@@ -8,6 +8,7 @@ export const prefabKnowledgeTable = pgTable('prefab_knowledge', {
   props: jsonb('props').notNull(),
   examples: text('examples').array().notNull().default([]),
   rules: text('rules').array().notNull().default([]),
+  slots: jsonb('slots').array().notNull().default([]),
 
   embedding: vector('embedding', { dimensions: parseInt(process.env.VECTOR_SIZE!) }).notNull(),
 }, (table) => [

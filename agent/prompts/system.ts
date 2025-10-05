@@ -141,6 +141,8 @@ type Animation = {
     * example \`for: 'i in [1, 2, 3]'\`, \`i\` will be 1, 2, 3 respectively and usable in current \`ELEMENT\`.
   + \`if\`, \`elif\`, \`else\`: A statement to control the flow of the \`ELEMENT\`.
     * example \`if: 'counter > 5'\`
+  + \`slot\`: A statement to use a slot, details of slot of each \`PREFAB\` will in the document.
+    * example \`slot: 'default'\`
 
 ### Rules
 - An \`COMPONENT\` can only have one root \`ELEMENT\`.
