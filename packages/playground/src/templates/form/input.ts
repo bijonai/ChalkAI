@@ -16,6 +16,9 @@ export const input: Template = {
           attrs: {
             model: 'content',
           },
+          statements: {
+            slot: 'content',
+          }
         },
         {
           name: 'block',
