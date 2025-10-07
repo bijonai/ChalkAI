@@ -24,16 +24,16 @@ onMounted(async () => {
   containers.value.push(...steps)
   nextTick(() => {
     _render()
-    setInterval(() => {
-      next()
-    }, 100)
+    // setInterval(() => {
+    //   next()
+    // }, 100)
   })
 })
 </script>
 
 <template>
   <div class="size-full flex">
-    <div class="max-w-full overflow-y-auto w-full chalk-board flex flex-col items-center gap-10">
+    <div class="max-w-full overflow-y-auto w-full chalk-board flex flex-col items-center gap-10 px-36">
       <div v-for="container in containers" :key="container.id" :ref="container" class="w-full"></div>
     </div>
   </div>

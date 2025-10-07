@@ -2,6 +2,7 @@ import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default"
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core"
 import block, { BlockAttributes, knowledge as blockKnowledge } from "./block"
+import { theme } from "@chalk-dsl/utils-theme"
 
 export interface ColumnAttributes extends BlockAttributes {
   gap: string | number
@@ -13,20 +14,18 @@ export const columns = definePrefab<'columns', ColumnAttributes>((context, _) =>
     name: 'columns',
     generator: (props, children) => {
       const column = <HTMLDivElement>block(context, _).generator(props, children)
-      column.style.display = 'grid'
+      column.style.display = 'flex'
+      column.style.flexDirection = 'column'
       column.style.width = '100%'
       const kids = children()
-      column.style.gridTemplateRows =
-        Array.isArray(props.columns)
-        ? props.columns
-          ? props.columns.map((c) => `${c}fr`).join(' ')
-          : `${props.columns}fr`
-        : kids.map(() => '1fr').join(' ')
-      column.style.gap = props.gap.toString()
+      column.style.flexWrap = 'wrap'
+      console.log(theme.size(props.gap.toString()))
+      column.style.gap = theme.size(props.gap.toString())
+      column.append(...kids)
       return column
     },
     defaults: {
-      gap: 0,
+      gap: 'md',
     }
   }
 })

@@ -13,16 +13,13 @@ const rows = definePrefab<'rows', RowAttributes>((context, _) => {
     name: 'rows',
     generator: (props, children) => {
       const row = <HTMLDivElement>block(context, _).generator(props, children)
-      row.style.display = 'grid'
+      row.style.display = 'flex'
       row.style.width = '100%'
+      row.style.flexDirection = 'row'
       const kids = children()
-      row.style.gridTemplateColumns =
-        Array.isArray(props.rows)
-          ? props.rows
-            ? props.rows.map((r) => `${r}fr`).join(' ')
-            : `${props.rows}fr`
-          : kids.map(() => '1fr').join(' ')
+      row.style.flexWrap = 'wrap'
       row.style.gap = props.gap.toString()
+      row.append(...kids)
       return row
     },
     defaults: {

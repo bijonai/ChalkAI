@@ -1,4 +1,4 @@
-import { createBox } from "@chalk-dsl/renderer-runtime"
+import { createBox, getRootSpace } from "@chalk-dsl/renderer-runtime"
 import type { Board } from "~~/shared"
 import '@chalk-dsl/layout'
 import '@chalk-dsl/form'
@@ -7,6 +7,8 @@ import '@chalk-dsl/widget'
 export function useBoard() {
   const currentStep = ref<number>(1)
   const steps: Ref<HTMLElement | null>[] = []
+
+  console.log(getRootSpace())
 
   const next = () => currentStep.value < steps.length ? currentStep.value++ : currentStep.value
 
