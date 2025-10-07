@@ -29,6 +29,9 @@ importers:
       '@chalk-dsl/utils-theme':
         specifier: workspace:*
         version: link:packages/utils-theme
+      '@chalk-dsl/widget':
+        specifier: workspace:*
+        version: link:packages/widget
       '@fortawesome/fontawesome-svg-core':
         specifier: ^7.0.0
         version: 7.0.1
