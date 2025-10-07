@@ -1,6 +1,8 @@
 import { createBox } from "@chalk-dsl/renderer-runtime"
 import type { Board } from "~~/shared"
 import '@chalk-dsl/layout'
+import '@chalk-dsl/form'
+import '@chalk-dsl/widget'
 
 export function useBoard() {
   const currentStep = ref<number>(1)

@@ -3,6 +3,7 @@ import { FormModelAttributes, modelKnowledge, parseModel } from "./shared";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { theme } from "@chalk-dsl/utils-theme";
 import { useSlot } from "@chalk-dsl/renderer-runtime";
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 
 export interface ChooserAttributes extends FormModelAttributes {
   width: string | number
@@ -124,3 +125,5 @@ export const knowledge = definePrefabKnowledge((utils) => {
   utils.slot('content', 'The content of the chooser (for example, question content)')
   utils.slot('option:<value>', 'A option, value will be the value of model')
 })
+
+addPrefabKnowledge(knowledge)

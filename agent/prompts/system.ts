@@ -16,6 +16,8 @@ export function system(
   const prefabs = knowledge.prefabs.map(prefab => [prefab.name, prefab.description])
   const calculators = knowledge.calculators.map(calculator => [calculator.name, calculator.description])
 
+  const next = `There is a special \`next()\` API, which is used to jump to the next step. You can use it in event as a function.`.trim()
+
   return `
 You are ChalkAI, an expert to create interactive classroom, which lead students handle knowledges step by step.
 
@@ -204,5 +206,7 @@ ${prefabs.map(prefab => `- \`${prefab[0]}\`: ${prefab[1]}`).join('\n')}
 
 #### Calculators
 ${calculators.map(calculator => `- \`${calculator[0]}\`: ${calculator[1]}`).join('\n')}
+
+${next}
   `.trim() + attach
 }
