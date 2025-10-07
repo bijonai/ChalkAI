@@ -180,6 +180,9 @@ importers:
       '@chalk-dsl/utils-theme':
         specifier: workspace:*
         version: link:../utils-theme
+      '@chalk-dsl/widget':
+        specifier: workspace:*
+        version: link:../widget
       '@unocss/preset-wind4':
         specifier: ^66.5.2
         version: 66.5.2
@@ -241,6 +244,18 @@ importers:
   packages/theme-default: {}
 
   packages/utils-theme: {}
+
+  packages/widget:
+    dependencies:
+      '@chalk-dsl/knowledge':
+        specifier: workspace:*
+        version: link:../knowledge
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:../renderer-core
+      '@chalk-dsl/renderer-runtime':
+        specifier: workspace:*
+        version: link:../renderer-runtime
 
 packages:
 

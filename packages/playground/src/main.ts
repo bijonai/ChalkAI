@@ -5,6 +5,7 @@ import 'virtual:uno.css'
 import router from './router'
 import '@chalk-dsl/theme-default/styles/main.css'
 import '@chalk-dsl/form'
+import '@chalk-dsl/widget'
 import { block } from '@chalk-dsl/layout'
 import { registerPrefab } from '@chalk-dsl/renderer-core'
 
