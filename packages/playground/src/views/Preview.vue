@@ -56,7 +56,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="size-full flex flex-row gap-2">
+  <div class="size-full flex flex-row gap-2 chalk-board">
     <div class="container-common w-12 p-1 gap-1 flex flex-col">
       <div 
         class="size-8 container-common container-interactive flex items-center justify-center cursor-pointer"

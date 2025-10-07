@@ -14,10 +14,34 @@ export function createBox(components: Component<string>[]) {
   const markdown = createMarkdown()
 
   const preprocessElement = (element: BaseChalkElement<string>, parent?: BaseChalkElement<string>) => {
-    for (const child of element.children ?? []) {
-      if (typeof child === 'string') continue
-      preprocessElement(child, element)
+    // Merge consecutive string children with newline separators
+    if (element.children && element.children.length > 0) {
+      const mergedChildren: (BaseChalkElement<string> | string)[] = []
+      let currentStringGroup: string[] = []
+
+      for (const child of element.children) {
+        if (typeof child === 'string') {
+          currentStringGroup.push(child)
+        } else {
+          // If we have accumulated string children, merge them
+          if (currentStringGroup.length > 0) {
+            mergedChildren.push(currentStringGroup.join('\n'))
+            currentStringGroup = []
+          }
+          // Process non-string child recursively
+          preprocessElement(child, element)
+          mergedChildren.push(child)
+        }
+      }
+
+      // Handle any remaining string children at the end
+      if (currentStringGroup.length > 0) {
+        mergedChildren.push(currentStringGroup.join('\n'))
+      }
+
+      element.children = mergedChildren
     }
+
     element.parent = parent
   }
 

@@ -7,6 +7,8 @@ import { input } from "./form/input"
 import { chooser } from "./form/chooser"
 import { table } from "./widget/table"
 import { code } from "./widget/code"
+import { test2 } from "./tests/test2"
+import { stringMergeTest } from "./tests/string-merge-test"
 
 export type Template = {
   id: string
@@ -27,6 +29,8 @@ export default [
     templates: [
       test1,
       conditionTest,
+      test2,
+      stringMergeTest,
     ]
   },
   {

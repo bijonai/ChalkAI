@@ -1,4 +1,6 @@
-import { createAdhoc, defineStatement, effect, registerStatement, ref, type Ref } from "@chalk-dsl/renderer-core"
+import { createAdhoc, defineStatement, effect, registerStatement, ref, type Ref, BaseChalkElement, AnimationItem } from "@chalk-dsl/renderer-core"
+import { createDelegate } from "../delegate"
+import { createAnimate } from "../animation"
 
 // 条件块状态管理
 const conditionBlockStates = new WeakMap<HTMLElement, {
@@ -61,6 +63,41 @@ function updateConditionBlock(root: HTMLElement, context: Record<string, unknown
   })
 }
 
+// 处理事件绑定和动画的通用函数
+function setupElementInteractions(
+  node: Node,
+  element: BaseChalkElement<string>,
+  context: Record<string, unknown>
+) {
+  // 事件绑定
+  const delegate = (node: Node, events: Record<string, string | (() => void)>) => {
+    const _delegate = createDelegate(node, context)
+    Object.entries(events).forEach(([event, handler]) => {
+      _delegate(event, handler)
+    })
+    return _delegate
+  }
+
+  // 动画处理
+  const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
+    const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
+    for (const [key, value] of Object.entries(animations)) {
+      const animate = () => createAnimate(context, { node, prefab: element.name })(value)
+      if (key === '$start') {
+        // 对于 $start 动画，我们可能需要特殊处理
+        animate()
+        break
+      }
+      results[key as keyof T] = animate
+    }
+    return results
+  }
+
+  // 绑定事件和动画
+  delegate(node, element.events ?? {})
+  delegate(node, resolveAnimations(element.animations ?? {}))
+}
+
 export const ifStatement = defineStatement((source) => {
   return {
     post(context, element, node) {
@@ -76,6 +113,9 @@ export const ifStatement = defineStatement((source) => {
 
       state.conditions.push({ ref: conditionRef, source })
       state.elements.push({ element: target, type: 'if', index })
+
+      // 设置事件绑定和动画
+      setupElementInteractions(node, element, context)
 
       effect(() => {
         updateConditionBlock(root, context)
@@ -102,6 +142,9 @@ export const elseStatement = defineStatement(() => {
       state.conditions.push({ ref: conditionRef, source: '' }) // 空 source 表示 else
       state.elements.push({ element: target, type: 'else', index })
 
+      // 设置事件绑定和动画
+      setupElementInteractions(node, element, context)
+
       effect(() => {
         updateConditionBlock(root, context)
       })
@@ -126,6 +169,9 @@ export const elifStatement = defineStatement((source) => {
 
       state.conditions.push({ ref: conditionRef, source })
       state.elements.push({ element: target, type: 'elif', index })
+
+      // 设置事件绑定和动画
+      setupElementInteractions(node, element, context)
 
       effect(() => {
         updateConditionBlock(root, context)
