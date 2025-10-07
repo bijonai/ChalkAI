@@ -6,6 +6,7 @@ import { conditionTest } from "./tests/condition-test"
 import { input } from "./form/input"
 import { chooser } from "./form/chooser"
 import { table } from "./widget/table"
+import { code } from "./widget/code"
 
 export type Template = {
   id: string
@@ -39,6 +40,7 @@ export default [
     id: 'widget',
     templates: [
       table,
+      code,
     ]
   }
 ] as Template[]

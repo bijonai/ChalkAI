@@ -5,12 +5,12 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
+    "@chalk-dsl/knowledge": "workspace:*",
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/renderer-runtime": "workspace:*",
-    "@chalk-dsl/knowledge": "workspace:*"
+    "shiki": "^3.13.0"
   }
 }
