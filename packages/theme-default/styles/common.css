@@ -6,44 +6,241 @@
   font-family: var(--chalk-font-primary);
 }
 
-.chalk-board h1 {
-  font-size: var(--chalk-size-2xl);
-  font-weight: 600;
-  margin-bottom: 12px;
+body {
+  overflow: hidden;
+}
+
+/* 表格样式 */
+.chalk-board table {
+  font-size: 1rem;
+  min-width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.chalk-board th,
+.chalk-board td {
+  font-size: 1rem;
+  border: 1px solid rgba(92, 91, 79, 0.5);
+  padding: 0.75rem 0.375rem;
+  min-width: 100px;
   text-align: center;
+}
+
+/* 列表样式 */
+.chalk-board ul,
+.chalk-board ol {
+  font-size: 1rem;
+  padding-left: 0.5rem;
+  margin: 0.5rem 0;
+  list-style-position: inside;
+}
+
+.chalk-board ul li {
+  margin: 0.25rem 0;
+}
+
+.chalk-board ol li {
+  margin: 0.25rem 0;
+}
+
+.chalk-board ul {
+  list-style-type: disc;
+}
+
+.chalk-board ol {
+  list-style-type: decimal;
+}
+
+.chalk-board li {
+  font-size: 1rem;
+}
+
+/* 引用块 */
+.chalk-board blockquote {
+  font-size: 1rem;
+  border-left: 4px solid rgba(92, 91, 79, 0.5);
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  font-style: italic;
+}
+
+/* 链接、强调、代码 */
+.chalk-board a {
+  font-size: 1rem;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.chalk-board a:hover {
+  text-decoration: underline;
+}
+
+.chalk-board strong {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.chalk-board em {
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.chalk-board code {
+  background-color: #FFFFE4;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+}
+
+.chalk-board p {
+  padding: 1rem 0;
+}
+
+/* 标题 */
+.chalk-board h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  text-align: left;
 }
 
 .chalk-board h2 {
-  font-size: var(--chalk-size-xl);
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 12px;
-  text-align: center;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  text-align: left;
 }
 
 .chalk-board h3 {
-  font-size: var(--chalk-size-lg);
+  font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 12px;
-  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
 }
 
 .chalk-board h4 {
-  font-size: var(--chalk-size-md);
+  font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 12px;
-  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
 }
 
 .chalk-board h5 {
-  font-size: var(--chalk-size-sm);
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 12px;
-  text-align: center;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  text-align: left;
 }
 
 .chalk-board h6 {
-  font-size: var(--chalk-size-xs);
+  font-size: 0.875rem;
   font-weight: 600;
-  margin-bottom: 12px;
-  text-align: center;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  color: #5C5B4F;
+  text-align: left;
+}
+
+/* 图片 */
+.chalk-board img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  margin: 0.75rem auto;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  display: block;
+}
+
+/* 分割线 */
+.chalk-board hr {
+  margin: 1.5rem 0;
+  border-top: 1px solid rgba(92, 91, 79, 0.5);
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+}
+
+/* 代码块 */
+.chalk-board pre {
+  background-color: #FFFFE4;
+  color: #5C5B4F;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  font-size: 1rem;
+}
+
+.chalk-board pre code {
+  background-color: transparent;
+  color: #5C5B4F;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* 删除线、上下标 */
+.chalk-board del {
+  text-decoration: line-through;
+  color: #5C5B4F;
+}
+
+.chalk-board sup,
+.chalk-board sub {
+  font-size: 0.75rem;
+}
+
+/* 脚注 */
+.chalk-board .footnote-ref {
+  color: #3b82f6;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.chalk-board .footnotes {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 1rem;
+  border-top: 1px solid #5C5B4F;
+  padding-top: 0.5rem;
+}
+
+/* 提示块（如 info/warning/danger/note）统一背景色 */
+.chalk-board .info,
+.chalk-board .note {
+  background-color: #E7E3C5;
+  border-left: 4px solid #60a5fa;
+  color: #1e40af;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  border-radius: 0.25rem;
+}
+
+.chalk-board .warning {
+  background-color: #E7E3C5;
+  border-left: 4px solid #fbbf24;
+  color: #92400e;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  border-radius: 0.25rem;
+}
+
+.chalk-board .danger {
+  background-color: #E7E3C5;
+  border-left: 4px solid #f87171;
+  color: #991b1b;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  border-radius: 0.25rem;
 }

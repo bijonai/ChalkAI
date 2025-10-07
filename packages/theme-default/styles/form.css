@@ -1,0 +1,38 @@
+.chalk-board button {
+  width: auto;
+  min-width: 20%;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: var(--chalk-accent);
+  color: var(--chalk-primary);
+  align-self: center;
+}
+
+.chalk-board button:hover {
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.chalk-board button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chalk-board input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--chalk-primary);
+}
+
+.chalk-board input:focus {
+  outline: none;
+}
+
+.chalk-board input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

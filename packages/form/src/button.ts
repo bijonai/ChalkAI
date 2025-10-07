@@ -6,7 +6,7 @@ import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 export interface ButtonAttributes {
   label: string
   disable: boolean
-  width?: number | string
+  // width?: number | string
 }
 
 const button = definePrefab<'button', ButtonAttributes>(() => {
@@ -16,7 +16,8 @@ const button = definePrefab<'button', ButtonAttributes>(() => {
       const button = document.createElement('button')
       button.textContent = attrs.label
       button.disabled = attrs.disable
-      button.style.width = attrs.width ? theme.size(attrs.width) : '100%'
+      // button.style.width = attrs.width ? theme.size(attrs.width) : '100%'
+      
       return button
     },
     defaults: {
@@ -40,9 +41,9 @@ export const knowledge = definePrefabKnowledge((utils) => {
   utils.prop('disable')
     .describe('The disable state of the button')
     .type('boolean').optional()
-  utils.prop('width')
-    .describe('The width of the button')
-    .type('string | number').optional()
+  // utils.prop('width')
+  //   .describe('The width of the button')
+  //   .type('string | number').optional()
 })
 
 addPrefabKnowledge(knowledge)

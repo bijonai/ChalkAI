@@ -1,15 +1,15 @@
 /* Background */
 :root {
-  --chalk-background: #24292F;
-  --chalk-background-accent: #181C20;
+  --chalk-background: #ffffff;
+  --chalk-background-accent: #f0f8ff;
 }
 
 /* Base Color Palette */
 :root {
-  --chalk-primary: #FFFFFF;
+  --chalk-primary: #666666;
   --chalk-note: #C7EDCC;
   --chalk-warning: #F7B051;
-  --chalk-accent: #F5F779;
+  --chalk-accent: #F7B051;
   --chalk-alert: #F76E67;
   --chalk-info: #4DDEF6;
   --chalk-success: #66ECDD;
@@ -19,11 +19,11 @@
 /* Transparent Marker Colors */
 :root {
   --chalk-highlight-primary: var(--chalk-highlight-key);
-  --chalk-highlight-key: rgba(var(--chalk-accent), 0.5);
-  --chalk-highlight-support: rgba(var(--chalk-success), 0.5);
-  --chalk-highlight-creative: rgba(var(--chalk-creative), 0.5);
-  --chalk-highlight-caution: rgba(var(--chalk-warning), 0.5);
-  --chalk-highlight-info: rgba(var(--chalk-info), 0.5);
+  --chalk-highlight-key: var(--chalk-accent);
+  --chalk-highlight-support: var(--chalk-success);
+  --chalk-highlight-creative: var(--chalk-creative);
+  --chalk-highlight-caution: var(--chalk-warning);
+  --chalk-highlight-info: var(--chalk-info);
 }
 
 /* Size Table */

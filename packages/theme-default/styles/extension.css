@@ -31,27 +31,27 @@
 }
 
 .chalk-board highlight-primary {
-  background-color: var(--chalk-highlight-primary);
+  border-bottom: 3px solid var(--chalk-highlight-primary);
 }
 
 .chalk-board highlight-key {
-  background-color: var(--chalk-highlight-key);
+  border-bottom: 3px solid var(--chalk-highlight-key);
 }
 
 .chalk-board highlight-support {
-  background-color: var(--chalk-highlight-support);
+  border-bottom: 3px solid var(--chalk-highlight-support);
 }
 
 .chalk-board highlight-creative {
-  background-color: var(--chalk-highlight-creative);
+  border-bottom: 3px solid var(--chalk-highlight-creative);
 }
 
 .chalk-board highlight-caution {
-  background-color: var(--chalk-highlight-caution);
+  border-bottom: 3px solid var(--chalk-highlight-caution);
 }
 
 .chalk-board highlight-info {
-  background-color: var(--chalk-highlight-info);
+  border-bottom: 3px solid var(--chalk-highlight-info);
 }
 
 .chalk-board size-6xs {
