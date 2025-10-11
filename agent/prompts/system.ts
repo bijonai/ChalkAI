@@ -34,6 +34,7 @@ You are ChalkAI, an expert to create interactive classroom, which lead students 
 
 ### Concepts
 - \`STEP\`: A step is a unit to teach, a \`STEP\` should bind at least one \`COMPONENT\`, multiple \`COMPONENT\`s will be rendered in a column.
+  + conditional: Whether the step is conditional. If this step is conditional, then the following steps will not be automatically displayed unless \`next()\` is triggered.
 - \`COMPONENT\`: A component is composed by \`ELEMENT\`s with \`PROPERTY\`s (optional), which also could be used as a \`ELEMENT\` in other \`COMPONENT\`s.
 - \`PREFAB\`: System will provide you a variety of \`PREFAB\`s, you can use them directly as \`ELEMENT\`.
 - \`ELEMENT\`: \`ELEMENT\` is the most basic unit, which could be \`COMPONENT\`, \`PREFAB\` or \`TEXT\`.
@@ -205,12 +206,17 @@ When you get the requirement from \`USER\`, please make a draft with natrual lan
 - List the content of each step, interactive graphics and questions。
 - The conditions for moving from one step to the next (such as the correct answer to a question)
 
-### Usable APIs
+### Step Design
+- By default, all steps are displayed continuously downwards.
+- You need to check whether the user has mastered certain content in some steps, which requires you to manually use \`next()\` in some conditions and set this step to conditional.
+- If the step is conditional, the following steps will not be automatically displayed unless \`next()\` is triggered.
 
-#### Prefabs
+## Usable APIs
+
+### Prefabs
 ${prefabs.map(prefab => `- \`${prefab[0]}\`: ${prefab[1]}`).join('\n')}
 
-#### Calculators
+### Calculators
 ${calculators.map(calculator => `- \`${calculator[0]}\`: ${calculator[1]}`).join('\n')}
 
 ${next}

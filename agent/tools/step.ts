@@ -1,4 +1,4 @@
-import { Board } from "../../shared";
+import { type Board } from "../../shared";
 import { tool } from "xsai";
 import { z } from "zod";
 
@@ -10,6 +10,7 @@ export async function setSteps(board: Board) {
       steps: z.array(z.object({
         description: z.string().describe('The description of the step.'),
         components: z.array(z.string()).describe('The components of the step.'),
+        conditional: z.boolean().describe('Whether the step is conditional'),
       })).describe('The steps of the course in order.'),
     }),
     execute: async ({ steps }) => {

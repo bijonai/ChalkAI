@@ -20,7 +20,7 @@ onMounted(async () => {
   await getInfo()
   if (!board.value) return
   console.log(board.value.result)
-  const [steps, _render] = loadBoard(board.value!)
+  const [steps, _render] = loadBoard(board.value!, true)
   containers.value.push(...steps)
   nextTick(() => {
     _render()

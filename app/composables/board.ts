@@ -15,22 +15,24 @@ export function useBoard() {
   const loadBoard = (board: Board): [Ref<HTMLElement | null>[], () => void] => {
     const { renderRoot, setValue, beginAnimations } = createBox(board.components)
     setValue('next', next)
+    setValue('currentStep', currentStep)
     steps.length = 0
     steps.push(...board.steps.map(() => ref<HTMLElement | null>(null)))
     const rendered: number[] = []
     const _render = () => {
-      watch(currentStep, (step) => {
-        for (let i = 1; i <= step; i++) {
-          if (rendered.includes(i)) continue
-          rendered.push(i)
-          const target = (steps[i - 1]!.value! as unknown as HTMLElement[])[0]!
+      watch(currentStep, (s) => {
+        for (const [i, step] of board.steps.entries()) {
+          if (rendered.includes(i + 1)) continue
+          rendered.push(i + 1)
+          const target = (steps[i]!.value! as unknown as HTMLElement[])[0]!
           target.innerHTML = ''
-          board.steps[i - 1]!.components.forEach((component) => {
+          step.components.forEach((component) => {
             const root = renderRoot(component)
             if (!root) return
             target.append(...(Array.isArray(root) ? root : [root]))
           })
           console.log(beginAnimations)
+          if (step.conditional && i + 1 >= s) break
         }
       }, { immediate: true })
     }

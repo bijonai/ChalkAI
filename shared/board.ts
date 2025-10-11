@@ -3,6 +3,7 @@ import type { Component } from "@chalk-dsl/renderer-core"
 export interface Step {
   components: string[]
   description: string
+  conditional: boolean
 }
 export interface Board {
   components: Component<string>[]
