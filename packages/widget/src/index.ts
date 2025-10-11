@@ -1,8 +1,9 @@
 import './table'
 import './code'
 import './paginator'
+import './canvas'
 
-
+export { default as canvas } from './canvas'
 export { default as table } from './table'
 export { default as code } from './code'
 export { default as paginator } from './paginator'
