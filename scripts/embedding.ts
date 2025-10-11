@@ -14,6 +14,7 @@ const getEmbeddings = async (input: string) => {
     model: process.env.DEFAULT_EMBED_MODEL!,
     apiKey: process.env.DEFAULT_EMBED_API_KEY!,
     baseURL: process.env.DEFAULT_EMBED_BASE_URL!,
+    dimensions: Number(process.env.VECTOR_SIZE) || 1536,
     input,
   })
   return embedding
