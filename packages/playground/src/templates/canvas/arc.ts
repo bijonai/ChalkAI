@@ -19,6 +19,7 @@ export const arc: Template = {
             start: 0,
             end: 360,
             radius: 20,
+            interactive: true,
           }
         }
       ]
