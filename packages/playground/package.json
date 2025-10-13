@@ -22,6 +22,7 @@
     "@chalk-dsl/utils-theme": "workspace:*",
     "@chalk-dsl/form": "workspace:*",
     "@chalk-dsl/widget": "workspace:*",
+    "@chalk-dsl/canvas": "workspace:*",
     "@unocss/preset-wind4": "^66.5.2",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",

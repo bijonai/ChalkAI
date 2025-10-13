@@ -1,5 +1,6 @@
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 
 export type Vector2 = [number, number]
 
@@ -50,5 +51,6 @@ export const knowledge = definePrefabKnowledge<CanvasAttributes>((utils) => {
     .describe('The origin of the canvas')
     .type('[number, number]')
     .optional('[0, 0]')
-  return utils.toKnowledge()
 })
+
+addPrefabKnowledge(knowledge)

@@ -22,6 +22,7 @@
     "@chalk-dsl/layout": "workspace:*",
     "@chalk-dsl/form": "workspace:*",
     "@chalk-dsl/widget": "workspace:*",
+    "@chalk-dsl/canvas": "workspace:*",
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/renderer-runtime": "workspace:*",
     "@chalk-dsl/theme-default": "workspace:*",

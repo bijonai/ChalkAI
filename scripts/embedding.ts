@@ -7,6 +7,7 @@ import 'dotenv/config'
 import '@chalk-dsl/layout'
 import '@chalk-dsl/form'
 import '@chalk-dsl/widget'
+import '@chalk-dsl/canvas'
 
 const getEmbeddings = async (input: string) => {
   const { embedding } = await embed({
