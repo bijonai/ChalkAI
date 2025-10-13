@@ -10,6 +10,7 @@ import { code } from "./widget/code"
 import { test2 } from "./tests/test2"
 import { stringMergeTest } from "./tests/string-merge-test"
 import { paginator } from "./widget/paginator"
+import { arc } from "./canvas/arc"
 
 export type Template = {
   id: string
@@ -47,6 +48,12 @@ export default [
       table,
       code,
       paginator
+    ]
+  },
+  {
+    id: 'canvas',
+    templates: [
+      arc
     ]
   }
 ] as Template[]

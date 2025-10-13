@@ -15,16 +15,22 @@ const arc = definePrefab<'arc', ArcAttributes>(() => {
     name: 'arc',
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs)
-        
-      root.append('path')
-        .attr('d', d3.arc()({
-          startAngle: attrs.start,
-          endAngle: attrs.end,
-          innerRadius: attrs.radius,
-          outerRadius: attrs.radius,
-        }))
 
-      return root.node()!
+      // Convert degrees to radians for d3.arc()
+      const startAngle = (attrs.start * Math.PI) / 180
+      const endAngle = (attrs.end * Math.PI) / 180
+
+      const pathData = d3.arc()({
+        startAngle: startAngle,
+        endAngle: endAngle,
+        innerRadius: 0,  // innerRadius should be 0 for a filled arc
+        outerRadius: attrs.radius,
+      })
+
+      d3.select(root).append('path')
+        .attr('d', pathData)
+
+      return root
     },
     defaults: {
       start: 0,

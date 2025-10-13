@@ -1,6 +1,5 @@
 import { definePrefabKnowledge } from '@chalk-dsl/knowledge'
 import { theme } from '@chalk-dsl/utils-theme'
-import * as d3 from 'd3'
 
 export type Vector2 = [number, number]
 export type Vector3 = [number, number, number]
@@ -31,31 +30,32 @@ export const createCanvasElementContainer = <
   attrs.rotation ??= 0
   const scale = attrs.scale ? Array.isArray(attrs.scale) ? attrs.scale : [attrs.scale, attrs.scale] : [1, 1]
 
-  const container = d3.create('g')
-    .attr(
-      'transform',
-      `translate(${attrs.position[0]}, ${attrs.position[1]}) rotate(${attrs.rotation}) scale(${scale[0]}, ${scale[1]})`
-    )
-    .attr(
-      'fill',
-      theme.pallete(attrs.fill ?? 'none')
-    )
-    .attr(
-      'fill-opacity',
-      attrs.fillOpacity ?? 1
-    )
-    .attr(
-      'stroke',
-      theme.pallete(attrs.stroke ?? 'none')
-    )
-    .attr(
-      'stroke-width',
-      attrs.strokeWidth ?? 1
-    )
-    .attr(
-      'stroke-opacity',
-      attrs.strokeOpacity ?? 1
-    )
+  const container = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGGElement
+
+  container.setAttribute(
+    'transform',
+    `translate(${attrs.position[0]}, ${attrs.position[1]}) rotate(${attrs.rotation}) scale(${scale[0]}, ${scale[1]})`
+  )
+  container.setAttribute(
+    'fill',
+    theme.pallete(attrs.fill ?? 'info')
+  )
+  container.setAttribute(
+    'fill-opacity',
+    String(attrs.fillOpacity ?? 0.5)
+  )
+  container.setAttribute(
+    'stroke',
+    theme.pallete(attrs.stroke ?? 'info')
+  )
+  container.setAttribute(
+    'stroke-width',
+    String(attrs.strokeWidth ?? 1)
+  )
+  container.setAttribute(
+    'stroke-opacity',
+    String(attrs.strokeOpacity ?? 1)
+  )
 
   return container
 }
