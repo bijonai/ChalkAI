@@ -126,6 +126,9 @@ importers:
 
   packages/canvas:
     dependencies:
+      '@chalk-dsl/form':
+        specifier: workspace:*
+        version: link:../form
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3

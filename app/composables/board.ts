@@ -3,6 +3,7 @@ import type { Board } from "~~/shared"
 import '@chalk-dsl/layout'
 import '@chalk-dsl/form'
 import '@chalk-dsl/widget'
+import '@chalk-dsl/canvas'
 
 export function useBoard() {
   const currentStep = ref<number>(1)

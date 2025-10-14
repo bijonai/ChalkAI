@@ -9,7 +9,8 @@
     "@chalk-dsl/utils-theme": "workspace:*"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./model": "./src/shared.ts"
   },
   "packageManager": "pnpm@10.8.1"
 }

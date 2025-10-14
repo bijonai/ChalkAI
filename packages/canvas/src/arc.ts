@@ -4,15 +4,17 @@ import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasEl
 import * as d3 from 'd3'
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { theme } from "@chalk-dsl/utils-theme";
+import { FormModelAttributes, parseModel } from "@chalk-dsl/form";
 
-export interface ArcAttributes extends BaseCanvasElementAttributes, Fillable, Strokeable {
+export interface ArcAttributes
+  extends BaseCanvasElementAttributes, Fillable, Strokeable, FormModelAttributes<['angle', 'position']> {
   start: number
   end: number
   radius: number
   interactive: boolean
 }
 
-const arc = definePrefab<'arc', ArcAttributes>(() => {
+const arc = definePrefab<'arc', ArcAttributes>((context) => {
   return {
     name: 'arc',
     generator: (attrs) => {
@@ -110,6 +112,9 @@ const arc = definePrefab<'arc', ArcAttributes>(() => {
             d3.select(root).select('circle#angle')
               .attr('cx', x + attrs.radius)
               .attr('cy', y)
+            if (attrs.model && attrs.model.position) {
+              context[attrs.model.position] = [x, y]
+            }
           }
         )
         dot(
@@ -121,6 +126,9 @@ const arc = definePrefab<'arc', ArcAttributes>(() => {
             const angle = Math.atan2(y - offsetY, x - offsetX)
             const _x = Math.cos(angle) * attrs.radius - attrs.radius
             const _y = Math.sin(angle) * attrs.radius
+            if (attrs.model && attrs.model.angle) {
+              context[attrs.model.angle] = angle * 180 / Math.PI
+            }
             selector.attr('transform', `translate(${_x}, ${_y})`)
           }
         )
@@ -160,6 +168,13 @@ export const knowledge = definePrefabKnowledge<ArcAttributes>((utils) => {
   utils.prop('radius')
     .describe('the radius of the arc')
     .type('number')
+  utils.prop('interactive')
+    .describe('whether the arc is interactive, if true, will show a control point for `angle`, a control point for `position`')
+    .type('boolean')
+    .optional('false')
+  utils.prop('model')
+    .describe('The variable to bind on two control points')
+    .type('{ angle: string, position: string }').optional()
 })
 
 addPrefabKnowledge(knowledge)

@@ -15,7 +15,6 @@ export const chooser = definePrefab<'chooser', ChooserAttributes>((context) => {
   return {
     name: 'chooser',
     generator: (attrs, children) => {
-      const { model } = parseModel(attrs.model)
       const root = document.createElement('div')
       root.style.width = attrs.width ? theme.size(attrs.width) : '100%'
       const field = document.createElement('fieldset')
@@ -72,7 +71,8 @@ export const chooser = definePrefab<'chooser', ChooserAttributes>((context) => {
         }
       }
 
-      if (model) {
+      if (attrs.model) {
+        const { model } = parseModel(attrs.model)
         if (attrs.type === 'single') {
           const opts = options.querySelectorAll(`input[name="${name}"]`)
           for (const option of Array.from(opts ?? [])) {
