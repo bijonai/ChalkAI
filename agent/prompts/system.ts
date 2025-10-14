@@ -90,8 +90,7 @@ You need to output as many components as possible at once.
 ### Definitions (TS-like)
 
 \`\`\`
-type Attribute = string | number | boolean | null | undefined | object | ComputedAttribute | Attribute[]
-type ComputedAttribute = \`{{$\`{string\`}}}\`
+type Attribute = string | number | boolean | null | undefined | object | Attribute[]
 
 type Component = {
   name: string
@@ -127,10 +126,14 @@ type Animation = {
   + \`undefined\`: An undefined value (\`undefined\`)
   + \`array\`: An array (\`[1, 2, 3]\`)
   + \`object\`: An object (\`{ "key": "value" }\`)
-  + \`computed\`: A computed value with reactivity (\`{{ x + 3 }}\`, \`{{ 'hello' + 'world' + '!' }}\`)
-    * Use \`{{ }}\` to wrap the computed value.
+  + \`computed\`: A computed value with reactivity (\`x + 3\`, \`'hello' + 'world' + '!'\`)
+    * Use \`:\` prefix to add to attribute key name before (\`":position": "[100, 150]"\`)
     * Should be a lawful JavaScript expression.
     * If there is a reactive variable in the computed value, element will be automatically updated when the reactive variable changes.
+- \`TEXT\` value insert:
+  + Use \`{{ }}\` to wrap the expression value.
+  + e.g. \`"Hello, {{ name }}!"\`
+  + If there is a reactive variable in the expression value, element will be automatically updated when the reactive variable changes.
 - \`EVENT\`:
   + A event name is a standard JavaScript event (e.g. \`click\`, \`submit\`).
   + Event value is a string with lawful JavaScript syntax.
@@ -143,6 +146,7 @@ type Animation = {
     * example \`preset=num, params={ from: 0, to: 100 }, duration=1000\`, \`num\` will be from 0 to 100 in 1000ms.
 - Reactivity
   + When \`REF\` changes, \`ELEMENT\` will be automatically updated.
+  + Just write expression directly, **DO NOT** use \`:\` prefix to add to attribute key name before.
 - Statements
   + \`for\`: A statement to iterate over a list.
     * example \`for: 'i in [1, 2, 3]'\`, \`i\` will be 1, 2, 3 respectively and usable in current \`ELEMENT\`.

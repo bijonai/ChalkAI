@@ -17,7 +17,7 @@ export const arc: Template = {
           attrs: {
             range: [0, 100],
             domain: [0, 100],
-            origin: [50, 50]
+            ':origin': '[50, 50]'
           },
           children: [
             {
@@ -25,7 +25,7 @@ export const arc: Template = {
               attrs: {
                 start: 0,
                 end: 360,
-                radius: 20,
+                radius: '20',
                 interactive: true,
                 model: {
                   angle: 'angle',
