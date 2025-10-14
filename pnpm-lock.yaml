@@ -281,6 +281,21 @@ importers:
         specifier: ^3.13.0
         version: 3.13.0
 
+  packages/x:
+    dependencies:
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:../renderer-core
+      '@chalk-dsl/x-parser':
+        specifier: workspace:*
+        version: link:../x-parser
+
+  packages/x-parser:
+    dependencies:
+      parse-entities:
+        specifier: ^4.0.2
+        version: 4.0.2
+
 packages:
 
   '@antfu/install-pkg@1.1.0':
