@@ -34,9 +34,29 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
       d3.select(root).append('path')
         .attr('d', pathData)
 
+      const line1 = d3.select(root).append('line')
+        .attr('x1', attrs.position?.[0] ?? 0)
+        .attr('y1', attrs.position?.[1] ?? 0)
+        .attr('x2', Math.cos(startAngle) * attrs.radius)
+        .attr('y2', Math.sin(startAngle) * attrs.radius)
+        .attr('stroke', attrs.stroke || theme.pallete('foreground'))
+        .attr('stroke-width', (attrs.strokeWidth ?? 1) * 0.5)
+        .attr('stroke-dasharray', '2,2')
+        .attr('id', 'angleStartLine')
+
+      const line2 = d3.select(root).append('line')
+        .attr('x1', attrs.position?.[0] ?? 0)
+        .attr('y1', attrs.position?.[1] ?? 0)
+        .attr('x2', Math.cos(endAngle) * attrs.radius)
+        .attr('y2', Math.sin(endAngle) * attrs.radius)
+        .attr('stroke', attrs.stroke || theme.pallete('foreground'))
+        .attr('stroke-width', (attrs.strokeWidth ?? 1) * 0.5)
+        .attr('stroke-dasharray', '2,2')
+        .attr('id', 'angleEndLine')
+
       if (attrs.interactive) {
-        let offsetX = 0
-        let offsetY = 0
+        let offsetX = attrs.position?.[0] ?? 0
+        let offsetY = attrs.position?.[1] ?? 0
         const dot = (
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           selector: d3.Selection<any, unknown, null, undefined>,
@@ -109,8 +129,16 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
             selector
               .attr('cx', x)
               .attr('cy', y)
-            d3.select(root).select('circle#angle')
+            d3.select(root).select('circle#angleStart')
               .attr('transform', `translate(${offsetX}, ${offsetY})`)
+            d3.select(root).select('circle#angleEnd')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+
+            d3.select(root).select('line#angleStartLine')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+            d3.select(root).select('line#angleEndLine')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+
             if (attrs.model && attrs.model.position) {
               context[attrs.model.position] = [x, y]
             }
@@ -118,9 +146,9 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
         )
         dot(
           d3.select(root),
-          Math.cos(endAngle) * attrs.radius,
-          Math.sin(endAngle) * attrs.radius,
-          'angle',
+          Math.cos(startAngle) * attrs.radius,
+          Math.sin(startAngle) * attrs.radius,
+          'angleStart',
           (x, y, selector) => {
             const angle = Math.atan2(y - offsetY, x - offsetX)
             console.log(offsetX, offsetY)
@@ -131,8 +159,32 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
             }
             selector.attr('cx', _x)
             selector.attr('cy', _y)
+            d3.select(root).select('line#angleStartLine')
+              .attr('x2', _x)
+              .attr('y2', _y)
           }
         )
+        dot(
+          d3.select(root),
+          Math.cos(endAngle) * attrs.radius,
+          Math.sin(endAngle) * attrs.radius,
+          'angleEnd',
+          (x, y, selector) => {
+            const angle = Math.atan2(y - offsetY, x - offsetX)
+            console.log(offsetX, offsetY)
+            const _x = Math.cos(angle) * attrs.radius
+            const _y = Math.sin(angle) * attrs.radius
+            if (attrs.model && attrs.model.angle) {
+              context[attrs.model.angle] = angle * 180 / Math.PI
+            }
+            selector.attr('cx', _x)
+            selector.attr('cy', _y)
+            d3.select(root).select('line#angleEndLine')
+              .attr('x2', _x)
+              .attr('y2', _y)
+          }
+        )
+
       }
 
       return root
