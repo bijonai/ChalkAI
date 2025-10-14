@@ -4,5 +4,5 @@ export type Component<T extends string> = {
   name: T
   props: string[]
   refs?: Record<string, string>
-  root?: BaseChalkElement<string>
+  root?: BaseChalkElement<string> | BaseChalkElement<string>[]
 }

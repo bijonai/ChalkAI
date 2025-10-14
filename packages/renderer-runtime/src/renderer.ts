@@ -54,7 +54,10 @@ export function createBox(components: Component<string>[]) {
     if (!component.root) {
       return document.createTextNode('')
     }
-    preprocessElement(component.root!)
+    const roots = toArray(component.root)
+    for (const root of roots) {
+      preprocessElement(root)
+    }
 
     const refs = Object.entries(component.refs ?? {})
     const retryWaitlist: string[] = []
@@ -84,16 +87,18 @@ export function createBox(components: Component<string>[]) {
     }
 
     // Set up default values to prevent undefined access
-    component.root.attrs ??= {}
-    component.root.events ??= {}
-    component.root.statements ??= {}
-    component.root.children ??= []
+    return roots.flatMap(root => {
+      root.attrs ??= {}
+      root.events ??= {}
+      root.statements ??= {}
+      root.children ??= []
 
-    const attrs = toProps(component.root.attrs, getActiveContext())
-    return withContext(
-      mergeContext(getActiveContext(), attrs),
-      (): Node | Node[] | null => renderElement(component.root!)
-    )
+      const attrs = toProps(root.attrs, getActiveContext())
+      return withContext(
+        mergeContext(getActiveContext(), attrs),
+        (): Node | Node[] | null => renderElement(root!)
+      )
+    }) as Node[]
   }
 
   const renderElement = (element: BaseChalkElement<string>): Node | Node[] | null => {
