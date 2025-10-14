@@ -125,6 +125,8 @@ type Animation = {
   + \`null\`: A null value (\`null\`)
   + \`undefined\`: An undefined value (\`undefined\`)
   + \`array\`: An array (\`[1, 2, 3]\`)
+    * Warning: \`array\` should be a part of json structure as a object, **DO NOT** write it as a string
+    * If you want to write expression in array, please use \`computed\` instead.
   + \`object\`: An object (\`{ "key": "value" }\`)
   + \`computed\`: A computed value with reactivity (\`x + 3\`, \`'hello' + 'world' + '!'\`)
     * Use \`:\` prefix to add to attribute key name before (\`":position": "[100, 150]"\`)

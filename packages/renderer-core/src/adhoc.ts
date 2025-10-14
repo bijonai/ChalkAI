@@ -13,12 +13,19 @@ export function createAdhoc(context: Context) {
   }
 }
 
-export function toProp(key: string,source: AttributeValue, context: Context) {
+export function toProp(key: string, source: AttributeValue, context: Context) {
   const _computed = (source: ComputedAttributeValue) => {
-    return createAdhoc(context)(source)
+    try {
+      return createAdhoc(context)(source)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return source
+    }
   }
   const _string = (source: string) => {
-    return key.startsWith(':') ? _computed(source as ComputedAttributeValue) : source
+    return key.startsWith(':') || (source.startsWith('[') && source.endsWith(']')) || source.startsWith('{') && source.endsWith('}')
+      ? _computed(source as ComputedAttributeValue)
+      : source
   }
   const _common = (source: number | boolean | null | undefined) => source
   const _array = (sources: AttributeValue[]) => [...sources.map((source) => toProp(key, source, context))]

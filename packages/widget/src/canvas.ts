@@ -16,18 +16,25 @@ const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
     generator: (attrs, children) => {
       const canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
       canvas.style.width = '100%'
+      const origin = attrs.origin || [
+        attrs.domain[1] / 2,
+        attrs.range[1] / 2
+      ]
 
-      canvas.setAttribute('viewBox', `${attrs.domain[0]} ${attrs.range[0]} ${attrs.domain[1]} ${attrs.range[1]}`)
+      canvas.setAttribute(
+        'viewBox',
+        `0 0 ${attrs.domain[1] - attrs.domain[0]} ${attrs.range[1] - attrs.range[0]}`
+      )
       
       const root = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      root.setAttribute('transform', `translate(${attrs.origin[0]}, ${attrs.origin[1]})`)
+      root.setAttribute('transform', `translate(${origin[0] - attrs.domain[0]}, ${origin[1] - attrs.range[0]})`)
       canvas.append(root)
 
       root.append(...children())
       return canvas
     },
     defaults: {
-      origin: [0, 0],
+      // origin: [0, 0],
     }
   }
 })
