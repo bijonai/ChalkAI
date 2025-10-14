@@ -110,8 +110,7 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
               .attr('cx', x)
               .attr('cy', y)
             d3.select(root).select('circle#angle')
-              .attr('cx', x + attrs.radius)
-              .attr('cy', y)
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
             if (attrs.model && attrs.model.position) {
               context[attrs.model.position] = [x, y]
             }
@@ -124,12 +123,14 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
           'angle',
           (x, y, selector) => {
             const angle = Math.atan2(y - offsetY, x - offsetX)
-            const _x = Math.cos(angle) * attrs.radius - attrs.radius
+            console.log(offsetX, offsetY)
+            const _x = Math.cos(angle) * attrs.radius
             const _y = Math.sin(angle) * attrs.radius
             if (attrs.model && attrs.model.angle) {
               context[attrs.model.angle] = angle * 180 / Math.PI
             }
-            selector.attr('transform', `translate(${_x}, ${_y})`)
+            selector.attr('cx', _x)
+            selector.attr('cy', _y)
           }
         )
       }
