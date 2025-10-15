@@ -1,4 +1,4 @@
-import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
+import { definePrefab, ref, registerPrefab } from "@chalk-dsl/renderer-core";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 
@@ -8,13 +8,19 @@ export interface CanvasAttributes {
   range: Vector2 // Y-axis
   domain: Vector2 // X-axis
   origin: Vector2
+  division: number
 }
 
 const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
+  const division = ref<number>(10)
   return {
     name: 'canvas',
+    provides: {
+      division,
+    },
     generator: (attrs, children) => {
       const canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
+      division.value = attrs.division
       canvas.style.width = '100%'
       const origin = attrs.origin || [
         attrs.domain[1] / 2,
@@ -35,6 +41,7 @@ const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
     },
     defaults: {
       // origin: [0, 0],
+      division: 10,
     }
   }
 })

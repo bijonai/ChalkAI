@@ -12,11 +12,12 @@ export interface ArcAttributes
   radius: number
 }
 
-const arc = definePrefab<'arc', ArcAttributes>((context) => {
+const arc = definePrefab<'arc', ArcAttributes, { division: number }>((context) => {
   return {
     name: 'arc',
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs)
+      console.log(context.division)
 
       // Convert degrees to radians for d3.arc()
       const currentStartAngle = (attrs.start * Math.PI) / 180
