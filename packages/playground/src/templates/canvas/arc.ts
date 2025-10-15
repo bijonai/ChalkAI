@@ -8,6 +8,8 @@ export const arc: Template = {
     refs: {
       angle: '0',
       position: '[0, 0]',
+      "center": "[0, 0]",
+      "completed": "false"
     },
     root: {
       name: 'columns',
@@ -46,6 +48,36 @@ export const arc: Template = {
           children: [
             'Position: {{ position }}',
           ],
+        },
+        {
+          "name": "canvas",
+          "attrs": {
+            ":range": "[0, 80]",
+            ":domain": "[0, 80]",
+            ":origin": "[40, 40]"
+          },
+          "events": {},
+          "children": [
+            {
+              "name": "arc",
+              "attrs": {
+                "model": {
+                  "position": "center"
+                },
+                "stroke": "creative",
+                ":radius": "30",
+                ":position": "center",
+                "interactive": true,
+                "strokeWidth": 1
+              },
+              "events": {},
+              "children": [],
+              "animations": {},
+              "statements": {}
+            }
+          ],
+          "animations": {},
+          "statements": {}
         }
       ]
     }

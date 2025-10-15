@@ -132,6 +132,9 @@ type Animation = {
     * Use \`:\` prefix to add to attribute key name before (\`":position": "[100, 150]"\`)
     * Should be a lawful JavaScript expression.
     * If there is a reactive variable in the computed value, element will be automatically updated when the reactive variable changes.
+    * ⚠️ \`computed\` are not only needed when reactive variables are in expressions, but also when they are in JavaScript expressions.
+    * ❌ Wrong: \`"x": "2"\`, \`"position": "[10, 10]"\`
+    * ✅ Right: \`":x": "2"\`, \`":position": "[10, 10]"\`
 - \`TEXT\` value insert:
   + Use \`{{ }}\` to wrap the expression value.
   + e.g. \`"Hello, {{ name }}!"\`
