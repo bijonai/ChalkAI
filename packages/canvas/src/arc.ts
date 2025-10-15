@@ -21,22 +21,49 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
       const root = createCanvasElementContainer(attrs)
 
       // Convert degrees to radians for d3.arc()
-      const startAngle = (attrs.start * Math.PI) / 180
-      const endAngle = (attrs.end * Math.PI) / 180
+      let currentStartAngle = (attrs.start * Math.PI) / 180
+      let currentEndAngle = (attrs.end * Math.PI) / 180
 
-      const pathData = d3.arc()({
-        startAngle: startAngle,
-        endAngle: endAngle,
-        innerRadius: 0,  // innerRadius should be 0 for a filled arc
-        outerRadius: attrs.radius,
-      })
+      // Function to update the arc path
+      const updateArcPath = (startAngle: number, endAngle: number) => {
+        if (startAngle > endAngle) {
+          endAngle += 2 * Math.PI
+        }
+        const pathData = d3.arc()({
+          startAngle: startAngle + Math.PI / 2, // Math convention to Compass convention
+          endAngle: endAngle + Math.PI / 2,
+          innerRadius: 0,  // innerRadius should be 0 for a filled arc
+          outerRadius: attrs.radius,
+        })
+        d3.select(root).select('path')
+          .attr('d', pathData)
+      }
 
+      // init arc path
       d3.select(root).append('path')
-        .attr('d', pathData)
+      updateArcPath(currentStartAngle, currentEndAngle)
+
+      const lineCenterToStart = d3.select(root).append('line')
+        .attr('x1', attrs.position?.[0] ?? 0)
+        .attr('y1', attrs.position?.[1] ?? 0)
+        .attr('x2', Math.cos(currentStartAngle) * attrs.radius)
+        .attr('y2', Math.sin(currentStartAngle) * attrs.radius)
+        .attr('stroke', attrs.stroke || theme.pallete('accent'))
+        .attr('stroke-width', attrs.strokeWidth ?? 1)
+        .attr('id', 'angleStartLine')
+
+      const lineCenterToEnd = d3.select(root).append('line')
+        .attr('x1', attrs.position?.[0] ?? 0)
+        .attr('y1', attrs.position?.[1] ?? 0)
+        .attr('x2', Math.cos(currentEndAngle) * attrs.radius)
+        .attr('y2', Math.sin(currentEndAngle) * attrs.radius)
+        .attr('stroke', attrs.stroke || theme.pallete('accent'))
+        .attr('stroke-width', attrs.strokeWidth ?? 1)
+        .attr('id', 'angleEndLine')
 
       if (attrs.interactive) {
-        let offsetX = 0
-        let offsetY = 0
+        let offsetX = attrs.position?.[0] ?? 0
+        let offsetY = attrs.position?.[1] ?? 0
         const dot = (
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           selector: d3.Selection<any, unknown, null, undefined>,
@@ -101,7 +128,6 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
           attrs.position?.[1] ?? 0,
           'center',
           (x, y, selector) => {
-            console.log(x, y)
             offsetX = x
             offsetY = y
             d3.select(root).select('path')
@@ -109,9 +135,16 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
             selector
               .attr('cx', x)
               .attr('cy', y)
-            d3.select(root).select('circle#angle')
-              .attr('cx', x + attrs.radius)
-              .attr('cy', y)
+            d3.select(root).select('circle#angleStart')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+            d3.select(root).select('circle#angleEnd')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+
+            d3.select(root).select('line#angleStartLine')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+            d3.select(root).select('line#angleEndLine')
+              .attr('transform', `translate(${offsetX}, ${offsetY})`)
+
             if (attrs.model && attrs.model.position) {
               context[attrs.model.position] = [x, y]
             }
@@ -119,19 +152,51 @@ const arc = definePrefab<'arc', ArcAttributes>((context) => {
         )
         dot(
           d3.select(root),
-          Math.cos(endAngle) * attrs.radius,
-          Math.sin(endAngle) * attrs.radius,
-          'angle',
+          Math.cos(currentStartAngle) * attrs.radius,
+          Math.sin(currentStartAngle) * attrs.radius,
+          'angleStart',
           (x, y, selector) => {
             const angle = Math.atan2(y - offsetY, x - offsetX)
-            const _x = Math.cos(angle) * attrs.radius - attrs.radius
+            const _x = Math.cos(angle) * attrs.radius
             const _y = Math.sin(angle) * attrs.radius
+
+            currentStartAngle = angle
+            updateArcPath(currentStartAngle, currentEndAngle)
+            
             if (attrs.model && attrs.model.angle) {
               context[attrs.model.angle] = angle * 180 / Math.PI
             }
-            selector.attr('transform', `translate(${_x}, ${_y})`)
+            selector.attr('cx', _x)
+            selector.attr('cy', _y)
+            d3.select(root).select('line#angleStartLine')
+              .attr('x2', _x)
+              .attr('y2', _y)
           }
         )
+        dot(
+          d3.select(root),
+          Math.cos(currentEndAngle) * attrs.radius,
+          Math.sin(currentEndAngle) * attrs.radius,
+          'angleEnd',
+          (x, y, selector) => {
+            const angle = Math.atan2(y - offsetY, x - offsetX)
+            const _x = Math.cos(angle) * attrs.radius
+            const _y = Math.sin(angle) * attrs.radius
+
+            currentEndAngle = angle
+            updateArcPath(currentStartAngle, currentEndAngle)
+            
+            if (attrs.model && attrs.model.angle) {
+              context[attrs.model.angle] = angle * 180 / Math.PI
+            }
+            selector.attr('cx', _x)
+            selector.attr('cy', _y)
+            d3.select(root).select('line#angleEndLine')
+              .attr('x2', _x)
+              .attr('y2', _y)
+          }
+        )
+
       }
 
       return root
