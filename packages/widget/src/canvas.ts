@@ -29,11 +29,11 @@ const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
 
       canvas.setAttribute(
         'viewBox',
-        `0 0 ${attrs.domain[1] - attrs.domain[0]} ${attrs.range[1] - attrs.range[0]}`
+        `0 0 ${(attrs.domain[1] - attrs.domain[0]) * attrs.division} ${(attrs.range[1] - attrs.range[0]) * attrs.division}`
       )
       
       const root = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      root.setAttribute('transform', `translate(${origin[0] - attrs.domain[0]}, ${origin[1] - attrs.range[0]})`)
+      root.setAttribute('transform', `translate(${(origin[0] - attrs.domain[0]) * attrs.division}, ${(origin[1] - attrs.range[0]) * attrs.division})`)
       canvas.append(root)
 
       root.append(...children())
@@ -41,7 +41,7 @@ const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
     },
     defaults: {
       // origin: [0, 0],
-      division: 10,
+      division: 5,
     }
   }
 })

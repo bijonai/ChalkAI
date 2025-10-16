@@ -50,7 +50,7 @@ export const createCanvasElementContainer = <
   )
   container.setAttribute(
     'stroke-width',
-    String(attrs.strokeWidth ?? 1)
+    String(attrs.strokeWidth ?? 2)
   )
   container.setAttribute(
     'stroke-opacity',

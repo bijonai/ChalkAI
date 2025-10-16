@@ -14,10 +14,13 @@ export interface ArcAttributes
 
 const arc = definePrefab<'arc', ArcAttributes, { division: number }>((context) => {
   return {
-    name: 'arc',
+    name: 'arc' as const,
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs)
       console.log(context.division)
+
+      // State division
+      const radius = context.division * attrs.radius
 
       // Convert degrees to radians for d3.arc()
       const currentStartAngle = (attrs.start * Math.PI) / 180
@@ -32,7 +35,7 @@ const arc = definePrefab<'arc', ArcAttributes, { division: number }>((context) =
           startAngle: startAngle + Math.PI / 2, // Math convention to Compass convention
           endAngle: endAngle + Math.PI / 2,
           innerRadius: 0,  // innerRadius should be 0 for a filled arc
-          outerRadius: attrs.radius,
+          outerRadius: radius,
         })
         d3.select(root).select('path')
           .attr('d', pathData)
