@@ -1,7 +1,5 @@
 import knowledge from '@chalk-dsl/knowledge/default'
 import { client } from '../shared/db'
-import type { CalculatorKnowledge, PrefabKnowledge } from '@chalk-dsl/knowledge'
-import { embed } from 'xsai'
 import 'dotenv/config'
 
 import '@chalk-dsl/layout'
@@ -9,58 +7,36 @@ import '@chalk-dsl/form'
 import '@chalk-dsl/widget'
 import '@chalk-dsl/canvas'
 
-const getEmbeddings = async (input: string) => {
-  const { embedding } = await embed({
-    model: process.env.DEFAULT_EMBED_MODEL!,
-    apiKey: process.env.DEFAULT_EMBED_API_KEY!,
-    baseURL: process.env.DEFAULT_EMBED_BASE_URL!,
-    dimensions: Number(process.env.VECTOR_SIZE) || 1536,
-    input,
-  })
-  return embedding
-}
+const defaultKnowledge = process.env.DEFAULT_KNOWLEDGE!
 
-const [, , type, ...targets] = process.argv
+const [, , command, ...args] = process.argv as [string, string, 'upload', string?] | [string, string, 'create', string, string?]
 
-const waitlist: {
-  prefabs: PrefabKnowledge[]
-  calculators: CalculatorKnowledge[]
-} = {
-  prefabs: [],
-  calculators: [],
-}
-
-if (type) {
-  if (type === 'prefab') {
-    if (targets.length === 0) {
-      waitlist.prefabs.push(...knowledge.prefabs)
-    } else {
-      waitlist.prefabs.push(...targets.map(target => knowledge.prefabs.find(prefab => prefab.name === target)).filter(Boolean) as PrefabKnowledge[])
-    }
-  } else if (type === 'calculator') {
-    if (targets.length === 0) {
-      waitlist.calculators.push(...knowledge.calculators)
-    } else {
-      waitlist.calculators.push(...targets.map(target => knowledge.calculators.find(calculator => calculator.name === target)).filter(Boolean) as CalculatorKnowledge[])
-    }
+const upload = async (name: string = defaultKnowledge) => {
+  const res = await client.knowledge.setKnowledge(name, knowledge, 'name')
+  if (res.success) {
+    console.log(`Uploaded knowledge ${name} successfully (id: \`${res.data.id}\`, ${res.data.description})`)
+  } else {
+    console.error(`Failed to upload knowledge ${name}`)
   }
-} else {
-  waitlist.prefabs.push(...knowledge.prefabs)
-  waitlist.calculators.push(...knowledge.calculators)
 }
 
-for (const prefab of waitlist.prefabs) {
-  const embedding = await getEmbeddings(JSON.stringify(prefab))
-  const result = await client.knowledge.setPrefabKnowledge(prefab, embedding)
-  console.log(`[Embedding] ${prefab.name} => ${result[0].id}`)
+const create = async (name: string = defaultKnowledge, description?: string) => {
+  const res = await client.knowledge.createKnowledge(name, description)
+  if (res.success) {
+    console.log(`Created knowledge ${name} successfully (id: \`${res.data.id}\`, ${res.data.description ?? 'no description'})`)
+  } else {
+    console.error(`Failed to create knowledge ${name}`)
+  }
 }
 
-for (const calculator of waitlist.calculators) {
-  const embedding = await getEmbeddings(JSON.stringify(calculator))
-  const result = await client.knowledge.setCalculatorKnowledge(calculator, embedding)
-  console.log(`[Embedding] ${calculator.name} => ${result[0].id}`)
+const main = async () => {
+  if (command === 'upload') {
+    await upload(args[0])
+  } else if (command === 'create') {
+    await create(args[0], args[1])
+  } else {
+    console.error(`Invalid command: ${command}`)
+  }
 }
 
-console.log('[Done]')
-console.log(`[Prefabs Count] ${waitlist.prefabs.length}`)
-console.log(`[Calculators Count] ${waitlist.calculators.length}`)
+main()

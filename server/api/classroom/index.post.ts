@@ -1,6 +1,6 @@
 import { client } from '#shared/db'
 import { createAgent } from '../../../agent'
-import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, DEFAULT_MODEL, DEFAULT_EMBED_BASE_URL } from '#shared/env'
+import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, DEFAULT_MODEL, DEFAULT_EMBED_BASE_URL, DEFAULT_KNOWLEDGE } from '#shared/env'
 import { Message } from 'xsai'
 import { failure, response } from '#shared/server/response'
 import { ClassroomStatus } from '#shared/db/client/classroom'
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }>(event)
   const context = body.id ? await client.classroom.getContext(body.id) ?? [] : [] satisfies Message[]
   const board = body.id ? await client.classroom.getResult(body.id) ?? createEmptyBoard() : createEmptyBoard()
-  const knowledge = await client.knowledge.getToKnowledges()
+  const { data } = await client.knowledge.getKnowledge(DEFAULT_KNOWLEDGE, 'name')
   let id: string = ''
   if (!body.id) {
     const classroom = await client.classroom.createClassroom()
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       apiKey: DEFAULT_EMBED_API_KEY,
       baseURL: DEFAULT_EMBED_BASE_URL,
     },
-    knowledge,
+    knowledge: data!,
   })
   const generate = async () => {
     await client.classroom.updateClassroomInfo(id, {
