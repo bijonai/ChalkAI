@@ -12,15 +12,15 @@ export interface PlaneAttributes extends BaseCanvasElementAttributes {
 
 const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((context) => {
   console.log(context.division, 'context.division')
-  const division = computed(() => [
+  const division = [
     context.division[0],
     context.division[1] * -1,
-  ])
-  context.division = <Vector2>division.value
+  ]
+  context.division = <Vector2>division
   return {
     name: 'plane',
     generator: (attrs, children) => {
-      const root = createCanvasElementContainer(attrs, division.value)
+      const root = createCanvasElementContainer(attrs, division)
 
       const selection = d3.select(root)
 
@@ -30,28 +30,28 @@ const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((con
         .attr('stroke-width', 0.5)
       for (let i = attrs.domain[0]; i <= attrs.domain[1]; i++) {
         grid.append('line')
-          .attr('x1', i * division.value[0])
-          .attr('y1', attrs.range[0] * division.value[1])
-          .attr('x2', i * division.value[0])
-          .attr('y2', attrs.range[1] * division.value[1])
+          .attr('x1', i * division[0])
+          .attr('y1', attrs.range[0] * division[1])
+          .attr('x2', i * division[0])
+          .attr('y2', attrs.range[1] * division[1])
       }
       for (let i = attrs.range[0]; i <= attrs.range[1]; i++) {
         grid.append('line')
-          .attr('x1', attrs.domain[0] * division.value[0])
-          .attr('y1', i * division.value[1])
-          .attr('x2', attrs.domain[1] * division.value[0])
-          .attr('y2', i * division.value[1])
+          .attr('x1', attrs.domain[0] * division[0])
+          .attr('y1', i * division[1])
+          .attr('x2', attrs.domain[1] * division[0])
+          .attr('y2', i * division[1])
       }
 
       // X Axis
       arrow(
-        attrs.domain[0] * division.value[0], 0, attrs.domain[1] * division.value[0], 0,
+        attrs.domain[0] * division[0], 0, attrs.domain[1] * division[0], 0,
         selection.append('g')
       )
 
       // Y Axis
       arrow(
-        0, attrs.range[0] * division.value[1], 0, attrs.range[1] * division.value[1],
+        0, attrs.range[0] * division[1], 0, attrs.range[1] * division[1],
         selection.append('g')
       )
 

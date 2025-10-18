@@ -25,7 +25,10 @@ export const definePrefab = <
 >(prefab: Prefab<Name, Props, Ctx>) => prefab
 
 const rootSpace: PrefabNamespace = new Map()
-export const registerPrefab = <T extends RawContext>(name: string, prefab: Prefab<string, T, T>) => {
+export const registerPrefab = <
+  T extends RawContext,
+  K extends RawContext = RawContext,
+>(name: string, prefab: Prefab<string, T, K>) => {
   rootSpace.set(name, prefab as Prefab<string, RawContext, RawContext>)
 }
 export const getRootSpace = () => rootSpace

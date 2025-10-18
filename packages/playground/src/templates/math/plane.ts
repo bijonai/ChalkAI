@@ -10,7 +10,7 @@ export const plane: Template = {
       attrs: {
         range: [0, 300],
         domain: [0, 300],
-        division: 40,
+        division: 20,
       },
       children: [
         {
@@ -23,7 +23,7 @@ export const plane: Template = {
             {
               name: 'function',
               attrs: {
-                ':expr': '(x) => x ** i',
+                ':expr': '(x) => x * i',
                 domain: [-5, 5],
                 color: 'primary',
               },

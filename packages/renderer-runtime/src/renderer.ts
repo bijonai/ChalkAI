@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
@@ -108,18 +108,22 @@ export function createBox(components: Component<string>[]) {
     if (!pfb) {
       return renderComponent(element)
     }
-    const { name, validator, generator, provides, defaults } = pfb(getActiveContext(), errors.addError)
-    if (validator) {
-      if (!validator()) {
-        return null
-      }
-    }
 
     // Set up default values to prevent undefined access
     element.attrs ??= {}
     element.events ??= {}
     element.statements ??= {}
     element.children ??= []
+
+    const props = toProps(element.attrs, getActiveContext())
+    setValue(Attributes, props)
+    setValue(Origin, element)
+    const { name, validator, generator, provides, defaults } = pfb(getActiveContext(), errors.addError)
+    if (validator) {
+      if (!validator()) {
+        return null
+      }
+    }
 
     const delegate = (node: Node, events: Record<string, string | (() => void)>) => {
       const _delegate = createDelegate(node, getActiveContext())
@@ -155,7 +159,7 @@ export function createBox(components: Component<string>[]) {
     )
 
     const node = generator(
-      {...defaults, ...toProps(element.attrs, getActiveContext())},
+      {...defaults, ...props},
       () => children)
     const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
       const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
