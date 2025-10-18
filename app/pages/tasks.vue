@@ -9,6 +9,7 @@ const classrooms = ref<ClassroomCardProps[]>([])
 const createInput = ref('')
 const createTitle = ref('')
 const createDisable = ref(false)
+const isReasoning = ref(false)
 const create = async () => {
   createDisable.value = true
   const { success, data } = await $fetch('/api/classroom', {
@@ -16,6 +17,7 @@ const create = async () => {
     body: {
       title: createTitle.value,
       input: createInput.value,
+      reasoning: isReasoning.value,
     },
   })
   if (success) {
@@ -72,15 +74,12 @@ onMounted(async () => {
       </div>
     </div>
     <Transition name="fade">
-      <dialog v-if="open" :open="open" class="fixed w-screen h-screen inset-0 z-50 bg-transparent bg-opacity-50 backdrop-blur-sm">
-        <div 
-          class="flex min-h-screen items-center justify-center p-4"
-          @click.self="open = false"
-        >
+      <dialog v-if="open" :open="open"
+        class="fixed w-screen h-screen inset-0 z-50 bg-transparent bg-opacity-50 backdrop-blur-sm">
+        <div class="flex min-h-screen items-center justify-center p-4" @click.self="open = false">
           <div
             class="w-full max-w-md p-6 bg-#1a1a1a rounded-lg border border-primary shadow-2xl transform transition-all"
-            @click.stop
-          >
+            @click.stop>
             <div class="flex flex-col mb-6">
               <h1 class="text-primary text-xl font-semibold mb-2">
                 Create Classroom Task
@@ -95,11 +94,12 @@ onMounted(async () => {
             <div class="h-32">
               <TextArea v-model="createInput" />
             </div>
+            <div class="h-32 flex items-center gap-3">
+              <span class="text-sub text-sm">Reasoning</span>
+              <Switch v-model:checked="isReasoning" />
+            </div>
             <div class="flex justify-end gap-3 mt-6">
-              <Button
-                variant="hover"
-                @click="open = false"
-              >
+              <Button variant="hover" @click="open = false">
                 Cancel
               </Button>
               <Button variant="accent" @click="create" :disable="createDisable">

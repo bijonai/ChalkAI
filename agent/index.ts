@@ -18,12 +18,16 @@ export interface AgentParams {
   messages: Message[]
   knowledge: Knowledge
   dev?: string
+  reasoning?: boolean
 }
 
 export function createAgent(params: AgentParams) {
   if (params.messages.length === 0) {
     params.messages.push(
-      message.system(prompts.system(params.knowledge, params.dev))
+      message.system(prompts.system(params.knowledge, {
+        dev: params.dev,
+        reasoning: params.reasoning,
+      }))
     )
   }
 

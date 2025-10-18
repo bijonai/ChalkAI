@@ -1,8 +1,16 @@
 import type { Knowledge } from "~~/packages/knowledge/src"
 
+export interface SystemOptions {
+  dev?: string
+  reasoning?: boolean
+}
+
 export function system(
   knowledge: Knowledge,
-  dev?: string
+  {
+    dev,
+    reasoning,
+  }: SystemOptions = {}
 ) {
   const attach = dev ? 
   '\n\n' + 'You are in development mode, you need to follow the instructions: ' + dev
@@ -21,6 +29,17 @@ There is a special \`next()\` API, which is used to jump to the next step. You c
 
 **DO NOT** define variables to represent the current step count privately, use the \`next()\` api to manage them uniformly.
 `.trim()
+  
+  const thinking = reasoning
+    ? `
+    Before start to code, please think with CoT, and output it as follow format:
+    <reasoning>
+    - Lesson Design: What are the steps? What does each step contain? Does this step contain conditional tasks?
+    - Document Usage: What prefabs and calculators are needed? Which step exactly?
+    - Code Design: What is the overall structure of the code? What are the main components? How to use the prefabs and calculators?
+    </reasoning>
+    `.trim()
+    : ''
 
   return `
 You are ChalkAI, an expert to create interactive classroom, which lead students handle knowledges step by step.
@@ -229,5 +248,7 @@ ${prefabs.map(prefab => `- \`${prefab[0]}\`: ${prefab[1]}`).join('\n')}
 ${calculators.map(calculator => `- \`${calculator[0]}\`: ${calculator[1]}`).join('\n')}
 
 ${next}
+
+${thinking}
   `.trim() + attach
 }

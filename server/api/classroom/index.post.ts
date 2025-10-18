@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     id?: string
     title?: string
     input: string
+    reasoning?: boolean
   }>(event)
   const context = body.id ? await client.classroom.getContext(body.id) ?? [] : [] satisfies Message[]
   const board = body.id ? await client.classroom.getResult(body.id) ?? createEmptyBoard() : createEmptyBoard()
@@ -38,6 +39,7 @@ export default defineEventHandler(async (event) => {
       baseURL: DEFAULT_EMBED_BASE_URL,
     },
     knowledge: data!,
+    reasoning: body.reasoning ?? false,
   })
   const generate = async () => {
     await client.classroom.updateClassroomInfo(id, {
