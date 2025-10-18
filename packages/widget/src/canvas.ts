@@ -8,11 +8,11 @@ export interface CanvasAttributes {
   range: Vector2 // Y-axis
   domain: Vector2 // X-axis
   origin: Vector2
-  division: number
+  division: number | Vector2
 }
 
 const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
-  const division = ref<number>(10)
+  const division = ref<Vector2>([10, 10])
   return {
     name: 'canvas',
     provides: {
@@ -20,20 +20,22 @@ const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
     },
     generator: (attrs, children) => {
       const canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
-      division.value = attrs.division
+      division.value = Array.isArray(attrs.division) ? attrs.division : [attrs.division, attrs.division]
       canvas.style.width = '100%'
       const origin = attrs.origin || [
         attrs.domain[1] / 2,
         attrs.range[1] / 2
       ]
 
+      const [xDivision, yDivision] = division.value
+
       canvas.setAttribute(
         'viewBox',
-        `0 0 ${(attrs.domain[1] - attrs.domain[0]) * attrs.division} ${(attrs.range[1] - attrs.range[0]) * attrs.division}`
+        `0 0 ${(attrs.domain[1] - attrs.domain[0])} ${(attrs.range[1] - attrs.range[0])}`
       )
       
       const root = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      root.setAttribute('transform', `translate(${(origin[0] - attrs.domain[0]) * attrs.division}, ${(origin[1] - attrs.range[0]) * attrs.division})`)
+      root.setAttribute('transform', `translate(${(origin[0] - attrs.domain[0])}, ${(origin[1] - attrs.range[0])})`)
       canvas.append(root)
 
       root.append(...children())

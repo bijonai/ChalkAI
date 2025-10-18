@@ -1,0 +1,17 @@
+{
+  "name": "@chalk-dsl/math",
+  "version": "0.0.0",
+  "main": "index.js",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@chalk-dsl/canvas": "workspace:*",
+    "@chalk-dsl/knowledge": "workspace:*",
+    "@chalk-dsl/renderer-core": "workspace:*",
+    "@types/d3": "^7.4.3",
+    "d3": "^7.9.0"
+  },
+  "scripts": {},
+  "packageManager": "pnpm@10.8.1"
+}

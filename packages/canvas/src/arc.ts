@@ -1,6 +1,6 @@
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
-import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, fillableKnowledge, Fillable, Strokeable, strokeableKnowledge } from "./shared";
+import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, fillableKnowledge, Fillable, Strokeable, strokeableKnowledge, Vector2 } from "./shared";
 import * as d3 from 'd3'
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { theme } from "@chalk-dsl/utils-theme";
@@ -12,15 +12,16 @@ export interface ArcAttributes
   radius: number
 }
 
-const arc = definePrefab<'arc', ArcAttributes, { division: number }>((context) => {
+const arc = definePrefab<'arc', ArcAttributes, { division: Vector2 }>((context) => {
   return {
     name: 'arc' as const,
     generator: (attrs) => {
-      const root = createCanvasElementContainer(attrs)
+      const root = createCanvasElementContainer(attrs, context.division)
       console.log(context.division)
+      const [xDivision, yDivision] = context.division
 
       // State division
-      const radius = context.division * attrs.radius
+      const xRadius = xDivision * attrs.radius
 
       // Convert degrees to radians for d3.arc()
       const currentStartAngle = (attrs.start * Math.PI) / 180
@@ -35,7 +36,7 @@ const arc = definePrefab<'arc', ArcAttributes, { division: number }>((context) =
           startAngle: startAngle + Math.PI / 2, // Math convention to Compass convention
           endAngle: endAngle + Math.PI / 2,
           innerRadius: 0,  // innerRadius should be 0 for a filled arc
-          outerRadius: radius,
+          outerRadius: xRadius,
         })
         d3.select(root).select('path')
           .attr('d', pathData)

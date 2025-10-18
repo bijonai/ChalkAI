@@ -163,6 +163,24 @@ importers:
         specifier: workspace:*
         version: link:../theme-default
 
+  packages/math:
+    dependencies:
+      '@chalk-dsl/canvas':
+        specifier: workspace:*
+        version: link:../canvas
+      '@chalk-dsl/knowledge':
+        specifier: workspace:*
+        version: link:../knowledge
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:../renderer-core
+      '@types/d3':
+        specifier: ^7.4.3
+        version: 7.4.3
+      d3:
+        specifier: ^7.9.0
+        version: 7.9.0
+
   packages/pkg: {}
 
   packages/playground:
@@ -189,6 +207,9 @@ importers:
       '@chalk-dsl/layout':
         specifier: workspace:*
         version: link:../layout
+      '@chalk-dsl/math':
+        specifier: workspace:*
+        version: link:../math
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:../renderer-core
