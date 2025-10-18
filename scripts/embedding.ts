@@ -6,6 +6,7 @@ import '@chalk-dsl/layout'
 import '@chalk-dsl/form'
 import '@chalk-dsl/widget'
 import '@chalk-dsl/canvas'
+import '@chalk-dsl/math'
 
 const defaultKnowledge = process.env.DEFAULT_KNOWLEDGE!
 

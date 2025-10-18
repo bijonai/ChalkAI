@@ -20,6 +20,9 @@ importers:
       '@chalk-dsl/layout':
         specifier: workspace:*
         version: link:packages/layout
+      '@chalk-dsl/math':
+        specifier: workspace:*
+        version: link:packages/math
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:packages/renderer-core

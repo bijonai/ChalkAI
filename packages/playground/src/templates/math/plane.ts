@@ -23,7 +23,7 @@ export const plane: Template = {
             {
               name: 'function',
               attrs: {
-                ':expr': '(x) => x * i',
+                ':expr': '(x) => x * i * Math.sin(x)',
                 domain: [-5, 5],
                 color: 'primary',
               },

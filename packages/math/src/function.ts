@@ -1,5 +1,6 @@
 import { BaseCanvasElementAttributes, createCanvasElementContainer, Vector2 } from "@chalk-dsl/canvas";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { theme } from "@chalk-dsl/utils-theme";
 import * as d3 from 'd3';
@@ -70,3 +71,4 @@ export const knowledge = definePrefabKnowledge((utils) => {
     .describe('The color of the function')
     .optional('primary')
 })
+addPrefabKnowledge(knowledge)
