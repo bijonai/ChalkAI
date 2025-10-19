@@ -4,7 +4,11 @@ import { ChalkError } from "./error"
 export type PrefabNamespace = Map<string, Prefab<string, RawContext, RawContext>>
 export type PrefabChildrenGetter = () => Node[]
 export type PrefabValidator = () => boolean
-export type PrefabGenerator<Props extends RawContext> = (props: Props, children: PrefabChildrenGetter) => Node
+export type PrefabGeneratorMount = (callback: () => void) => void
+export type PrefabGeneratorContext = {
+  mount: PrefabGeneratorMount
+}
+export type PrefabGenerator<Props extends RawContext> = (props: Props, children: PrefabChildrenGetter, context: PrefabGeneratorContext) => Node
 
 export type Prefab<
   Name extends string,
