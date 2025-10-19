@@ -5,8 +5,6 @@ import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 export type Vector2 = [number, number]
 
 export interface CanvasAttributes {
-  range: Vector2 // Y-axis
-  domain: Vector2 // X-axis
   origin: Vector2
   division: number | Vector2
 }
@@ -23,26 +21,30 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
     provides: {
       division,
     },
-    generator: (attrs, children) => {
+    generator: (attrs, children, { mount }) => {
       const canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
       canvas.style.width = '100%'
-      const origin = attrs.origin || [
-        attrs.domain[1] / 2,
-        attrs.range[1] / 2
-      ]
 
-      const [xDivision, yDivision] = division.value
 
-      canvas.setAttribute(
-        'viewBox',
-        `0 0 ${(attrs.domain[1] - attrs.domain[0])} ${(attrs.range[1] - attrs.range[0])}`
-      )
-      
       const root = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      root.setAttribute('transform', `translate(${(origin[0] - attrs.domain[0])}, ${(origin[1] - attrs.range[0])})`)
       canvas.append(root)
 
       root.append(...children())
+
+      mount(() => {
+        const bbox = root.getBBox()
+        const canvasRect = canvas.getBoundingClientRect()
+
+        canvas.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`)
+
+        const aspectRatio = bbox.height / bbox.width
+        const height = canvasRect.width * aspectRatio
+        canvas.style.height = `${height}px`
+
+        canvas.setAttribute('width', String(canvasRect.width))
+        canvas.setAttribute('height', String(height))
+      })
+
       return canvas
     },
     defaults: {
@@ -61,12 +63,6 @@ export default canvas
 export const knowledge = definePrefabKnowledge<CanvasAttributes>((utils) => {
   utils.name('canvas')
   utils.description('A canvas widget')
-  utils.prop('range')
-    .describe('The range of the canvas')
-    .type('[number, number]')
-  utils.prop('domain')
-    .describe('The domain of the canvas')
-    .type('[number, number]')
   utils.prop('origin')
     .describe('The origin of the canvas')
     .type('[number, number]')
