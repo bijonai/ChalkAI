@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorMount, PrefabGeneratorContext } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
@@ -12,6 +12,11 @@ export function createBox(components: Component<string>[]) {
   const errors = createErrorContainer()
   const beginAnimations: (() => void)[] = []
   const markdown = createMarkdown()
+
+  const mountQueue: (() => void)[] = []
+  const onMount = (callback: () => void) => {
+    mountQueue.push(callback)
+  }
 
   const preprocessElement = (element: BaseChalkElement<string>, parent?: BaseChalkElement<string>) => {
     // Merge consecutive string children with newline separators
@@ -158,9 +163,13 @@ export function createBox(components: Component<string>[]) {
       () => (element.children ?? []).flatMap(renderNode).filter(child => child !== null && child !== undefined)
     )
 
+    const generatorContext: PrefabGeneratorContext = {
+      mount: onMount,
+    }
+
     const node = generator(
       {...defaults, ...props},
-      () => children)
+      () => children, generatorContext)
     const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
       const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
       for (const [key, value] of Object.entries(animations)) {
@@ -186,7 +195,10 @@ export function createBox(components: Component<string>[]) {
       element.events ??= {}
       element.children ??= []
       const attrs = toProps(element.attrs, getActiveContext())
-      const newNode = generator({...defaults, ...attrs}, () => children)
+      const fakeContext: PrefabGeneratorContext = {
+        mount: () => {}
+      }
+      const newNode = generator({...defaults, ...attrs}, () => children, fakeContext)
       delegate(newNode, element.events)
       delegate(newNode, resolveAnimations(element.animations ?? {}))
       patch(node, newNode)
@@ -249,6 +261,9 @@ export function createBox(components: Component<string>[]) {
     const root = renderRoot(rootName)
     if (!root) return
     element.append(...toArray(root))
+    for (const callback of mountQueue) {
+      callback()
+    }
   }
   
   return {
@@ -266,5 +281,6 @@ export function createBox(components: Component<string>[]) {
     setValue,
     getValue,
     beginAnimations,
+    onMount,
   }
 }
