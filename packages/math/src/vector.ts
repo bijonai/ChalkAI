@@ -1,4 +1,7 @@
-import type { Vector2 } from "@chalk-dsl/canvas";
+import { createCanvasElementContainer, type BaseCanvasElementAttributes, type Vector2 } from "@chalk-dsl/canvas";
+import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
+import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { theme } from "@chalk-dsl/utils-theme";
 import * as d3 from 'd3'
 
@@ -27,3 +30,54 @@ export const arrow = (
 
   return selection
 }
+
+export interface VectorAttributes extends BaseCanvasElementAttributes {
+  from: Vector2
+  to: Vector2
+  color: string
+}
+
+const vector = definePrefab<'vector', VectorAttributes, { division: Vector2 }>((context) => {
+  return {
+    name: 'vector',
+    generator: (attrs) => {
+      const root = createCanvasElementContainer(attrs, context.division)
+      const [xDivision, yDivision] = context.division
+
+      arrow(
+        attrs.from[0] * xDivision, attrs.from[1] * yDivision,
+        attrs.to[0] * xDivision, attrs.to[1] * yDivision,
+        d3.select(root),
+        theme.pallete(attrs.color)
+      )
+
+      return root
+    },
+    defaults: {
+      color: 'primary',
+    }
+  }
+})
+
+registerPrefab('vector', vector)
+
+export default vector
+
+// ------
+
+export const knowledge = definePrefabKnowledge<VectorAttributes>((utils) => {
+  utils.name('vector')
+  utils.description('A vector math widget')
+  utils.prop('from')
+    .describe('The starting point of the vector')
+    .type('[number, number]')
+  utils.prop('to')
+    .describe('The ending point of the vector')
+    .type('[number, number]')
+  utils.prop('color')
+    .describe('The color of the vector')
+    .type('string')
+    .optional('primary')
+})
+
+addPrefabKnowledge(knowledge)

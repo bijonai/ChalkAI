@@ -47,7 +47,7 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
     },
     defaults: {
       // origin: [0, 0],
-      division: 5,
+      division: 20,
     }
   }
 })
