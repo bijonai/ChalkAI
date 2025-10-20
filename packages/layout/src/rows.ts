@@ -19,6 +19,10 @@ const rows = definePrefab<'rows', RowAttributes>((context, _) => {
       const kids = children()
       row.style.flexWrap = 'wrap'
       row.style.gap = props.gap.toString()
+      kids.forEach((kid) => {
+        ;(<HTMLElement>kid).style.width = 'auto'
+        ;(<HTMLElement>kid).style.flex = '1'
+      })
       row.append(...kids)
       return row
     },
