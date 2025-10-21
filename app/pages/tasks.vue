@@ -10,17 +10,20 @@ const createInput = ref('')
 const createTitle = ref('')
 const createDisable = ref(false)
 const isReasoning = ref(false)
+const createModel = ref('')
+const modelsSelect = ref<string[]>([])
 const create = async () => {
   createDisable.value = true
-  const { success, data } = await $fetch('/api/classroom', {
+  const { data } = await $fetch('/api/classroom', {
     method: 'POST',
     body: {
       title: createTitle.value,
       input: createInput.value,
       reasoning: isReasoning.value,
+      model: createModel.value,
     },
   })
-  if (success) {
+  if (data && 'id' in data) {
     classrooms.value.push({
       title: data.title,
       date: data.createdAt,
@@ -47,6 +50,12 @@ const getClassrooms = async () => {
       public: c.public,
       id: c.id,
     })))
+  }
+  const models = await $fetch('/api/model/list')
+  if (models && 'data' in models && 'models' in models.data) {
+    console.log(models.data.models)
+    createModel.value = models.data.models[0] ?? ''
+    modelsSelect.value = models.data.models
   }
 }
 
@@ -97,6 +106,10 @@ onMounted(async () => {
             <div class="h-32 flex items-center gap-3">
               <span class="text-sub text-sm">Reasoning</span>
               <Switch v-model:checked="isReasoning" />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-sub text-sm">Model</span>
+              <Select v-model="createModel" :options="modelsSelect.map(m => ({ label: m, value: m }))" />
             </div>
             <div class="flex justify-end gap-3 mt-6">
               <Button variant="hover" @click="open = false">

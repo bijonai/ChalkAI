@@ -1,8 +1,8 @@
 import { client } from '#shared/db'
 import { createAgent } from '../../../agent'
-import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, DEFAULT_MODEL, DEFAULT_EMBED_BASE_URL, DEFAULT_KNOWLEDGE } from '#shared/env'
+import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, MODELS, DEFAULT_EMBED_BASE_URL, DEFAULT_KNOWLEDGE } from '#shared/env'
 import { Message } from 'xsai'
-import { failure, response } from '#shared/server/response'
+import { response } from '#shared/server/response'
 import { ClassroomStatus } from '#shared/db/client/classroom'
 import { createEmptyBoard } from '~~/shared'
 
@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     title?: string
     input: string
     reasoning?: boolean
+    model?: string
   }>(event)
   const context = body.id ? await client.classroom.getContext(body.id) ?? [] : [] satisfies Message[]
   const board = body.id ? await client.classroom.getResult(body.id) ?? createEmptyBoard() : createEmptyBoard()
@@ -23,7 +24,10 @@ export default defineEventHandler(async (event) => {
       id = classroom.id
     }
   } else {
-    return failure('classroom id is required')
+    return createError({
+      statusCode: 400,
+      statusMessage: 'classroom id is required',
+    })
   }
   await client.classroom.updateClassroomInfo(id, {
     title: body.title ?? 'Untitled',
@@ -31,7 +35,7 @@ export default defineEventHandler(async (event) => {
   const agent = createAgent({
     apiKey: DEFAULT_API_KEY,
     baseURL: DEFAULT_BASE_URL,
-    model: DEFAULT_MODEL,
+    model: body.model ?? MODELS[0],
     messages: context,
     embedding: {
       model: DEFAULT_EMBED_MODEL,
