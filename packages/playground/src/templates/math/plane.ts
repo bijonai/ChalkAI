@@ -8,8 +8,6 @@ export const plane: Template = {
     root: {
       name: 'canvas',
       attrs: {
-        range: [0, 300],
-        domain: [0, 300],
         division: 20,
       },
       children: [
@@ -25,6 +23,7 @@ export const plane: Template = {
               attrs: {
                 ':expr': '(x) => x * i * Math.sin(x)',
                 domain: [-5, 5],
+                range: [-5, 5],
                 color: 'primary',
               },
               statements: {

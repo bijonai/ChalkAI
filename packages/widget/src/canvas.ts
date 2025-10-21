@@ -7,6 +7,8 @@ export type Vector2 = [number, number]
 export interface CanvasAttributes {
   origin: Vector2
   division: number | Vector2
+  range?: Vector2
+  domain?: Vector2
 }
 
 const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
@@ -35,14 +37,19 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
         const bbox = root.getBBox()
         const canvasRect = canvas.getBoundingClientRect()
 
-        canvas.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`)
+        const x = attrs.domain ? attrs.domain[0] : bbox.x
+        const y = attrs.range ? attrs.range[0] : bbox.y
+        const width = attrs.domain ? attrs.domain[1] - attrs.domain[0] : bbox.width
+        const height = attrs.range ? attrs.range[1] - attrs.range[0] : bbox.height
 
-        const aspectRatio = bbox.height / bbox.width
-        const height = canvasRect.width * aspectRatio
-        canvas.style.height = `${height}px`
+        canvas.setAttribute('viewBox', `${x} ${y} ${width} ${height}`)
+
+        const aspectRatio = height / width
+        const canvasHeight = canvasRect.width * aspectRatio
+        canvas.style.height = `${canvasHeight}px`
 
         canvas.setAttribute('width', String(canvasRect.width))
-        canvas.setAttribute('height', String(height))
+        canvas.setAttribute('height', String(canvasHeight))
       })
 
       return canvas

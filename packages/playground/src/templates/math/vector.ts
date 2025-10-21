@@ -23,8 +23,6 @@ export const vector: Template = {
             {
               name: 'canvas',
               attrs: {
-                range: [0, 200],
-                domain: [0, 200],
               },
               children: [
                 {
