@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorMount, PrefabGeneratorContext, PrefabDefinition, RawContext } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorContext, PrefabDefinition, RawContext } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
@@ -109,7 +109,7 @@ export function createBox(components: Component<string>[]) {
   const renderPrefab = (
     element: BaseChalkElement<string>,
     props: RawContext,
-    { validator, generator, provides, defaults }: PrefabDefinition<string>
+    { name, validator, generator, provides, defaults }: PrefabDefinition<string>
   ) => {
     // Set up default values to prevent undefined access
     element.attrs ??= {}
@@ -284,14 +284,19 @@ export function createBox(components: Component<string>[]) {
     return renderComponent(fakeElement)
   }
 
+  const mount = () => {
+    for (const callback of mountQueue) {
+      callback()
+    }
+    mountQueue.length = 0
+  }
+
   const render = (rootName: string, element: HTMLElement) => {
     (Array.from(element.children ?? [])).forEach(child => child.remove())
     const root = renderRoot(rootName)
     if (!root) return
     element.append(...toArray(root))
-    for (const callback of mountQueue) {
-      callback()
-    }
+    mount()
   }
   
   return {
@@ -310,5 +315,6 @@ export function createBox(components: Component<string>[]) {
     getValue,
     beginAnimations,
     onMount,
+    mount,
   }
 }

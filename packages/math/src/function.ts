@@ -53,7 +53,7 @@ const func = definePrefab<'function', FunctionAttributes, { division: Vector2 }>
     name: 'function',
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs, context.division)
-      const { path, length } = curve(attrs.expr, attrs.domain, attrs.range, context.division)
+      const { path, length } = curve(attrs.expr, attrs.domain, attrs.range ?? attrs.domain, context.division)
 
       d3.select(root).append('path')
         .attr('d', path)
@@ -80,6 +80,9 @@ export const knowledge = definePrefabKnowledge((utils) => {
     .type('(x: number) => number')
   utils.prop('domain')
     .describe('The domain of the function')
+    .type('[number, number]')
+  utils.prop('range')
+    .describe('The range of the function')
     .type('[number, number]')
   utils.prop('color')
     .describe('The color of the function')

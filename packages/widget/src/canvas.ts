@@ -16,7 +16,7 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
   const division = ref<Vector2>(
     divisionAttr
       ? Array.isArray(divisionAttr) ? divisionAttr : [divisionAttr, divisionAttr]
-      : [10, 10]
+      : [30, 30]
   )
   return {
     name: 'canvas',
@@ -32,6 +32,14 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
       canvas.append(root)
 
       root.append(...children())
+      root.style.vectorEffect = 'non-scaling-stroke'
+
+      const container = document.createElement('div')
+      container.append(canvas)
+      container.style.minWidth = '100%'
+      container.style.display = 'flex'
+      container.style.justifyContent = 'center'
+      container.style.alignItems = 'center'
 
       mount(() => {
         const bbox = root.getBBox()
@@ -42,17 +50,17 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
         const width = attrs.domain ? attrs.domain[1] - attrs.domain[0] : bbox.width
         const height = attrs.range ? attrs.range[1] - attrs.range[0] : bbox.height
 
-        canvas.setAttribute('viewBox', `${x} ${y} ${width} ${height}`)
+        root.setAttribute('transform', `translate(${width / 2}, ${height / 2})`);
 
-        const aspectRatio = height / width
-        const canvasHeight = canvasRect.width * aspectRatio
-        canvas.style.height = `${canvasHeight}px`
+        canvas.style.height = `${height}px`
+
+        container.style.minWidth = `${width}px`
+        container.style.minHeight = `${height}px`
 
         canvas.setAttribute('width', String(canvasRect.width))
-        canvas.setAttribute('height', String(canvasHeight))
       })
-
-      return canvas
+      
+      return container
     },
     defaults: {
       // origin: [0, 0],

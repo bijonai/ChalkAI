@@ -4,6 +4,7 @@ import '@chalk-dsl/layout'
 import '@chalk-dsl/form'
 import '@chalk-dsl/widget'
 import '@chalk-dsl/canvas'
+import '@chalk-dsl/math'
 
 export function useBoard() {
   const currentStep = ref<number>(1)
@@ -14,7 +15,7 @@ export function useBoard() {
   const next = () => currentStep.value < steps.length ? currentStep.value++ : currentStep.value
 
   const loadBoard = (board: Board): [Ref<HTMLElement | null>[], () => void] => {
-    const { renderRoot, setValue, beginAnimations } = createBox(board.components)
+    const { renderRoot, setValue, beginAnimations, mount } = createBox(board.components)
     setValue('next', next)
     setValue('currentStep', currentStep)
     steps.length = 0
@@ -35,6 +36,7 @@ export function useBoard() {
           console.log(beginAnimations)
           if (step.conditional && i + 1 >= s) break
         }
+        mount()
       }, { immediate: true })
     }
     return [steps, _render]
