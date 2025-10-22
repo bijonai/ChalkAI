@@ -7,7 +7,7 @@ export interface CodeAttributes {
   lang: string
 }
 
-const toText = (nodes: Node[]) => {
+export const toText = (nodes: Node[]) => {
   let result = ''
   for (const node of nodes) {
     result += node.textContent
@@ -50,6 +50,7 @@ export const knowledge = definePrefabKnowledge<CodeAttributes>((utils) => {
   utils.prop('lang')
     .describe('the language of the code')
     .type('string')
+  utils.rule('The code should be children nodes as text nodes')
 })
 
 addPrefabKnowledge(knowledge)

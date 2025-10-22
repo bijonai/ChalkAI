@@ -2,6 +2,7 @@ import './table'
 import './code'
 import './paginator'
 import './canvas'
+import './mermaid'
 
 export { default as canvas } from './canvas'
 export { default as table } from './table'

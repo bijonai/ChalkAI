@@ -14,6 +14,7 @@ import { paginator } from "./widget/paginator"
 import { arc } from "./canvas/arc"
 import { plane } from "./math/plane"
 import { vector } from "./math/vector"
+import { mermaid } from "./widget/mermaid"
 
 export type Template = {
   id: string
@@ -51,7 +52,8 @@ export default [
     templates: [
       table,
       code,
-      paginator
+      paginator,
+      mermaid,
     ]
   },
   {

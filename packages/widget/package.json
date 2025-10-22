@@ -11,6 +11,7 @@
     "@chalk-dsl/knowledge": "workspace:*",
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/renderer-runtime": "workspace:*",
+    "mermaid": "^11.12.0",
     "shiki": "^3.13.0"
   }
 }
