@@ -5,6 +5,11 @@ import type { ClassroomCardProps } from '~/components/ClassroomCard.vue'
 
 const open = ref(false)
 
+const filter = ref('')
+const isFiltered = (name: string) => {
+  return name.toLowerCase().includes(filter.value.toLowerCase())
+}
+
 const classrooms = ref<ClassroomCardProps[]>([])
 const createInput = ref('')
 const createTitle = ref('')
@@ -72,14 +77,14 @@ onMounted(async () => {
         Tasks
       </h1>
       <div class="flex flex-row w-full gap-2">
-        <Input />
+        <Input v-model="filter" />
         <Button variant="accent" class="flex flex-row gap-2 w-30" @click="open = true">
           <FontAwesomeIcon class="size-4" :icon="faPlus" />
           <span>Create</span>
         </Button>
       </div>
       <div class="w-full grid md:grid-cols-3 sm:grid-cols-1 gap-2">
-        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" />
+        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" v-show="isFiltered(c.title)" />
       </div>
     </div>
     <Transition name="fade">
