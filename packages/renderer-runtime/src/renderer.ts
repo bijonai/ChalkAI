@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorMount, PrefabGeneratorContext } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorMount, PrefabGeneratorContext, PrefabDefinition, RawContext } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
@@ -106,24 +106,17 @@ export function createBox(components: Component<string>[]) {
     }) as Node[]
   }
 
-  const renderElement = (element: BaseChalkElement<string>): Node | Node[] | null => {
-    const pfbs = getRootSpace()
-    console.log(pfbs)
-    const pfb = pfbs.get(element.name)
-    if (!pfb) {
-      return renderComponent(element)
-    }
-
+  const renderPrefab = (
+    element: BaseChalkElement<string>,
+    props: RawContext,
+    { validator, generator, provides, defaults }: PrefabDefinition<string>
+  ) => {
     // Set up default values to prevent undefined access
     element.attrs ??= {}
     element.events ??= {}
     element.statements ??= {}
     element.children ??= []
 
-    const props = toProps(element.attrs, getActiveContext())
-    setValue(Attributes, props)
-    setValue(Origin, element)
-    const { name, validator, generator, provides, defaults } = pfb(getActiveContext(), errors.addError)
     if (validator) {
       if (!validator()) {
         return null
@@ -168,7 +161,7 @@ export function createBox(components: Component<string>[]) {
     }
 
     const node = generator(
-      {...defaults, ...props},
+      { ...defaults, ...props },
       () => children, generatorContext)
     const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
       const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
@@ -196,9 +189,9 @@ export function createBox(components: Component<string>[]) {
       element.children ??= []
       const attrs = toProps(element.attrs, getActiveContext())
       const fakeContext: PrefabGeneratorContext = {
-        mount: () => {}
+        mount: () => { }
       }
-      const newNode = generator({...defaults, ...attrs}, () => children, fakeContext)
+      const newNode = generator({ ...defaults, ...attrs }, () => children, fakeContext)
       delegate(newNode, element.events)
       delegate(newNode, resolveAnimations(element.animations ?? {}))
       patch(node, newNode)
@@ -206,6 +199,41 @@ export function createBox(components: Component<string>[]) {
     })
 
     return node
+  }
+
+  const renderElement = (element: BaseChalkElement<string>): Node | Node[] | null => {
+    const pfbs = getRootSpace()
+    console.log(pfbs)
+    const pfb = pfbs.get(element.name)
+    if (!pfb) {
+      return renderComponent(element)
+    }
+
+    element.attrs ??= {}
+
+    const props = toProps(element.attrs, getActiveContext())
+    setValue(Attributes, props)
+    setValue(Origin, element)
+
+    
+    const maybePromise = pfb(getActiveContext(), errors.addError)
+    if (maybePromise instanceof Promise) {
+      const fragment = document.createElement('div')
+      onMount(() => {
+        maybePromise.then((definition) => {
+          const parent = fragment.parentElement
+          const nodes = toArray(renderPrefab(element, props, definition))
+          console.log(parent, nodes)
+          for (const node of nodes) {
+            if (!node || !parent) continue
+            parent.insertBefore(node, parent.firstChild)
+          }
+        })
+      })
+      return fragment
+    }
+    return renderPrefab(element, props, maybePromise)
+    
   }
   
   const renderValue = (source: string) => {

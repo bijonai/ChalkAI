@@ -1,6 +1,6 @@
 import { CalculatorKnowledge, type Knowledge, type PrefabKnowledge } from ".";
 
-const knowledge: Knowledge = {
+export const knowledge: Knowledge = {
   prefabs: [],
   calculators: [],
 }
