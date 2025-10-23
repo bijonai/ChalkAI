@@ -45,13 +45,13 @@ export function createAgent(params: AgentParams) {
       tools,
       maxSteps: 100,
     })
+    params.messages.length = 0
+    params.messages.push(...messages)
     for (const message of messages) {
       if (message.role === 'assistant' && typeof message.content === 'string') {
         parse(message.content)
       }
     }
-    params.messages.length = 0
-    params.messages.push(...messages)
     return board
   }
 }

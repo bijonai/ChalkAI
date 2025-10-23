@@ -71,6 +71,9 @@ importers:
       drizzle-orm:
         specifier: ^0.43.0
         version: 0.43.1(@types/pg@8.15.5)(pg@8.16.3)
+      jsonrepair:
+        specifier: ^3.13.1
+        version: 3.13.1
       nuxt:
         specifier: ^4.1.1
         version: 4.1.1(@parcel/watcher@2.5.1)(@types/node@24.3.1)(@vue/compiler-sfc@3.5.21)(db0@0.3.2(drizzle-orm@0.43.1(@types/pg@8.15.5)(pg@8.16.3)))(drizzle-orm@0.43.1(@types/pg@8.15.5)(pg@8.16.3))(eslint@9.35.0(jiti@2.5.1))(ioredis@5.7.0)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.50.1)(terser@5.44.0)(tsx@4.20.5)(typescript@5.9.2)(vite@7.1.7(@types/node@24.3.1)(jiti@2.5.1)(terser@5.44.0)(tsx@4.20.5)(yaml@2.8.1))(vue-tsc@3.0.8(typescript@5.9.2))(yaml@2.8.1)
@@ -3956,6 +3959,10 @@ packages:
   json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
+    hasBin: true
+
+  jsonrepair@3.13.1:
+    resolution: {integrity: sha512-WJeiE0jGfxYmtLwBTEk8+y/mYcaleyLXWaqp5bJu0/ZTSeG0KQq/wWQ8pmnkKenEdN6pdnn6QtcoSUkbqDHWNw==}
     hasBin: true
 
   katex@0.16.22:
@@ -10030,6 +10037,8 @@ snapshots:
   json-stable-stringify-without-jsonify@1.0.1: {}
 
   json5@2.2.3: {}
+
+  jsonrepair@3.13.1: {}
 
   katex@0.16.22:
     dependencies:
