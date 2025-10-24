@@ -40,8 +40,9 @@ const errors = ref<ChalkError<string>[]>([])
 const _render = () => {
   console.log(template.value?.content)
   if (!template.value?.content) return
-  const { render, getErrors } = createRenderer([template.value?.content!])
-  render(template.value?.content!.name!, container.value!)
+  const { render, getErrors, addComponents } = createRenderer()
+  const [name] = addComponents(template.value?.content!)
+  render(name, container.value!)
   nextTick(() => {
     console.log(getErrors())
     errors.value = getErrors()

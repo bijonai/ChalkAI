@@ -15,7 +15,8 @@ export function useBoard() {
   const next = () => currentStep.value < steps.length ? currentStep.value++ : currentStep.value
 
   const loadBoard = (board: Board): [Ref<HTMLElement | null>[], () => void] => {
-    const { renderRoot, setValue, beginAnimations, mount } = createRenderer(board.components)
+    const { renderRoot, setValue, beginAnimations, mount, addComponents } = createRenderer()
+    addComponents(...board.components)
     setValue('next', next)
     setValue('currentStep', currentStep)
     steps.length = 0

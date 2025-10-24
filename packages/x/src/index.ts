@@ -1,5 +1,5 @@
 import { BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
-import { AttributeNode, BaseNode, ElementNode, NodeType, parse, TextNode, ValueNode } from "@chalk-dsl/x-parser";
+import { AttributeNode, BaseNode, ElementNode, NodeType, parse, ParseOptions, TextNode, ValueNode } from "@chalk-dsl/x-parser";
 import { parse as parseYaml } from 'yaml'
 
 export function parseXAttribute(attribute: AttributeNode) {
@@ -85,12 +85,12 @@ export function parseXNode(node: BaseNode, parent: BaseChalkElement<string> | nu
   return ''
 }
 
-export function parseX(content: string): (BaseChalkElement<string> | string)[] {
-  const { children } = parse(content)
+export function parseX(content: string, options: ParseOptions): (BaseChalkElement<string> | string)[] {
+  const { children } = parse(content, options)
   return children.map((child) => parseXNode(child, null))
 }
 
-export function parseComponent(content: string): Component<string> {
+export function parseComponent(content: string, options: ParseOptions): Component<string> {
   const component: Component<string> = {
     name: '',
     props: [],
@@ -107,6 +107,8 @@ export function parseComponent(content: string): Component<string> {
     component.refs = yaml.refs
   }
   const template = content.replace(REG, '').trim()
-  component.root = parseX(template)
+  component.root = parseX(template, options)
   return component
 }
+
+export * from '@chalk-dsl/x-parser'

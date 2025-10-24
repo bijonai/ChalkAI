@@ -4,18 +4,36 @@ import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
 import { createMarkdown } from "./builtins/markdown"
 import patch from 'morphdom'
+import { createParser } from "./parser"
 
 export const toArray = <T>(value: T | T[]): T[] => Array.isArray(value) ? value : [value]
 
-export function createRenderer(components: Component<string>[]) {
+export function createRenderer() {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
   const beginAnimations: (() => void)[] = []
+  const { parse } = createParser({ space: getRootSpace() })
   const markdown = createMarkdown()
 
   const mountQueue: (() => void)[] = []
   const onMount = (callback: () => void) => {
     mountQueue.push(callback)
+  }
+  const components: Component<string>[] = []
+
+  const addComponents = (...components: (Component<string> | string)[]) => {
+    const names: string[] = []
+    for (const component of components) {
+      if (typeof component === 'string') {
+        const parsed = parse(component)
+        components.push(parsed)
+        names.push(parsed.name)
+      } else {
+        components.push(component)
+        names.push(component.name)
+      }
+    }
+    return names as [string, ...string[]]
   }
 
   const preprocessElement = (element: BaseChalkElement<string>, parent?: BaseChalkElement<string>) => {
@@ -226,7 +244,7 @@ export function createRenderer(components: Component<string>[]) {
     setValue(Origin, element)
 
     
-    const maybePromise = pfb(getActiveContext(), errors.addError)
+    const maybePromise = pfb.prefab(getActiveContext(), errors.addError)
     if (maybePromise instanceof Promise) {
       const fragment = document.createElement('div')
       onMount(() => {
@@ -319,6 +337,7 @@ export function createRenderer(components: Component<string>[]) {
     renderNode,
     renderText,
     renderValue,
+    addComponents,
     getActiveContext,
     setActiveContext,
     clearActiveContext,
