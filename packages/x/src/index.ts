@@ -2,26 +2,27 @@ import { BaseChalkElement } from "@chalk-dsl/renderer-core";
 import { AttributeNode, BaseNode, ElementNode, NodeType, parse, TextNode, ValueNode } from "@chalk-dsl/x-parser";
 
 export function parseXAttribute(attribute: AttributeNode) {
-  const type = attribute.name.startsWith(':')
-    ? 'expression' : attribute.name.startsWith('&')
-    ? 'animation' : attribute.name.startsWith('@')
-    ? 'event' : attribute.name.startsWith('#')
-          ? 'statement' : 'string'
+  const type =
+    attribute.name.startsWith(':') ? 'expression'
+      // : attribute.name.startsWith('&') ? 'animation'
+        : attribute.name.startsWith('@') ? 'event'
+          : attribute.name.startsWith('#') ? 'statement'
+            : 'string'
   switch (type) {
     case 'expression': {
-      return {
-        type,
-        value: `{{ ${attribute.value} }}`,
-        key: attribute.name,
-      }
-    }
-    case 'animation': {
       return {
         type,
         value: attribute.value,
         key: attribute.name,
       }
     }
+    // case 'animation': {
+    //   return {
+    //     type,
+    //     value: attribute.value,
+    //     key: attribute.name,
+    //   }
+    // }
     case 'event': {
       return {
         type,
@@ -46,44 +47,44 @@ export function parseXAttribute(attribute: AttributeNode) {
   }
 }
 
-export function parseXNode(node: BaseNode, parent: BaseChalkElement<string>): BaseChalkElement<string> | string {
+export function parseXNode(node: BaseNode, parent: BaseChalkElement<string> | null = null): BaseChalkElement<string> | string {
   if (node.type === NodeType.ELEMENT) {
-    const element: Required<BaseChalkElement<string>> = {
+    const element: BaseChalkElement<string> = {
       name: (<ElementNode>node).tag,
       id: `${(<ElementNode>node).tag}-${crypto.randomUUID()}`,
-      parent,
-      attrs: {},
-      animations: {},
-      events: {},
-      statements: {},
-      children: [],
     }
+    element.attrs ??= {}
+    element.events ??= {}
+    element.statements ??= {}
+    element.children ??= []
+    element.parent = parent ?? undefined
     for (const attribute of (<ElementNode>node).attributes) {
       const attr = parseXAttribute(attribute)
       if (attr.type === 'expression' || attr.type === 'string') {
         element.attrs[attr.key] = attr.value
       }
-      else if (attr.type === 'animation') {
-        element.animations[attr.key] = [attr.value]
-      }
       else if (attr.type === 'event') {
-        element.events[attr.key] = attr.value
+        element.events[attr.key.slice(1)] = attr.value
       }
       else if (attr.type === 'statement') {
-        element.statements[attr.key] = attr.value
+        element.statements[attr.key.slice(1)] = attr.value
       }
+    }
+    for (const child of (<ElementNode>node).children) {
+      element.children.push(parseXNode(child, element))
     }
     return element
   }
   else if (node.type === NodeType.TEXT) {
-    return (node as TextNode).content
+    return (node as TextNode).content.trim()
   }
   else if (node.type === NodeType.VALUE) {
     return `{{ ${(node as ValueNode).value} }}`
   }
+  return ''
 }
 
-export function parseX(content: string): BaseChalkElement<string>[] {
+export function parseX(content: string): (BaseChalkElement<string> | string)[] {
   const { children } = parse(content)
-  return children.map(parseXNode)
+  return children.map((child) => parseXNode(child, null))
 }
