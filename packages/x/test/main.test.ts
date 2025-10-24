@@ -1,6 +1,14 @@
-import { parseX } from "../src"
+import { parseComponent, parseX } from "../src"
 
 const content = `
+---
+name: component
+props:
+  - name
+  - items
+refs:
+  - items: items
+---
 <component :name="Hello World" @click="console.log('Hello World')" #for="item in items">
 Hello
 World
@@ -10,6 +18,6 @@ World
 </component>
 `
 
-const result = parseX(content)
+const result = parseComponent(content)
 
 console.log(result)

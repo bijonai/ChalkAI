@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router';
 import templates from '../templates';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { createBox, type ChalkError } from '@chalk-dsl/renderer-runtime';
+import { createRenderer, type ChalkError } from '@chalk-dsl/renderer-runtime';
 import Files from '../components/Files.vue';
 import Errors from '../components/Errors.vue';
 
@@ -40,7 +40,7 @@ const errors = ref<ChalkError<string>[]>([])
 const _render = () => {
   console.log(template.value?.content)
   if (!template.value?.content) return
-  const { render, getErrors } = createBox([template.value?.content!])
+  const { render, getErrors } = createRenderer([template.value?.content!])
   render(template.value?.content!.name!, container.value!)
   nextTick(() => {
     console.log(getErrors())

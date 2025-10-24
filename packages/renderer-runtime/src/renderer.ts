@@ -7,7 +7,7 @@ import patch from 'morphdom'
 
 export const toArray = <T>(value: T | T[]): T[] => Array.isArray(value) ? value : [value]
 
-export function createBox(components: Component<string>[]) {
+export function createRenderer(components: Component<string>[]) {
   const { getActiveContext, setActiveContext, clearActiveContext, withContext, setValue, getValue } = createContext(reactive({}))
   const errors = createErrorContainer()
   const beginAnimations: (() => void)[] = []
@@ -50,21 +50,8 @@ export function createBox(components: Component<string>[]) {
     element.parent = parent
   }
 
-  const renderComponent = (element: BaseChalkElement<string>): Node | Node[] | null => {
-    const component = components.find((component) => component.name === element.name)
-    if (!component) {
-      errors.addError({ name: "Element Not Found", message: `Element ${element.name} not found`, element } satisfies ElementNotFoundError)
-      return null
-    }
-    if (!component.root) {
-      return document.createTextNode('')
-    }
-    const roots = toArray(component.root)
-    for (const root of roots) {
-      preprocessElement(root)
-    }
-
-    const refs = Object.entries(component.refs ?? {})
+  const processRefs = (sources: Record<string, string>) => {
+    const refs = Object.entries(sources)
     const retryWaitlist: string[] = []
     const resolve = (key: string, value: string, retrying: boolean = false) => {
       const _ref = ref()
@@ -82,7 +69,7 @@ export function createBox(components: Component<string>[]) {
         }
         if (retrying) return
         for (const key of retryWaitlist) {
-          resolve(key, component.refs![key], true)
+          resolve(key, sources[key], true)
         }
       })
     }
@@ -90,9 +77,32 @@ export function createBox(components: Component<string>[]) {
       const [key, value] = reflection
       resolve(key, value)
     }
+  }
+
+  const renderComponent = (element: BaseChalkElement<string>): Node | Node[] | null => {
+    const component = components.find((component) => component.name === element.name)
+    if (!component) {
+      errors.addError({ name: "Element Not Found", message: `Element ${element.name} not found`, element } satisfies ElementNotFoundError)
+      return null
+    }
+    if (!component.root) {
+      return document.createTextNode('')
+    }
+    const roots = toArray(component.root)
+    for (const root of roots) {
+      if (typeof root === 'string') {
+        continue
+      }
+      preprocessElement(root)
+    }
+
+    processRefs(component.refs ?? {})
 
     // Set up default values to prevent undefined access
     return roots.flatMap(root => {
+      if (typeof root === 'string') {
+        return renderText(root)
+      }
       root.attrs ??= {}
       root.events ??= {}
       root.statements ??= {}
@@ -301,6 +311,7 @@ export function createBox(components: Component<string>[]) {
   
   return {
     ...errors,
+    processRefs,
     render,
     renderRoot,
     renderElement,

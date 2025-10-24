@@ -1,4 +1,4 @@
-import { createBox, getRootSpace } from "@chalk-dsl/renderer-runtime"
+import { createRenderer, getRootSpace } from "@chalk-dsl/renderer-runtime"
 import type { Board } from "~~/shared"
 import '@chalk-dsl/layout'
 import '@chalk-dsl/form'
@@ -15,7 +15,7 @@ export function useBoard() {
   const next = () => currentStep.value < steps.length ? currentStep.value++ : currentStep.value
 
   const loadBoard = (board: Board): [Ref<HTMLElement | null>[], () => void] => {
-    const { renderRoot, setValue, beginAnimations, mount } = createBox(board.components)
+    const { renderRoot, setValue, beginAnimations, mount } = createRenderer(board.components)
     setValue('next', next)
     setValue('currentStep', currentStep)
     steps.length = 0
