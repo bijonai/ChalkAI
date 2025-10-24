@@ -25,7 +25,7 @@ export const createCanvasElementContainer = <
   T extends BaseCanvasElementAttributes,
   F extends Fillable,
   S extends Strokeable
->(attrs: T & Partial<F & S>) => {
+>(attrs: T & Partial<F & S>, division: Vector2) => {
   attrs.position ??= [0, 0]
   attrs.rotation ??= 0
   const scale = attrs.scale ? Array.isArray(attrs.scale) ? attrs.scale : [attrs.scale, attrs.scale] : [1, 1]
@@ -34,11 +34,11 @@ export const createCanvasElementContainer = <
 
   container.setAttribute(
     'transform',
-    `translate(${attrs.position[0]}, ${attrs.position[1]}) rotate(${attrs.rotation}) scale(${scale[0]}, ${scale[1]})`
+    `translate(${attrs.position[0] * division[0]}, ${attrs.position[1] * division[1]}) rotate(${attrs.rotation}) scale(${scale[0]}, ${scale[1]})`
   )
   container.setAttribute(
     'fill',
-    theme.pallete(attrs.fill ?? 'info')
+    theme.pallete(attrs.fill ?? 'none')
   )
   container.setAttribute(
     'fill-opacity',
@@ -83,10 +83,10 @@ export const fillableKnowledge = definePrefabKnowledge((utils) => {
     .describe('the fill color of the element')
     .type('string')
     .optional('none')
-  utils.prop('fillOpacity')
-    .describe('the fill opacity of the element')
-    .type('number')
-    .optional('1')
+  // utils.prop('fillOpacity')
+  //   .describe('the fill opacity of the element')
+  //   .type('number')
+  //   .optional('1')
 })
 
 export const strokeableKnowledge = definePrefabKnowledge((utils) => {
@@ -94,8 +94,8 @@ export const strokeableKnowledge = definePrefabKnowledge((utils) => {
     .describe('the stroke color of the element')
     .type('string')
     .optional('none')
-  utils.prop('strokeWidth')
-    .describe('the stroke width of the element')
-    .type('number')
-    .optional('1')
+  // utils.prop('strokeWidth')
+  //   .describe('the stroke width of the element')
+  //   .type('number')
+  //   .optional('1')
 })

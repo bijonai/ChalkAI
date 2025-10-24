@@ -5,20 +5,30 @@ import type { ClassroomCardProps } from '~/components/ClassroomCard.vue'
 
 const open = ref(false)
 
+const filter = ref('')
+const isFiltered = (name: string) => {
+  return name.toLowerCase().includes(filter.value.toLowerCase())
+}
+
 const classrooms = ref<ClassroomCardProps[]>([])
 const createInput = ref('')
 const createTitle = ref('')
 const createDisable = ref(false)
+const isReasoning = ref(false)
+const createModel = ref('')
+const modelsSelect = ref<string[]>([])
 const create = async () => {
   createDisable.value = true
-  const { success, data } = await $fetch('/api/classroom', {
+  const { data } = await $fetch('/api/classroom', {
     method: 'POST',
     body: {
       title: createTitle.value,
       input: createInput.value,
+      reasoning: isReasoning.value,
+      model: createModel.value,
     },
   })
-  if (success) {
+  if (data && 'id' in data) {
     classrooms.value.push({
       title: data.title,
       date: data.createdAt,
@@ -46,6 +56,12 @@ const getClassrooms = async () => {
       id: c.id,
     })))
   }
+  const models = await $fetch('/api/model/list')
+  if (models && 'data' in models && 'models' in models.data) {
+    console.log(models.data.models)
+    createModel.value = models.data.models[0] ?? ''
+    modelsSelect.value = models.data.models
+  }
 }
 
 onMounted(async () => {
@@ -61,26 +77,23 @@ onMounted(async () => {
         Tasks
       </h1>
       <div class="flex flex-row w-full gap-2">
-        <Input />
+        <Input v-model="filter" />
         <Button variant="accent" class="flex flex-row gap-2 w-30" @click="open = true">
           <FontAwesomeIcon class="size-4" :icon="faPlus" />
           <span>Create</span>
         </Button>
       </div>
       <div class="w-full grid md:grid-cols-3 sm:grid-cols-1 gap-2">
-        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" />
+        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" v-show="isFiltered(c.title)" />
       </div>
     </div>
     <Transition name="fade">
-      <dialog v-if="open" :open="open" class="fixed w-screen h-screen inset-0 z-50 bg-transparent bg-opacity-50 backdrop-blur-sm">
-        <div 
-          class="flex min-h-screen items-center justify-center p-4"
-          @click.self="open = false"
-        >
+      <dialog v-if="open" :open="open"
+        class="fixed w-screen h-screen inset-0 z-50 bg-transparent bg-opacity-50 backdrop-blur-sm">
+        <div class="flex min-h-screen items-center justify-center p-4" @click.self="open = false">
           <div
             class="w-full max-w-md p-6 bg-#1a1a1a rounded-lg border border-primary shadow-2xl transform transition-all"
-            @click.stop
-          >
+            @click.stop>
             <div class="flex flex-col mb-6">
               <h1 class="text-primary text-xl font-semibold mb-2">
                 Create Classroom Task
@@ -95,11 +108,16 @@ onMounted(async () => {
             <div class="h-32">
               <TextArea v-model="createInput" />
             </div>
+            <div class="h-32 flex items-center gap-3">
+              <span class="text-sub text-sm">Reasoning</span>
+              <Switch v-model:checked="isReasoning" />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-sub text-sm">Model</span>
+              <Select v-model="createModel" :options="modelsSelect.map(m => ({ label: m, value: m }))" />
+            </div>
             <div class="flex justify-end gap-3 mt-6">
-              <Button
-                variant="hover"
-                @click="open = false"
-              >
+              <Button variant="hover" @click="open = false">
                 Cancel
               </Button>
               <Button variant="accent" @click="create" :disable="createDisable">

@@ -5,12 +5,16 @@ import { test1 } from "./tests/test1"
 import { conditionTest } from "./tests/condition-test"
 import { input } from "./form/input"
 import { chooser } from "./form/chooser"
+import { slider } from "./form/slider"
 import { table } from "./widget/table"
 import { code } from "./widget/code"
 import { test2 } from "./tests/test2"
 import { stringMergeTest } from "./tests/string-merge-test"
 import { paginator } from "./widget/paginator"
 import { arc } from "./canvas/arc"
+import { plane } from "./math/plane"
+import { vector } from "./math/vector"
+import { mermaid } from "./widget/mermaid"
 
 export type Template = {
   id: string
@@ -40,6 +44,7 @@ export default [
     templates: [
       input,
       chooser,
+      slider,
     ]
   },
   {
@@ -47,13 +52,21 @@ export default [
     templates: [
       table,
       code,
-      paginator
+      paginator,
+      mermaid,
     ]
   },
   {
     id: 'canvas',
     templates: [
       arc
+    ]
+  },
+  {
+    id: 'math',
+    templates: [
+      plane,
+      vector,
     ]
   }
 ] as Template[]

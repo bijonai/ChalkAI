@@ -13,6 +13,7 @@ export default defineConfig({
     '@chalk-dsl/form',
     '@chalk-dsl/widget',
     '@chalk-dsl/canvas',
+    '@chalk-dsl/math',
   ],
   env: {
     NODE_ENV: 'dev',

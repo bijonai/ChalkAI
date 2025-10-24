@@ -3,7 +3,7 @@
 // import { signal } from "alien-signals"
 import { Reactive, reactive } from "@vue/reactivity"
 
-export type RawContext = Record<string, any>
+export type RawContext = Record<string | symbol, any>
 export type Context = Reactive<RawContext>
 export const mergeContext = (target: Context, source: Context) => {
   return reactive(Object.assign(target, source));
@@ -24,10 +24,10 @@ export const createContext = (context: Context) => {
     setActiveContext(previousContext)
     return result
   }
-  const setValue = (key: string, value: unknown) => {
+  const setValue = (key: string | symbol, value: unknown) => {
     context[key] = value
   }
-  const getValue = (key: string) => {
+  const getValue = (key: string | symbol) => {
     return context[key]
   }
 
@@ -39,4 +39,14 @@ export const createContext = (context: Context) => {
     setValue,
     getValue,
   }
+}
+
+export const Attributes = Symbol('Attributes')
+export const Origin = Symbol('Origin')
+
+export function useAttributes<T extends RawContext>(context: Context): Partial<T> {
+  return context[Attributes]
+}
+export function useOrigin(context: Context) {
+  return context[Origin]
 }

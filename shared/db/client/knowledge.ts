@@ -1,85 +1,42 @@
-import type { CalculatorKnowledge, CalculatorKnowledgeArgument, Knowledge, PrefabKnowledge, PrefabKnowledgeProp } from "@chalk-dsl/knowledge";
-import { db } from "..";
-import { calculatorKnowledgeTable, prefabKnowledgeTable } from "../schema";
+import { eq } from "drizzle-orm"
+import { db } from ".."
+import { knowledgeTable } from "../schema/knowledge"
+import type { CalculatorKnowledge, Knowledge, PrefabKnowledge } from "@chalk-dsl/knowledge"
 
-export const setPrefabKnowledge = async (prefab: PrefabKnowledge, embedding: number[]) => {
-  // console.log(embedding.length)
-  return await db.insert(prefabKnowledgeTable)
-    .values({
-      name: prefab.name,
-      description: prefab.description,
-      tags: prefab.tags,
-      props: prefab.props,
-      examples: prefab.examples,
-      rules: prefab.rules,
-      slots: prefab.slots,
-      embedding,
-    })
-    .onConflictDoUpdate({
-      target: prefabKnowledgeTable.name,
-      set: {
-        description: prefab.description,
-        tags: prefab.tags,
-        props: prefab.props,
-        examples: prefab.examples,
-        rules: prefab.rules,
-        slots: prefab.slots,
-        embedding,
-      },
-    })
-    .returning({ id: prefabKnowledgeTable.id, name: prefabKnowledgeTable.name })
-}
-
-export const setCalculatorKnowledge = async (calculator: CalculatorKnowledge, embedding: number[]) => {
-  return await db.insert(calculatorKnowledgeTable)
-    .values({
-      name: calculator.name,
-      description: calculator.description,
-      args: calculator.args,
-      return: calculator.return,
-      raw: calculator.raw,
-      embedding,
-    })
-    .onConflictDoUpdate({
-      target: calculatorKnowledgeTable.name,
-      set: {
-        description: calculator.description,
-        args: calculator.args,
-        return: calculator.return,
-        raw: calculator.raw,
-        embedding,
-      },
-    })
-    .returning({ id: calculatorKnowledgeTable.id, name: calculatorKnowledgeTable.name })
-}
-
-export const getToKnowledges = async (): Promise<Knowledge> => {
-  const prefabQuery = await db.select()
-    .from(prefabKnowledgeTable)
-  const prefabs: PrefabKnowledge[] = prefabQuery.map(r => {
-    return {
-      name: r.name,
-      description: r.description,
-      tags: r.tags,
-      props: r.props as PrefabKnowledgeProp[],
-      examples: r.examples,
-      rules: r.rules,
-      slots: r.slots as [string, string][],
-    }
-  })
-  const calculatorQuery = await db.select()
-    .from(calculatorKnowledgeTable)
-  const calculators: CalculatorKnowledge[] = calculatorQuery.map(r => {
-    return {
-      name: r.name,
-      description: r.description,
-      args: r.args as CalculatorKnowledgeArgument[],
-      return: r.return as [string, string?],
-      raw: r.raw,
-    }
-  })
+export const createKnowledge = async (name: string, description?: string) => {
+  const [knowledge] = await db.insert(knowledgeTable).values({
+    name,
+    description,
+  }).returning({ id: knowledgeTable.id, name: knowledgeTable.name, description: knowledgeTable.description })
   return {
-    prefabs,
-    calculators,
-  } satisfies Knowledge
+    success: true,
+    data: knowledge,
+  } as const
+}
+
+export const setKnowledge = async (id: string, knowledge: {
+  prefabs: PrefabKnowledge[]
+  calculators: CalculatorKnowledge[]
+}, by: 'id' | 'name' = 'name') => {
+  const result = await db.update(knowledgeTable).set({
+    prefabs: knowledge.prefabs,
+    calculators: knowledge.calculators,
+  }).where(by === 'id' ? eq(knowledgeTable.id, id) : eq(knowledgeTable.name, id))
+    .returning({ id: knowledgeTable.id, name: knowledgeTable.name, description: knowledgeTable.description })
+  
+  return {
+    success: true,
+    data: result.at(0)!,
+  }
+}
+
+export const getKnowledge = async (id: string, by: 'id' | 'name' = 'name') => {
+  const result = await db.select({ prefabs: knowledgeTable.prefabs, calculators: knowledgeTable.calculators })
+    .from(knowledgeTable)
+    .where(by === 'id' ? eq(knowledgeTable.id, id) : eq(knowledgeTable.name, id))
+    .then(r => r.at(0) ?? null)
+  return {
+    success: true,
+    data: result as Knowledge | null,
+  }
 }

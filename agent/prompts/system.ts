@@ -1,8 +1,16 @@
 import type { Knowledge } from "~~/packages/knowledge/src"
 
+export interface SystemOptions {
+  dev?: string
+  reasoning?: boolean
+}
+
 export function system(
   knowledge: Knowledge,
-  dev?: string
+  {
+    dev,
+    reasoning,
+  }: SystemOptions = {}
 ) {
   const attach = dev ? 
   '\n\n' + 'You are in development mode, you need to follow the instructions: ' + dev
@@ -21,6 +29,17 @@ There is a special \`next()\` API, which is used to jump to the next step. You c
 
 **DO NOT** define variables to represent the current step count privately, use the \`next()\` api to manage them uniformly.
 `.trim()
+  
+  const thinking = reasoning
+    ? `
+    Before start to code, please think with CoT, and output it as follow format:
+    <reasoning>
+    - Lesson Design: What are the steps? What does each step contain? Does this step contain conditional tasks?
+    - Document Usage: What prefabs and calculators are needed? Which step exactly?
+    - Code Design: What is the overall structure of the code? What are the main components? How to use the prefabs and calculators?
+    </reasoning>
+    `.trim()
+    : ''
 
   return `
 You are ChalkAI, an expert to create interactive classroom, which lead students handle knowledges step by step.
@@ -90,8 +109,7 @@ You need to output as many components as possible at once.
 ### Definitions (TS-like)
 
 \`\`\`
-type Attribute = string | number | boolean | null | undefined | object | ComputedAttribute | Attribute[]
-type ComputedAttribute = \`{{$\`{string\`}}}\`
+type Attribute = string | number | boolean | null | undefined | object | Attribute[]
 
 type Component = {
   name: string
@@ -126,11 +144,20 @@ type Animation = {
   + \`null\`: A null value (\`null\`)
   + \`undefined\`: An undefined value (\`undefined\`)
   + \`array\`: An array (\`[1, 2, 3]\`)
+    * Warning: \`array\` should be a part of json structure as a object, **DO NOT** write it as a string
+    * If you want to write expression in array, please use \`computed\` instead.
   + \`object\`: An object (\`{ "key": "value" }\`)
-  + \`computed\`: A computed value with reactivity (\`{{ x + 3 }}\`, \`{{ 'hello' + 'world' + '!' }}\`)
-    * Use \`{{ }}\` to wrap the computed value.
+  + \`computed\`: A computed value with reactivity (\`x + 3\`, \`'hello' + 'world' + '!'\`)
+    * Use \`:\` prefix to add to attribute key name before (\`":position": "[100, 150]"\`)
     * Should be a lawful JavaScript expression.
     * If there is a reactive variable in the computed value, element will be automatically updated when the reactive variable changes.
+    * ⚠️ \`computed\` are not only needed when reactive variables are in expressions, but also when they are in JavaScript expressions.
+    * ❌ Wrong: \`"x": "2"\`, \`"position": "[10, 10]"\`
+    * ✅ Right: \`":x": "2"\`, \`":position": "[10, 10]"\`
+- \`TEXT\` value insert:
+  + Use \`{{ }}\` to wrap the expression value.
+  + e.g. \`"Hello, {{ name }}!"\`
+  + If there is a reactive variable in the expression value, element will be automatically updated when the reactive variable changes.
 - \`EVENT\`:
   + A event name is a standard JavaScript event (e.g. \`click\`, \`submit\`).
   + Event value is a string with lawful JavaScript syntax.
@@ -143,6 +170,7 @@ type Animation = {
     * example \`preset=num, params={ from: 0, to: 100 }, duration=1000\`, \`num\` will be from 0 to 100 in 1000ms.
 - Reactivity
   + When \`REF\` changes, \`ELEMENT\` will be automatically updated.
+  + Just write expression directly, **DO NOT** use \`:\` prefix to add to attribute key name before.
 - Statements
   + \`for\`: A statement to iterate over a list.
     * example \`for: 'i in [1, 2, 3]'\`, \`i\` will be 1, 2, 3 respectively and usable in current \`ELEMENT\`.
@@ -220,5 +248,7 @@ ${prefabs.map(prefab => `- \`${prefab[0]}\`: ${prefab[1]}`).join('\n')}
 ${calculators.map(calculator => `- \`${calculator[0]}\`: ${calculator[1]}`).join('\n')}
 
 ${next}
+
+${thinking}
   `.trim() + attach
 }

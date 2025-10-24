@@ -9,18 +9,18 @@ export interface LineAttributes extends BaseCanvasElementAttributes, Strokeable 
   to: Vector2
 }
 
-const line = definePrefab<'line'>(() => {
+const line = definePrefab<'line', LineAttributes, { division: Vector2 }>((context) => {
   return {
     name: 'line',
     generator: (attrs) => {
-      const root = createCanvasElementContainer(attrs)
+      const root = createCanvasElementContainer(attrs, context.division)
 
       d3.select(root)
         .append('line')
-        .attr('x1', attrs.from[0])
-        .attr('y1', attrs.from[1])
-        .attr('x2', attrs.to[0])
-        .attr('y2', attrs.to[1])
+        .attr('x1', attrs.from[0] * context.division[0])
+        .attr('y1', attrs.from[1] * context.division[1])
+        .attr('x2', attrs.to[0] * context.division[0])
+        .attr('y2', attrs.to[1] * context.division[1])
 
       return root
     }

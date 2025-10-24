@@ -90,4 +90,75 @@ const prefab = definePrefab<'prefab-name', PrefabAttributes>((context, _) => {
 
 ### Provide & Inject
 
+#### Provide
 
+```ts
+const prefab = definePrefab<'parent-prefab-name', PrefabAttributes>((context, _) => {
+  return {
+    name: 'prefab-name',
+    generator: (attrs, children) => {
+      // ...
+    },
+    provides: {
+      x: 10,
+    }
+  }
+})
+```
+
+#### Inject
+
+```ts
+interface ParentPrefabAttributes {
+  // ...
+}
+
+interface ChildPrefabInjection {
+  x: number
+}
+
+const prefab = definePrefab<'child-prefab-name', PrefabAttributes, ChildPrefabInjection>((context, _) => {
+  return {
+    name: 'prefab-name',
+    generator: (attrs, children) => {
+      // ...
+      console.log(context.x) // 10
+    },
+  }
+})
+```
+
+### Knowledge
+
+```ts
+const knowledge = definePrefabKnowledge((utils) => {
+  // name:
+  utils.name('prefab-name')
+  // description:
+  utils.description('the description of the prefab')
+  // tags:
+  utils.tag('tag1', 'tag2')
+  // props:
+  utils.prop('x')
+    .describe('the x of the prefab')
+    .type('number')
+    .optional('10') // optional default value
+  utils.prop('y')
+    .describe('the y of the prefab')
+    .type('number')
+    .optional('20') // optional default value
+  utils.prop('attr')
+    .describe('the attribute of the prefab')
+    .type('string') // required
+  // examples:
+  utils.example('example1')
+  // rules:
+  utils.rule('rule1')
+  utils.rule('rule2')
+  // slots:
+  utils.slot('slot1', 'the description of the slot1')
+  utils.slot('slot2', 'the description of the slot2')
+})
+
+addPrefabKnowledge(knowledge)
+```

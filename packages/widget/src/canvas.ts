@@ -1,33 +1,70 @@
-import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
+import { definePrefab, ref, registerPrefab, useAttributes } from "@chalk-dsl/renderer-core";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 
 export type Vector2 = [number, number]
 
 export interface CanvasAttributes {
-  range: Vector2 // Y-axis
-  domain: Vector2 // X-axis
   origin: Vector2
+  division: number | Vector2
+  range?: Vector2
+  domain?: Vector2
 }
 
-const canvas = definePrefab<'canvas', CanvasAttributes>(() => {
+const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
+  const { division: divisionAttr } = useAttributes<CanvasAttributes>(context)
+  const division = ref<Vector2>(
+    divisionAttr
+      ? Array.isArray(divisionAttr) ? divisionAttr : [divisionAttr, divisionAttr]
+      : [30, 30]
+  )
   return {
     name: 'canvas',
-    generator: (attrs, children) => {
+    provides: {
+      division,
+    },
+    generator: (attrs, children, { mount }) => {
       const canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
       canvas.style.width = '100%'
 
-      canvas.setAttribute('viewBox', `${attrs.domain[0]} ${attrs.range[0]} ${attrs.domain[1]} ${attrs.range[1]}`)
-      
+
       const root = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      root.setAttribute('transform', `translate(${attrs.origin[0]}, ${attrs.origin[1]})`)
       canvas.append(root)
 
       root.append(...children())
-      return canvas
+      root.style.vectorEffect = 'non-scaling-stroke'
+
+      const container = document.createElement('div')
+      container.append(canvas)
+      container.style.minWidth = '100%'
+      container.style.display = 'flex'
+      container.style.justifyContent = 'center'
+      container.style.alignItems = 'center'
+
+      mount(() => {
+        const bbox = root.getBBox()
+        const canvasRect = canvas.getBoundingClientRect()
+
+        const x = attrs.domain ? attrs.domain[0] : bbox.x
+        const y = attrs.range ? attrs.range[0] : bbox.y
+        const width = attrs.domain ? attrs.domain[1] - attrs.domain[0] : bbox.width
+        const height = attrs.range ? attrs.range[1] - attrs.range[0] : bbox.height
+
+        root.setAttribute('transform', `translate(${width / 2}, ${height / 2})`);
+
+        canvas.style.height = `${height}px`
+
+        container.style.minWidth = `${width}px`
+        container.style.minHeight = `${height}px`
+
+        canvas.setAttribute('width', String(canvasRect.width))
+      })
+      
+      return container
     },
     defaults: {
-      origin: [0, 0],
+      // origin: [0, 0],
+      division: 20,
     }
   }
 })
@@ -41,12 +78,6 @@ export default canvas
 export const knowledge = definePrefabKnowledge<CanvasAttributes>((utils) => {
   utils.name('canvas')
   utils.description('A canvas widget')
-  utils.prop('range')
-    .describe('The range of the canvas')
-    .type('[number, number]')
-  utils.prop('domain')
-    .describe('The domain of the canvas')
-    .type('[number, number]')
   utils.prop('origin')
     .describe('The origin of the canvas')
     .type('[number, number]')

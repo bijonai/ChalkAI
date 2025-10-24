@@ -1,145 +1,56 @@
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
-import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, fillableKnowledge, Fillable, Strokeable, strokeableKnowledge } from "./shared";
+import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, fillableKnowledge, Fillable, Strokeable, strokeableKnowledge, Vector2 } from "./shared";
 import * as d3 from 'd3'
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { theme } from "@chalk-dsl/utils-theme";
-import { FormModelAttributes, parseModel } from "@chalk-dsl/form";
 
 export interface ArcAttributes
-  extends BaseCanvasElementAttributes, Fillable, Strokeable, FormModelAttributes<['angle', 'position']> {
+  extends BaseCanvasElementAttributes, Fillable, Strokeable {
   start: number
   end: number
   radius: number
-  interactive: boolean
 }
 
-const arc = definePrefab<'arc', ArcAttributes>((context) => {
+const arc = definePrefab<'arc', ArcAttributes, { division: Vector2 }>((context) => {
   return {
-    name: 'arc',
+    name: 'arc' as const,
     generator: (attrs) => {
-      const root = createCanvasElementContainer(attrs)
+      const root = createCanvasElementContainer(attrs, context.division)
+      console.log(context.division)
+      const [xDivision, yDivision] = context.division
+
+      // State division
+      const xRadius = xDivision * attrs.radius
 
       // Convert degrees to radians for d3.arc()
-      const startAngle = (attrs.start * Math.PI) / 180
-      const endAngle = (attrs.end * Math.PI) / 180
+      const currentStartAngle = (attrs.start * Math.PI) / 180
+      const currentEndAngle = (attrs.end * Math.PI) / 180
 
-      const pathData = d3.arc()({
-        startAngle: startAngle,
-        endAngle: endAngle,
-        innerRadius: 0,  // innerRadius should be 0 for a filled arc
-        outerRadius: attrs.radius,
-      })
-
-      d3.select(root).append('path')
-        .attr('d', pathData)
-
-      if (attrs.interactive) {
-        let offsetX = 0
-        let offsetY = 0
-        const dot = (
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          selector: d3.Selection<any, unknown, null, undefined>,
-          x: number,
-          y: number,
-          id: string,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onDrag: (x: number, y: number, selector: d3.Selection<any, unknown, null, undefined>) => void = () => { },
-        ) => {
-
-          let dragging = false
-          return selector.append('circle')
-            .attr('r', attrs.strokeWidth ?? 1)
-            .attr('cx', x)
-            .attr('cy', y)
-            .attr('stroke', 'none')
-            .attr('fill', theme.pallete('accent'))
-            .attr('fill-opacity', 0.5)
-            .on('mouseover', function () {
-              d3.select(this)
-                .attr('fill-opacity', 1)
-                .attr('r', (attrs.strokeWidth ?? 1) * 1.2)
-            })
-            .on('mouseout', function () {
-              if (dragging) return
-              d3.select(this)
-                .attr('fill-opacity', 0.5)
-                .attr('r', attrs.strokeWidth ?? 1)
-            })
-            .attr('id', id)
-            .call(
-              d3.drag()
-                .on('start', function (event) {
-                  dragging = true
-                  d3.select(this)
-                    .classed('dragging', true)
-                    .attr('fill-opacity', 1)
-                    .attr('r', (attrs.strokeWidth ?? 1) * 1.2)
-                  const ended = () => {
-                    dragging = false
-                    d3
-                    .select(this)
-                    .classed('dragging', false)
-                    .attr('fill-opacity', 0.5)
-                    .attr('r', attrs.strokeWidth ?? 1)
-                  }
-                  const dragged = (event: DragEvent) => {
-                    onDrag(
-                      event.x, event.y,
-                      d3.select(this).raise()
-                    )
-                  }
-                  event.on('drag', dragged)
-                  event.on('end', ended)
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                }) as any
-            )
+      // Function to update the arc path
+      const updateArcPath = (startAngle: number, endAngle: number) => {
+        if (startAngle > endAngle) {
+          endAngle += 2 * Math.PI
         }
-        dot(
-          d3.select(root),
-          attrs.position?.[0] ?? 0,
-          attrs.position?.[1] ?? 0,
-          'center',
-          (x, y, selector) => {
-            console.log(x, y)
-            offsetX = x
-            offsetY = y
-            d3.select(root).select('path')
-              .attr('transform', `translate(${x}, ${y})`)
-            selector
-              .attr('cx', x)
-              .attr('cy', y)
-            d3.select(root).select('circle#angle')
-              .attr('cx', x + attrs.radius)
-              .attr('cy', y)
-            if (attrs.model && attrs.model.position) {
-              context[attrs.model.position] = [x, y]
-            }
-          }
-        )
-        dot(
-          d3.select(root),
-          Math.cos(endAngle) * attrs.radius,
-          Math.sin(endAngle) * attrs.radius,
-          'angle',
-          (x, y, selector) => {
-            const angle = Math.atan2(y - offsetY, x - offsetX)
-            const _x = Math.cos(angle) * attrs.radius - attrs.radius
-            const _y = Math.sin(angle) * attrs.radius
-            if (attrs.model && attrs.model.angle) {
-              context[attrs.model.angle] = angle * 180 / Math.PI
-            }
-            selector.attr('transform', `translate(${_x}, ${_y})`)
-          }
-        )
+        const pathData = d3.arc()({
+          startAngle: startAngle + Math.PI / 2, // Math convention to Compass convention
+          endAngle: endAngle + Math.PI / 2,
+          innerRadius: 0,  // innerRadius should be 0 for a filled arc
+          outerRadius: xRadius,
+        })
+        d3.select(root).select('path')
+          .attr('d', pathData)
       }
+
+      // init arc path
+      d3.select(root).append('path')
+      updateArcPath(currentStartAngle, currentEndAngle)
 
       return root
     },
     defaults: {
       start: 0,
       end: 360,
-      interactive: false,
     }
   }
 })
@@ -168,13 +79,6 @@ export const knowledge = definePrefabKnowledge<ArcAttributes>((utils) => {
   utils.prop('radius')
     .describe('the radius of the arc')
     .type('number')
-  utils.prop('interactive')
-    .describe('whether the arc is interactive, if true, will show a control point for `angle`, a control point for `position`')
-    .type('boolean')
-    .optional('false')
-  utils.prop('model')
-    .describe('The variable to bind on two control points')
-    .type('{ angle: string, position: string }').optional()
 })
 
 addPrefabKnowledge(knowledge)

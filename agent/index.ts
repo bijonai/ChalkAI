@@ -18,12 +18,16 @@ export interface AgentParams {
   messages: Message[]
   knowledge: Knowledge
   dev?: string
+  reasoning?: boolean
 }
 
 export function createAgent(params: AgentParams) {
   if (params.messages.length === 0) {
     params.messages.push(
-      message.system(prompts.system(params.knowledge, params.dev))
+      message.system(prompts.system(params.knowledge, {
+        dev: params.dev,
+        reasoning: params.reasoning,
+      }))
     )
   }
 
@@ -41,13 +45,13 @@ export function createAgent(params: AgentParams) {
       tools,
       maxSteps: 100,
     })
+    params.messages.length = 0
+    params.messages.push(...messages)
     for (const message of messages) {
       if (message.role === 'assistant' && typeof message.content === 'string') {
         parse(message.content)
       }
     }
-    params.messages.length = 0
-    params.messages.push(...messages)
     return board
   }
 }

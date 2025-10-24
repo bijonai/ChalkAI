@@ -1,17 +1,17 @@
 {
-  "name": "@chalk-dsl/widget",
+  "name": "@chalk-dsl/math",
   "version": "0.0.0",
   "main": "index.js",
   "exports": {
     ".": "./src/index.ts"
   },
-  "scripts": {},
-  "packageManager": "pnpm@10.8.1",
   "dependencies": {
+    "@chalk-dsl/canvas": "workspace:*",
     "@chalk-dsl/knowledge": "workspace:*",
     "@chalk-dsl/renderer-core": "workspace:*",
-    "@chalk-dsl/renderer-runtime": "workspace:*",
-    "mermaid": "^11.12.0",
-    "shiki": "^3.13.0"
-  }
+    "@types/d3": "^7.4.3",
+    "d3": "^7.9.0"
+  },
+  "scripts": {},
+  "packageManager": "pnpm@10.8.1"
 }
