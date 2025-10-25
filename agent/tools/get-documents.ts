@@ -1,4 +1,4 @@
-import { contential, type Knowledge } from "@chalk-dsl/knowledge";
+import { prefabritize, type Knowledge } from "@chalk-dsl/knowledge";
 import { tool } from "xsai";
 import { z } from "zod";
 
@@ -13,7 +13,7 @@ export async function getDocuments(knowledge: Knowledge) {
     execute: async (input) => {
       const prefabs = knowledge.prefabs
         .filter(prefab => input.prefabs.includes(prefab.name))
-        .map(prefab => contential.prefab(prefab))
+        .map(prefab => prefabritize(prefab))
       const calculators = knowledge.calculators.filter(calculator => input.calculators.includes(calculator.name))
       return {
         success: true,

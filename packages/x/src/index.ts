@@ -1,6 +1,6 @@
 import { BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
 import { AttributeNode, BaseNode, ElementNode, NodeType, parse, ParseOptions, TextNode, ValueNode } from "@chalk-dsl/x-parser";
-import { parse as parseYaml } from 'yaml'
+import { load } from 'js-yaml'
 
 export function parseXAttribute(attribute: AttributeNode) {
   const type =
@@ -90,23 +90,32 @@ export function parseX(content: string, options: ParseOptions): (BaseChalkElemen
   return children.map((child) => parseXNode(child, null))
 }
 
+const COMPONENT_INFO_REG = /---.*?---/gms
+export function parseComponentInfo(content: string): { name: string, props: string[], refs: Record<string, string> } {
+  const match = content.match(COMPONENT_INFO_REG)
+  if (match) {
+    const info = match[0].trim().slice(3, -3)
+    const { name, props, refs } = load(info) as { name: string, props: string[], refs: Record<string, string> }
+    return {
+      name,
+      props,
+      refs,
+    }
+  }
+  return { name: '', props: [], refs: {} }
+}
+
 export function parseComponent(content: string, options: ParseOptions): Component<string> {
   const component: Component<string> = {
     name: '',
     props: [],
     refs: {},
   }
-  const REG = /---.*?---/gms
-  const match = content.match(REG)
-  if (match) {
-    const yamlContent = match[0].trim().slice(3, -3)
-    const yaml = parseYaml(yamlContent)
-    component.name = yaml.name
-    component.props = yaml.props
-    component.root = yaml.root
-    component.refs = yaml.refs
-  }
-  const template = content.replace(REG, '').trim()
+  const { name, props, refs } = parseComponentInfo(content)
+  component.name = name
+  component.props = props
+  component.refs = refs
+  const template = content.replace(COMPONENT_INFO_REG, '').trim()
   component.root = parseX(template, options)
   return component
 }

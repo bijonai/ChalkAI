@@ -5,3 +5,4 @@ onlyBuiltDependencies:
 
 packages:
   - 'packages/*'
+  - 'agent'

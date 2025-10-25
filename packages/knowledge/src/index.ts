@@ -8,4 +8,5 @@ export interface Knowledge {
 
 export * from './calculator'
 export * from './prefab'
-export * from './utils'
+export * from './utils/contential'
+export * from './utils/tag'

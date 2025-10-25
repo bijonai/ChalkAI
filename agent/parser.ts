@@ -1,17 +1,23 @@
-import { Board } from "../shared";
-import { jsonrepair } from 'jsonrepair'
+import { type Board } from "../shared";
+import { Component, parseComponentInfo } from '@chalk-dsl/renderer-runtime'
 
 export const createParser = (board: Board) => {
   return (content: string) => {
-    const matches = content.match(/<component>[\s\S]*?<\/component>/gm)
+    const matches = content.match(/```component[\s\S]*?```/gm)
     for (const match of matches || []) {
-      const json = match.replace(/<component>/g, '').replace(/<\/component>/g, '')
-      const repaired = jsonrepair(json)
-      const component = JSON.parse(repaired)
-      if (board.components.find(c => c.name === component.name)) {
-        board.components = board.components.filter(c => c.name !== component.name)
-        board.components.push(component)
-      } else board.components.push(component)
+      const data = match.replace(/```component/g, '').replace(/```/g, '')
+      const component = parseComponentInfo(data)
+      if (board.components.find(c => (<Component<string>>c).name === component.name)) {
+        board.components = board.components.filter(c => {
+          if (typeof c === 'string') {
+            const parsed = parseComponentInfo(c)
+            return parsed.name !== component.name
+          } else {
+            return c.name !== component.name
+          }
+        })
+        board.components.push(data)
+      } else board.components.push(data)
     }
   }
 }
