@@ -1,16 +1,11 @@
 import { getDocuments } from "./get-documents"
 import { setSteps } from "./step"
-import type { Knowledge } from "~~/packages/knowledge/src"
+import type { Knowledge } from "@chalk-dsl/knowledge"
 import type { Board } from "~~/shared"
 
 export interface ToolsGeneratorParams {
   board: Board
   knowledge: Knowledge
-  embedding: {
-    model: string
-    apiKey: string
-    baseURL: string
-  }
 }
 
 export default async function (params: ToolsGeneratorParams) {

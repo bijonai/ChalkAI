@@ -3,12 +3,14 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {},
+  "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
     "@chalk-dsl/renderer-core": "workspace:*",
+    "@chalk-dsl/x": "workspace:*",
     "morphdom": "^2.7.7",
     "rehype-stringify": "^10.0.1",
     "remark-gfm": "^4.0.1",

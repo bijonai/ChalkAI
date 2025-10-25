@@ -1,5 +1,5 @@
 import { client } from '#shared/db'
-import { createAgent } from '../../../agent'
+import { createAgent } from '@chalk-ai/agent'
 import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, MODELS, DEFAULT_EMBED_BASE_URL, DEFAULT_KNOWLEDGE } from '#shared/env'
 import { Message } from 'xsai'
 import { response } from '#shared/server/response'

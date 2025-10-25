@@ -6,7 +6,7 @@ export interface Step {
   conditional: boolean
 }
 export interface Board {
-  components: Component<string>[]
+  components: (Component<string> | string)[]
   steps: Step[]
 }
 

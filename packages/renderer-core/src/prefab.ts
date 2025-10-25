@@ -1,7 +1,12 @@
 import type { RawContext } from "./context"
 import { ChalkError } from "./error"
 
-export type PrefabNamespace = Map<string, Prefab<string, RawContext, RawContext> | AsyncPrefab<string, RawContext, RawContext>>
+export type PrefabParseType = 'node' | 'raw'
+export type RegisterablePrefab = Prefab<string, RawContext, RawContext> | AsyncPrefab<string, RawContext, RawContext>
+export type PrefabNamespace = Map<string, {
+  prefab: RegisterablePrefab
+  type: PrefabParseType
+}>
 export type PrefabChildrenGetter = () => Node[]
 export type PrefabValidator = () => boolean
 export type PrefabGeneratorMount = (callback: () => void) => void
@@ -45,7 +50,10 @@ const rootSpace: PrefabNamespace = new Map()
 export const registerPrefab = <
   T extends RawContext,
   K extends RawContext = RawContext,
->(name: string, prefab: Prefab<string, T, K> | AsyncPrefab<string, T, K>) => {
-  rootSpace.set(name, prefab as Prefab<string, RawContext, RawContext> | AsyncPrefab<string, RawContext, RawContext>)
+>(name: string, prefab: Prefab<string, T, K> | AsyncPrefab<string, T, K>, parseType: PrefabParseType = 'node') => {
+  rootSpace.set(name, {
+    prefab: prefab as RegisterablePrefab,
+    type: parseType,
+  })
 }
 export const getRootSpace = () => rootSpace

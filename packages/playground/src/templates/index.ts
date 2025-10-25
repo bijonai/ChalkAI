@@ -18,7 +18,7 @@ import { mermaid } from "./widget/mermaid"
 
 export type Template = {
   id: string
-  content?: Component<string>
+  content?: Component<string> | string
   templates?: Template[]
 }
 

@@ -1,131 +1,131 @@
-.chalk-board primary {
+.chalk-board .primary {
   color: var(--chalk-primary);
 }
 
-.chalk-board accent {
+.chalk-board .accent {
   color: var(--chalk-accent);
 }
 
-.chalk-board note {
+.chalk-board .note {
   color: var(--chalk-note);
 }
 
-.chalk-board warning {
+.chalk-board .warning {
   color: var(--chalk-warning);
 }
 
-.chalk-board alert {
+.chalk-board .alert {
   color: var(--chalk-alert);
 }
 
-.chalk-board info {
+.chalk-board .info {
   color: var(--chalk-info);
 }
 
-.chalk-board success {
+.chalk-board .success {
   color: var(--chalk-success);
 }
 
-.chalk-board creative {
+.chalk-board .creative {
   color: var(--chalk-creative);
 }
 
-.chalk-board highlight-primary {
+.chalk-board .highlight-primary {
   border-bottom: 3px solid var(--chalk-highlight-primary);
 }
 
-.chalk-board highlight-key {
+.chalk-board .highlight-key {
   border-bottom: 3px solid var(--chalk-highlight-key);
 }
 
-.chalk-board highlight-support {
+.chalk-board .highlight-support {
   border-bottom: 3px solid var(--chalk-highlight-support);
 }
 
-.chalk-board highlight-creative {
+.chalk-board .highlight-creative {
   border-bottom: 3px solid var(--chalk-highlight-creative);
 }
 
-.chalk-board highlight-caution {
+.chalk-board .highlight-caution {
   border-bottom: 3px solid var(--chalk-highlight-caution);
 }
 
-.chalk-board highlight-info {
+.chalk-board .highlight-info {
   border-bottom: 3px solid var(--chalk-highlight-info);
 }
 
-.chalk-board size-6xs {
+.chalk-board .size-6xs {
   font-size: var(--chalk-size-6xs);
 }
 
-.chalk-board size-5xs {
+.chalk-board .size-5xs {
   font-size: var(--chalk-size-5xs);
 }
 
-.chalk-board size-4xs {
+.chalk-board .size-4xs {
   font-size: var(--chalk-size-4xs);
 }
 
-.chalk-board size-3xs {
+.chalk-board .size-3xs {
   font-size: var(--chalk-size-3xs);
 }
 
-.chalk-board size-2xs {
+.chalk-board .size-2xs {
   font-size: var(--chalk-size-2xs);
 }
 
-.chalk-board size-xs {
+.chalk-board .size-xs {
   font-size: var(--chalk-size-xs);
 }
 
-.chalk-board size-sm {
+.chalk-board .size-sm {
   font-size: var(--chalk-size-sm);
 }
 
-.chalk-board size-md {
+.chalk-board .size-md {
   font-size: var(--chalk-size-md);
 }
 
-.chalk-board size-lg {
+.chalk-board .size-lg {
   font-size: var(--chalk-size-lg);
 }
 
-.chalk-board size-xl {
+.chalk-board .size-xl {
   font-size: var(--chalk-size-xl);
 }
 
-.chalk-board size-2xl {
+.chalk-board .size-2xl {
   font-size: var(--chalk-size-2xl);
 }
 
-.chalk-board size-3xl {
+.chalk-board .size-3xl {
   font-size: var(--chalk-size-3xl);
 }
 
-.chalk-board size-4xl {
+.chalk-board .size-4xl {
   font-size: var(--chalk-size-4xl);
 }
 
-.chalk-board size-5xl {
+.chalk-board .size-5xl {
   font-size: var(--chalk-size-5xl);
 }
 
-.chalk-board size-6xl {
+.chalk-board .size-6xl {
   font-size: var(--chalk-size-6xl);
 }
 
-.chalk-board font-primary {
+.chalk-board .font-primary {
   font-family: var(--chalk-font-primary);
 }
 
-.chalk-board font-comic {
+.chalk-board .font-comic {
   font-family: var(--chalk-font-comic);
 }
 
-.chalk-board font-code {
+.chalk-board .font-code {
   font-family: var(--chalk-font-code);
 }
 
-.chalk-board font-math {
+.chalk-board .font-math {
   font-family: var(--chalk-font-math);
 }

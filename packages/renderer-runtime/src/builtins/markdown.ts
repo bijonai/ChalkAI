@@ -13,6 +13,10 @@ export const createMarkdown = () => {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
   return (source: string) => {
-    return processor.processSync(source).toString()
+    // Replace all `[<...>]<content>[/<...>]` to `<span class="..."><content></span>`
+    const processed = source.replaceAll(/`\[<([^>]+)>\]<([^>]+)>\/<([^>]+)>`/g, (match, p1, p2) => {
+      return `<span class="${p1}">${p2}</span>`
+    })
+    return processor.processSync(processed).toString()
   }
 }

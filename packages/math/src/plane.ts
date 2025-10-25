@@ -82,6 +82,7 @@ export const knowledge = definePrefabKnowledge((utils) => {
   utils.prop('domain')
     .describe('The domain of the plane')
     .type('[number, number]')
+  utils.rule('`plane` must be used under a `canvas` element')
   utils.rule('The y coordinate of `canvas` is downward by default, but the y coordinate of `plane` is upward. The y coordinates of all subcomponents under the plane will be automatically flipped.')
 })
 
