@@ -1,4 +1,4 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorContext, PrefabDefinition, RawContext } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorContext, PrefabDefinition, RawContext, PrefabParseType } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import { createDelegate } from "./delegate"
 import { createAnimate } from "./animation"
@@ -21,9 +21,10 @@ export function createRenderer() {
   }
   const components: Component<string>[] = []
 
-  const addComponents = (...components: (Component<string> | string)[]) => {
+  const addComponents = (...newComponents: (Component<string> | string)[]) => {
     const names: string[] = []
-    for (const component of components) {
+    console.log(newComponents)
+    for (const component of newComponents) {
       if (typeof component === 'string') {
         const parsed = parse(component)
         components.push(parsed)
@@ -97,7 +98,7 @@ export function createRenderer() {
     }
   }
 
-  const renderComponent = (element: BaseChalkElement<string>): Node | Node[] | null => {
+  const renderComponent = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
     if (!component) {
       errors.addError({ name: "Element Not Found", message: `Element ${element.name} not found`, element } satisfies ElementNotFoundError)
@@ -119,7 +120,7 @@ export function createRenderer() {
     // Set up default values to prevent undefined access
     return roots.flatMap(root => {
       if (typeof root === 'string') {
-        return renderText(root)
+        return renderText(root, parsetype)
       }
       root.attrs ??= {}
       root.events ??= {}
@@ -129,7 +130,7 @@ export function createRenderer() {
       const attrs = toProps(root.attrs, getActiveContext())
       return withContext(
         mergeContext(getActiveContext(), attrs),
-        (): Node | Node[] | null => renderElement(root!)
+        (): Node | Node[] | null => renderElement(root!, parsetype)
       )
     }) as Node[]
   }
@@ -137,7 +138,8 @@ export function createRenderer() {
   const renderPrefab = (
     element: BaseChalkElement<string>,
     props: RawContext,
-    { name, validator, generator, provides, defaults }: PrefabDefinition<string>
+    { name, validator, generator, provides, defaults }: PrefabDefinition<string>,
+    parsetype: PrefabParseType = 'node'
   ) => {
     // Set up default values to prevent undefined access
     element.attrs ??= {}
@@ -173,15 +175,15 @@ export function createRenderer() {
       if (!pre) continue
       return pre(getActiveContext(), element, (element, contextOverride) => {
         if (contextOverride) {
-          return withContext(contextOverride, () => renderNode(element))
+          return withContext(contextOverride, () => renderNode(element, parsetype))
         }
-        return renderNode(element)
+        return renderNode(element, parsetype)
       })
     }
 
     const children = withContext(
       mergeContext(getActiveContext(), provides ?? {}),
-      () => (element.children ?? []).flatMap(renderNode).filter(child => child !== null && child !== undefined)
+      () => (element.children ?? []).flatMap(child => renderNode(child, parsetype)).filter(child => child !== null && child !== undefined)
     )
 
     const generatorContext: PrefabGeneratorContext = {
@@ -229,12 +231,12 @@ export function createRenderer() {
     return node
   }
 
-  const renderElement = (element: BaseChalkElement<string>): Node | Node[] | null => {
+  const renderElement = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
     const pfbs = getRootSpace()
     console.log(pfbs)
     const pfb = pfbs.get(element.name)
     if (!pfb) {
-      return renderComponent(element)
+      return renderComponent(element, parsetype)
     }
 
     element.attrs ??= {}
@@ -260,7 +262,7 @@ export function createRenderer() {
       })
       return fragment
     }
-    return renderPrefab(element, props, maybePromise)
+    return renderPrefab(element, props, maybePromise, pfb.type)
     
   }
   
@@ -276,24 +278,24 @@ export function createRenderer() {
     return adhoc(source)
   }
 
-  const renderText = (source: string) => {
+  const renderText = (source: string, parsetype: PrefabParseType = 'node') => {
     const text = document.createElement('span')
     effect(() => {
       const value = source.replace(/{{(.*?)}}/g, (match, key) => {
         // 去除首尾空格
         return _renderValue(key.trim())
       })
-      text.innerHTML = markdown(value)
+      text.innerHTML = parsetype === 'node' ? markdown(value) : value
     })
     return text
   }
 
-  const renderNode = (element: BaseChalkElement<string> | string) => {
+  const renderNode = (element: BaseChalkElement<string> | string, parsetype: PrefabParseType = 'node') => {
     if (typeof element === 'string') {
-      return renderText(element)
+      return renderText(element, parsetype)
     }
     console.log(element, getActiveContext())
-    return renderElement(element)
+    return renderElement(element, parsetype)
   }
 
   const renderRoot = (root: string) => {
