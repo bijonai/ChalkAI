@@ -25,9 +25,9 @@ export function system(
   const calculators = knowledge.calculators.map(calculator => [calculator.name, calculator.description])
 
   const next = `
-There is a special \`next()\` API, which is used to jump to the next step. You can use it in event as a function.
+  There is a special \`next()\` API, which is used to jump to the next step. You can use it in event as a function.
 
-**DO NOT** define variables to represent the current step count privately, use the \`next()\` api to manage them uniformly.
+  **DO NOT** define variables to represent the current step count privately, use the \`next()\` api to manage them uniformly.
 `.trim()
   
   const thinking = reasoning
@@ -78,29 +78,18 @@ Output this format DIRECTLY in content:
 
 \`\`\`example
 <component>
-{
-  "name": "<component-name>",
-  "props": ["<prop-name>", "<prop-name>", ...],
-  "refs": {
-    "<ref-name>": "<ref-value>"
-  },
-  "root": {
-    "name": "<element-name>",
-    "attrs": {
-      "<attr-name>": "<attr-value>"
-    },
-    "events": {
-      "<event-name>": "<event-value>"
-    },
-    "statements": {
-      "<statement-name>": "<statement-value>"
-    },
-    "children": ["<element>", "<element>", ...],
-    "animations": {
-      "<event-name>": ["<animation-name>", "<animation-name>", ...]
-    }
-  }
-}
+---
+name: ComponentName
+props: [prop1, prop2, ...]
+refs:
+  ref1: expression
+  ref2: expression
+---
+<element>
+  <child/>
+  <child/>
+  ...
+</element>
 </component>
 \`\`\`
 
