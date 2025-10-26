@@ -1,6 +1,6 @@
 import { client } from '#shared/db'
 import { createAgent } from '@chalk-ai/agent'
-import { DEFAULT_API_KEY, DEFAULT_BASE_URL, DEFAULT_EMBED_MODEL, DEFAULT_EMBED_API_KEY, MODELS, DEFAULT_EMBED_BASE_URL, DEFAULT_KNOWLEDGE } from '#shared/env'
+import { DEFAULT_API_KEY, DEFAULT_BASE_URL, MODELS, DEFAULT_KNOWLEDGE } from '#shared/env'
 import { Message } from 'xsai'
 import { response } from '#shared/server/response'
 import { ClassroomStatus } from '#shared/db/client/classroom'
@@ -29,6 +29,12 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'classroom id is required',
     })
   }
+  if (body.model && !MODELS.includes(body.model)) {
+    return createError({
+      statusCode: 400,
+      statusMessage: 'model is not supported',
+    })
+  }
   await client.classroom.updateClassroomInfo(id, {
     title: body.title ?? 'Untitled',
   })
@@ -37,11 +43,6 @@ export default defineEventHandler(async (event) => {
     baseURL: DEFAULT_BASE_URL,
     model: body.model ?? MODELS[0],
     messages: context,
-    embedding: {
-      model: DEFAULT_EMBED_MODEL,
-      apiKey: DEFAULT_EMBED_API_KEY,
-      baseURL: DEFAULT_EMBED_BASE_URL,
-    },
     knowledge: data!,
     reasoning: body.reasoning ?? false,
   })

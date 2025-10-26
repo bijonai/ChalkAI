@@ -129,8 +129,8 @@ export function system(
   name: ComponentName
   props: [prop1, prop2, ...]
   refs:
-    ref_name1: expression
-    ref_name2: expression
+    ref_name1: "expression"
+    ref_name2: "expression"
   ---
   <element>
     <child/>
@@ -140,6 +140,11 @@ export function system(
   $$$
 
   Use a codeblock with $component$ tag, and use yaml to define the basic information of the component, write Chalk DSL code after the yaml block.
+
+  **⚠️ IMPORTANT YAML RULES:**
+  - **ALWAYS** wrap ref expressions in double quotes (e.g., $ref_name: "0"$, $count: "x + 1"$)
+  - **NEVER** output raw expressions without quotes (e.g., ❌ $ref_name: x + 1$ will cause YAML parsing errors)
+  - Even simple values should be quoted for consistency (e.g., $x: "0"$, $flag: "true"$)
 
   ## Tools
 
