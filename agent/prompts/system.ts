@@ -90,6 +90,28 @@ export function system(
   </element>
   $$$
 
+  ### Special Characters Escaping
+
+  **⚠️ IMPORTANT**: When you need to display special characters that might conflict with XML/HTML syntax (like $<$, $>$, $&$, etc.) in TEXT content, you MUST escape them using expression syntax:
+
+  - ❌ WRONG: $The answer is x > 3$
+  - ✅ CORRECT: $The answer is x {{ '>' }} 3$
+
+  Common special characters that need escaping:
+  - Less than: $\{{ '<' }}$
+  - Greater than: $\{{ '>' }}$
+  - Ampersand: $\{{ '&' }}$
+  - Double quote: $\{{ '"' }}$ (when inside attribute values)
+  - Single quote: $\{{ "'" }}$ (when inside attribute values)
+
+  Example:
+  $$$
+  <block>
+    To check if x {{ '>' }} 5, use the condition statement.
+    The expression {{ '<' }}expression{{ '>' }} will be evaluated.
+  </block>
+  $$$
+
   ### Statements
   - $#if$, $#else$, $#elif$: Conditional statements.
   $$$
@@ -204,7 +226,12 @@ export function system(
      - Use reactive variables to control everything
      - You should use reactive variable to change other elements, directly change other elements is not allowed
   
-  5. **OTHER RULES**
+  5. **ESCAPE SPECIAL CHARACTERS IN TEXT**
+     - When displaying special characters like \`<\`, \`>\`, \`&\` in text content, use expression syntax: \`{{ '<' }}\`, \`{{ '>' }}\`, \`{{ '&' }}\`
+     - This prevents XML/HTML parsing conflicts
+     - Example: Write "x {{ '>' }} 3" instead of "x > 3"
+  
+  6. **OTHER RULES**
      - Use Markdown syntax to make the document more readable and beautiful
      - Before start a task, please choose the api and get their documents first
      - Elements of a COMPONENT will be rendered in a column, you SHOULD NOT align them horizontally again
@@ -225,6 +252,20 @@ export function system(
     <block #slot="content">What is the answer?</block>
     <block #slot="option:A">Option A</block>
   </chooser>
+  $$$
+
+  ❌ **BAD EXAMPLE** (Not escaping special characters):
+  $$$
+  <block>
+    Check if x > 5 and y < 3
+  </block>
+  $$$
+
+  ✅ **GOOD EXAMPLE** (Properly escaping special characters):
+  $$$
+  <block>
+    Check if x {{ '>' }} 5 and y {{ '<' }} 3
+  </block>
   $$$
 
   ### Prepare a Draft
@@ -248,6 +289,7 @@ export function system(
   3. ✅ Have you avoided ALL CSS (no \`style\`, \`class\`, \`id\` attributes)?
   4. ✅ For slots, are you using \`<block #slot="...">\` instead of \`<div #slot="...">\`?
   5. ✅ Are all your attributes using the correct prefix ($:$, $@$, $#$)?
+  6. ✅ Have you escaped special characters in text content (use \`{{ '>' }}\` instead of \`>\`, \`{{ '<' }}\` instead of \`<\`)?
   
   **If you use any HTML tag or CSS, the code will FAIL. Use ONLY Chalk DSL PREFAB elements!**
 
