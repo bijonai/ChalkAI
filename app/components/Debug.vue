@@ -3,6 +3,8 @@ import { createHighlighter } from 'shiki'
 import type { Board } from '~~/shared';
 import { parseComponentInfo } from '@chalk-dsl/renderer-runtime'
 
+const hide = defineModel<boolean>('hide', { default: true })
+
 const { board } = defineProps<{
   board: Board | null
 }>()
@@ -37,39 +39,70 @@ const content = computed(() => {
   })
 })
 
-const hide = ref(true)
+
 </script>
 
 <template>
-  <div class="flex flex-row h-full w-full bg-white border p-2 gap-2" v-if="!hide">
+  <div
+    v-if="!hide"
+    class="flex flex-row h-full w-full bg-white border p-2 gap-2 pointer-events-auto"
+  >
     <div class="h-full flex flex-col gap-1 p-1">
       <div class="flex flex-col gap-1 h-full">
-        <div class=" text-gray-800 border-b border-gray-800 select-none cursor-pointer"
-          v-for="(step, index) in board?.steps" :key="index">
+        <div
+          v-for="(step, index) in board?.steps"
+          :key="index"
+          class=" text-gray-800 border-b border-gray-800 select-none cursor-pointer"
+        >
           <div>
-            <span v-if="step.conditional"
-              class="text-gray-400 border border-sky-3 bg-sky-1 text-xs p-1 rounded-md mr-2">conditional</span>
+            <span
+              v-if="step.conditional"
+              class="text-gray-400 border border-sky-3 bg-sky-1 text-xs p-1 rounded-md mr-2"
+            >conditional</span>
             <span>{{ index + 1 }}. {{ step.description }}</span>
           </div>
           <div class="pl-4">
-            <div v-for="(component, i) in step.components" :key="i" class="hover:text-sky-2"
-              @click="current = component">
+            <div
+              v-for="(component, i) in step.components"
+              :key="i"
+              class="hover:text-sky-2"
+              @click="current = component"
+            >
               <span>{{ component }}</span>
             </div>
           </div>
         </div>
         <div class="flex flex-col h-full mb-auto justify-end">
-          <div class="h-8 w-20 flex" v-show="!hide">
-            <Button variant="accent" @click="hide = true">Hide</Button>
+          <div
+            v-show="!hide"
+            class="h-8 w-20 flex"
+          >
+            <Button
+              variant="accent"
+              @click="hide = true"
+            >
+              Hide
+            </Button>
           </div>
         </div>
       </div>
     </div>
-    <div class="w-full overflow-x-auto overflow-y-auto h-full max-h-full p-2 pre" v-html="content" />
+    <div
+      class="w-full overflow-x-auto overflow-y-auto h-full max-h-full p-2 pre"
+      v-html="content"
+    />
   </div>
-  <div class="w-full flex flex-row justify-end mr-auto">
-    <div class="h-8 w-20 flex" v-show="hide">
-      <Button variant="accent" @click="hide = false">Debug</Button>
+  <div class="w-full flex flex-row justify-end mr-auto pointer-events-auto">
+    <div
+      v-show="hide"
+      class="h-8 w-20 flex"
+    >
+      <Button
+        variant="accent"
+        @click="hide = false"
+      >
+        Debug
+      </Button>
     </div>
   </div>
 </template>

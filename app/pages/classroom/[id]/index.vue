@@ -31,15 +31,27 @@ onMounted(async () => {
 })
 
 const { app: { buildId } } = useRuntimeConfig()
+const debug = ref(true)
 </script>
 
 <template>
   <div class="size-full flex flex-row">
-    <div class="fixed right-0 flex h-full w-1/2 pre" v-if="buildId === 'dev'">
-      <Debug :board="board" />
+    <div
+      v-if="buildId === 'dev'"
+      class="fixed z-0 right-0 flex pre"
+      :class="{
+        'h-full w-1/2': !debug,
+      }"
+    >
+      <Debug :board="board" v-model:hide="debug" />
     </div>
     <div class="min-w-full max-w-full overflow-y-auto chalk-board flex flex-col items-center gap-10 px-36">
-      <div v-for="(container, index) in containers" :key="index" :ref="container" class="w-full"></div>
+      <div
+        v-for="(container, index) in containers"
+        :key="index"
+        :ref="container"
+        class="w-full"
+      />
     </div>
   </div>
 </template>
