@@ -28,6 +28,7 @@ export function createRenderer() {
       if (typeof component === 'string') {
         const parsed = parse(component)
         components.push(parsed)
+        console.log(parsed)
         names.push(parsed.name)
       } else {
         components.push(component)
@@ -281,10 +282,10 @@ export function createRenderer() {
   const renderText = (source: string, parsetype: PrefabParseType = 'node') => {
     const text = document.createElement('span')
     effect(() => {
-      const value = source.replace(/{{(.*?)}}/g, (match, key) => {
-        // 去除首尾空格
-        return _renderValue(key.trim())
+      const value = source.replace(/\n*{{(.*?)}}\n*/g, (match, key) => {
+        return String(_renderValue(key)).trim()
       })
+      console.log(value)
       text.innerHTML = parsetype === 'node' ? markdown(value) : value
     })
     return text

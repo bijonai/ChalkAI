@@ -14,7 +14,7 @@ export const createMarkdown = () => {
     .use(rehypeStringify, { allowDangerousHtml: true })
   return (source: string) => {
     // Replace all `[<...>]<content>[/<...>]` to `<span class="..."><content></span>`
-    const processed = source.replaceAll(/`\[<([^>]+)>\]<([^>]+)>\/<([^>]+)>`/g, (match, p1, p2) => {
+    const processed = source.replaceAll(/\[(.*?)\](.*?)\[\/(.*?)\]/g, (match, p1, p2) => {
       return `<span class="${p1}">${p2}</span>`
     })
     return processor.processSync(processed).toString()
