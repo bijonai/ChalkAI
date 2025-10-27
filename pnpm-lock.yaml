@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@chalk-ai/agent':
+        specifier: workspace:*
+        version: link:agent
       '@chalk-dsl/canvas':
         specifier: workspace:*
         version: link:packages/canvas
@@ -83,6 +86,9 @@ importers:
       sciux:
         specifier: ^0.0.7
         version: 0.0.7
+      shiki:
+        specifier: ^3.13.0
+        version: 3.13.0
       vue:
         specifier: ^3.5.21
         version: 3.5.21(typescript@5.9.2)
@@ -129,6 +135,21 @@ importers:
       vue-eslint-parser:
         specifier: ^10.2.0
         version: 10.2.0(eslint@9.35.0(jiti@2.5.1))
+
+  agent:
+    dependencies:
+      '@chalk-dsl/knowledge':
+        specifier: workspace:*
+        version: link:../packages/knowledge
+      '@chalk-dsl/renderer-runtime':
+        specifier: workspace:*
+        version: link:../packages/renderer-runtime
+      '@chalk-dsl/x':
+        specifier: workspace:*
+        version: link:../packages/x
+      xsai:
+        specifier: ^0.4.0-beta.3
+        version: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
 
   packages/canvas:
     dependencies:
@@ -270,6 +291,9 @@ importers:
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:../renderer-core
+      '@chalk-dsl/x':
+        specifier: workspace:*
+        version: link:../x
       morphdom:
         specifier: ^2.7.7
         version: 2.7.7
@@ -313,6 +337,28 @@ importers:
       shiki:
         specifier: ^3.13.0
         version: 3.13.0
+
+  packages/x:
+    dependencies:
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:../renderer-core
+      '@chalk-dsl/x-parser':
+        specifier: workspace:*
+        version: link:../x-parser
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+    devDependencies:
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
+
+  packages/x-parser:
+    dependencies:
+      parse-entities:
+        specifier: ^4.0.2
+        version: 4.0.2
 
 packages:
 
@@ -1819,6 +1865,9 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
+
+  '@types/js-yaml@4.0.9':
+    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -7613,6 +7662,8 @@ snapshots:
   '@types/hast@3.0.4':
     dependencies:
       '@types/unist': 3.0.3
+
+  '@types/js-yaml@4.0.9': {}
 
   '@types/json-schema@7.0.15': {}
 

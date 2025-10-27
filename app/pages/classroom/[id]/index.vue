@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Board } from '~~/shared'
+import { createHighlighter } from 'shiki'
 
 const containers = ref<Ref<HTMLElement | null>[]>([])
 const id = useRoute().params.id as string
@@ -16,26 +17,35 @@ const getInfo = async () => {
 const { loadBoard } = useBoard()
 
 onMounted(async () => {
-  await getInfo()
-  if (!board.value) return
-  const [steps, _render] = loadBoard(board.value)
-  containers.value.push(...steps)
-  nextTick(() => {
-    _render()
-    // setInterval(() => {
-    //   next()
-    // }, 100)
-  })
+  try {
+    await getInfo()
+    if (!board.value) return
+    const [steps, _render] = loadBoard(board.value)
+    containers.value.push(...steps)
+    nextTick(() => {
+      _render()
+    })
+  } catch (error) {
+    console.error(error)
+  }
 })
+
+const { app: { buildId } } = useRuntimeConfig()
 </script>
 
 <template>
-  <div class="size-full flex">
-    <div class="max-w-full overflow-y-auto w-full chalk-board flex flex-col items-center gap-10 px-36">
-      <div 
-        v-for="(container, index) in containers" :key="index" :ref="container"
-        class="w-full"
-      ></div>
+  <div class="size-full flex flex-row">
+    <div class="fixed right-0 flex h-full w-1/2 pre" v-if="buildId === 'dev'">
+      <Debug :board="board" />
+    </div>
+    <div class="min-w-full max-w-full overflow-y-auto chalk-board flex flex-col items-center gap-10 px-36">
+      <div v-for="(container, index) in containers" :key="index" :ref="container" class="w-full"></div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.pre {
+  padding: 30px;
+}
+</style>

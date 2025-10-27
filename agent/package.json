@@ -1,0 +1,21 @@
+{
+  "name": "@chalk-ai/agent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "build": "tsup build index.ts",
+    "test": "tsup test/main.test.ts && node dist/main.test.cjs",
+    "test:parser": "tsup test/parser.test.ts && node dist/parser.test.cjs"
+  },
+  "dependencies": {
+    "@chalk-dsl/renderer-runtime": "workspace:*",
+    "@chalk-dsl/x": "workspace:*",
+    "@chalk-dsl/knowledge": "workspace:*",
+    "xsai": "^0.4.0-beta.3"
+  },
+  "exports": {
+    ".": "./index.ts"
+  }
+}

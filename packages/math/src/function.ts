@@ -74,7 +74,7 @@ registerPrefab('function', func)
 
 export const knowledge = definePrefabKnowledge((utils) => {
   utils.name('function')
-  utils.description('A function widget')
+  utils.description('A function graph under `canvas`')
   utils.prop('expr')
     .describe('The expression of the function')
     .type('(x: number) => number')
@@ -87,5 +87,7 @@ export const knowledge = definePrefabKnowledge((utils) => {
   utils.prop('color')
     .describe('The color of the function')
     .optional('primary')
+  utils.rule('`function` must be used under a `canvas` element, better under a `plane` element')
+  utils.rule('`plane` element must be used under a `canvas` element')
 })
 addPrefabKnowledge(knowledge)

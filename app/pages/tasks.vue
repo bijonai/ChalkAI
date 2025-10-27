@@ -67,6 +67,22 @@ const getClassrooms = async () => {
 onMounted(async () => {
   getClassrooms()
 })
+
+const deleteClassroom = async (id: string) => {
+  const { data } = await $fetch(`/api/classroom/${id}`, {
+    method: 'DELETE',
+  })
+  if (data && 'id' in data) {
+    classrooms.value = classrooms.value.filter(c => c.id !== data.id)
+  }
+}
+
+const refreshClassroom = async (id: string) => {
+  const { data } = await $fetch(`/api/classroom/${id}/`)
+  if (data && 'classroom' in data) {
+    classrooms.value = classrooms.value.map(c => c.id === id ? { ...c, ...data.classroom } : c)
+  }
+}
 </script>
 
 
@@ -84,7 +100,7 @@ onMounted(async () => {
         </Button>
       </div>
       <div class="w-full grid md:grid-cols-3 sm:grid-cols-1 gap-2">
-        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" v-show="isFiltered(c.title)" />
+        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" v-show="isFiltered(c.title)" @delete="deleteClassroom" @refresh="refreshClassroom" />
       </div>
     </div>
     <Transition name="fade">

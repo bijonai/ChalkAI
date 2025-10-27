@@ -15,9 +15,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "knowledge": "tsup build scripts/knowledge.ts && node dist/knowledge.js",
-    "test:agent": "tsup build agent/test/main.test.ts && node dist/main.test.js"
+    "test:agent": "tsx agent/test/main.test.ts"
   },
   "dependencies": {
+    "@chalk-ai/agent": "workspace:*",
     "@chalk-dsl/canvas": "workspace:*",
     "@chalk-dsl/form": "workspace:*",
     "@chalk-dsl/knowledge": "workspace:*",
@@ -43,6 +44,7 @@
     "nuxt": "^4.1.1",
     "pg": "^8.16.3",
     "sciux": "^0.0.7",
+    "shiki": "^3.13.0",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1",
     "xsai": "0.4.0-beta.3",
