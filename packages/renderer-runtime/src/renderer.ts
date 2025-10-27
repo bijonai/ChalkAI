@@ -71,32 +71,7 @@ export function createRenderer() {
   }
 
   const processRefs = (sources: Record<string, string>) => {
-    const refs = Object.entries(sources)
-    const retryWaitlist: string[] = []
-    const resolve = (key: string, value: string, retrying: boolean = false) => {
-      const _ref = ref()
-      setValue(key, _ref)
-      effect(() => {
-        try {
-          _ref.value = createAdhoc(getActiveContext())(value)
-          if (retryWaitlist.includes(key)) {
-            retryWaitlist.splice(retryWaitlist.indexOf(key), 1)
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-          if (retrying) return
-          retryWaitlist.push(key)
-        }
-        if (retrying) return
-        for (const key of retryWaitlist) {
-          resolve(key, sources[key], true)
-        }
-      })
-    }
-    for (const reflection of refs) {
-      const [key, value] = reflection
-      resolve(key, value)
-    }
+    
   }
 
   const renderComponent = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
@@ -116,7 +91,36 @@ export function createRenderer() {
       preprocessElement(root)
     }
 
-    processRefs(component.refs ?? {})
+    console.log(component)
+
+    const refs = Object.entries(component.refs ?? {})
+    const retryWaitlist: string[] = []
+    const resolve = (key: string, value: string, retrying: boolean = false) => {
+      const _ref = ref()
+      setValue(key, _ref)
+      const update = () => {
+        try {
+          _ref.value = createAdhoc(getActiveContext())(value)
+          if (retryWaitlist.includes(key)) {
+            retryWaitlist.splice(retryWaitlist.indexOf(key), 1)
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          if (retrying) return
+          retryWaitlist.push(key)
+        }
+        if (retrying) return
+        for (const key of retryWaitlist) {
+          resolve(key, component.refs![key], true)
+        }
+      }
+      update()
+      effect(update)
+    }
+    for (const reflection of refs) {
+      const [key, value] = reflection
+      resolve(key, value)
+    }
 
     // Set up default values to prevent undefined access
     return roots.flatMap(root => {
