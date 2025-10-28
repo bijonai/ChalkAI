@@ -17,16 +17,16 @@ export const createMarkdown = () => {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeKatex, { output: 'mathml' })
     .use(rehypeStringify, { allowDangerousHtml: true })
-  // .use(rehypeShiki, {
-  //   themes: {
-  //     default: 'github-dark',
-  //   },
-  // })
-  return (source: string) => {
+    .use(rehypeShiki, {
+      themes: {
+        default: 'github-dark',
+      },
+    })
+  return async (source: string) => {
     // Replace all `[<...>]<content>[/<...>]` to `<span class="..."><content></span>`
     const processed = source.replaceAll(/\[(.*?)\](.*?)\[\/(.*?)\]/g, (match, p1, p2) => {
       return `<span class="${p1}">${p2}</span>`
     })
-    return processor.processSync(processed).toString()
+    return processor.process(processed)
   }
 }

@@ -68,10 +68,6 @@ export function createRenderer() {
     element.parent = parent
   }
 
-  const processRefs = (sources: Record<string, string>) => {
-    
-  }
-
   const renderComponent = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
     if (!component) {
@@ -282,7 +278,13 @@ export function createRenderer() {
       const value = source.replace(/\n*{{(.*?)}}\n*/g, (match, key) => {
         return String(_renderValue(key)).trim()
       })
-      text.innerHTML = parsetype === 'node' ? markdown(value) : value
+      if (parsetype === 'node') {
+        markdown(value).then(result => {
+          text.innerHTML = result.toString()
+        })
+      } else {
+        text.innerHTML = value
+      }
     })
     return text
   }
@@ -327,7 +329,6 @@ export function createRenderer() {
   
   return {
     ...errors,
-    processRefs,
     render,
     renderRoot,
     renderElement,
