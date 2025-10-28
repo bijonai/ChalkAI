@@ -1,7 +1,6 @@
 import { client } from '#shared/db'
-import { createAgent } from '@chalk-ai/agent'
+import { createWorkflow } from '@chalk-ai/workflow'
 import { DEFAULT_API_KEY, DEFAULT_BASE_URL, MODELS, DEFAULT_KNOWLEDGE } from '#shared/env'
-import { Message } from 'xsai'
 import { response } from '#shared/server/response'
 import { ClassroomStatus } from '#shared/db/client/classroom'
 import { createEmptyBoard } from '~~/shared'
@@ -37,12 +36,7 @@ export default defineEventHandler(async (event) => {
   await client.classroom.updateClassroomInfo(id, {
     title: body.title ?? 'Untitled',
   })
-  const agent = createAgent({
-    apiKey: DEFAULT_API_KEY,
-    baseURL: DEFAULT_BASE_URL,
-    model: body.model ?? MODELS[0],
-    messages: context,
-    knowledge: data!,
+  const { start } = createWorkflow({
     board,
     coder: {
       apiKey: DEFAULT_API_KEY,
@@ -59,6 +53,7 @@ export default defineEventHandler(async (event) => {
       messages: [],
       knowledge: data!,
     },
+    knowledge: data!,
   })
   const generate = async () => {
     await client.classroom.updateClassroomInfo(id, {

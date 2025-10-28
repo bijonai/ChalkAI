@@ -16,10 +16,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "knowledge": "tsup build scripts/knowledge.ts && node dist/knowledge.js",
-    "test:agent": "tsup build workflow/test/main.test.ts && node dist/main.test.js"
+    "test:workflow": "tsup build workflow/test/main.test.ts && node dist/main.test.js"
   },
   "dependencies": {
-    "@chalk-ai/agent": "workspace:*",
+    "@chalk-ai/workflow": "workspace:*",
     "@chalk-dsl/canvas": "workspace:*",
     "@chalk-dsl/form": "workspace:*",
     "@chalk-dsl/knowledge": "workspace:*",

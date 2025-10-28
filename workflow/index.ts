@@ -6,24 +6,24 @@ import type { Knowledge } from '@chalk-dsl/knowledge'
 import * as tools from './tools'
 import { createParser } from './parser'
 
-export interface BaseAgentParams {
+export interface BaseWorkflowParams {
   apiKey: string
   baseURL: string
   model: string
   messages: Message[]
 }
 
-export interface CoderParams extends BaseAgentParams {
+export interface CoderParams extends BaseWorkflowParams {
   knowledge: Knowledge
   dev?: string
   reasoning?: boolean
 }
 
-export interface PlannerParams extends BaseAgentParams {
+export interface PlannerParams extends BaseWorkflowParams {
   knowledge: Knowledge
 }
 
-export interface ReviewerParams extends BaseAgentParams {
+export interface ReviewerParams extends BaseWorkflowParams {
 
 }
 

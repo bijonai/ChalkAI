@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@chalk-ai/agent':
+      '@chalk-ai/workflow':
         specifier: workspace:*
-        version: link:agent
+        version: link:workflow
       '@chalk-dsl/canvas':
         specifier: workspace:*
         version: link:packages/canvas
@@ -135,21 +135,6 @@ importers:
       vue-eslint-parser:
         specifier: ^10.2.0
         version: 10.2.0(eslint@9.35.0(jiti@2.5.1))
-
-  agent:
-    dependencies:
-      '@chalk-dsl/knowledge':
-        specifier: workspace:*
-        version: link:../packages/knowledge
-      '@chalk-dsl/renderer-runtime':
-        specifier: workspace:*
-        version: link:../packages/renderer-runtime
-      '@chalk-dsl/x':
-        specifier: workspace:*
-        version: link:../packages/x
-      xsai:
-        specifier: ^0.4.0-beta.3
-        version: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
 
   packages/canvas:
     dependencies:
@@ -374,6 +359,21 @@ importers:
       parse-entities:
         specifier: ^4.0.2
         version: 4.0.2
+
+  workflow:
+    dependencies:
+      '@chalk-dsl/knowledge':
+        specifier: workspace:*
+        version: link:../packages/knowledge
+      '@chalk-dsl/renderer-runtime':
+        specifier: workspace:*
+        version: link:../packages/renderer-runtime
+      '@chalk-dsl/x':
+        specifier: workspace:*
+        version: link:../packages/x
+      xsai:
+        specifier: ^0.4.0-beta.3
+        version: 0.4.0-beta.3(arktype@2.1.22)(zod-to-json-schema@3.24.6(zod@4.1.9))(zod@4.1.9)
 
 packages:
 
