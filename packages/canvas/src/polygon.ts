@@ -1,23 +1,23 @@
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core"
-import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, Strokeable, strokeableKnowledge, Vector2 } from "./shared"
+import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, fillableKnowledge, Fillable, Strokeable, strokeableKnowledge, Vector2 } from "./shared"
 import * as d3 from 'd3'
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default"
 
-export interface PolylineAttributes extends BaseCanvasElementAttributes, Strokeable {
+export interface PolygonAttributes extends BaseCanvasElementAttributes, Strokeable, Fillable {
   points: Vector2[]
 }
 
-const polyline = definePrefab<'polyline', PolylineAttributes, { division: Vector2 }>((context) => {
+const polygon = definePrefab<'polygon', PolygonAttributes, { division: Vector2 }>((context) => {
   return {
-    name: 'polyline',
+    name: 'polygon',
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs, context.division)
       const [xDivision, yDivision] = context.division
 
       const generatePath = () => attrs.points.map(
         ([x, y], index) => index === 0 ? `M${x * xDivision},${y * yDivision}` : `L${x * xDivision},${y * yDivision}`
-      ).join(' ')
+      ).join(' ') + ' Z'
 
       d3.select(root).append('path')
         .attr('d', generatePath())
@@ -27,20 +27,21 @@ const polyline = definePrefab<'polyline', PolylineAttributes, { division: Vector
   }
 })
 
-registerPrefab('polyline', polyline)
+registerPrefab('polygon', polygon)
 
-export default polyline
+export default polygon
 
 // ------
 
-export const knowledge = definePrefabKnowledge<PolylineAttributes>((utils) => {
-  utils.name('polyline')
-  utils.description('Polyline, used in canvas')
+export const knowledge = definePrefabKnowledge<PolygonAttributes>((utils) => {
+  utils.name('polygon')
+  utils.description('Polygon, used in canvas')
   utils.extend(baseCanvasElementKnowledge)
   utils.extend(strokeableKnowledge)
+  utils.extend(fillableKnowledge)
 
   utils.prop('points')
-    .describe('The points of the polyline')
+    .describe('The points of the polygon')
     .type('[number, number][]')
 })
 addPrefabKnowledge(knowledge)
