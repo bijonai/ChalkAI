@@ -1,5 +1,5 @@
 import { BaseCanvasElementAttributes, createCanvasElementContainer, Vector2 } from "@chalk-dsl/canvas"
-import { computed, definePrefab, ref, registerPrefab } from "@chalk-dsl/renderer-core"
+import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core"
 import * as d3 from 'd3'
 import { arrow } from "./vector"
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
@@ -20,7 +20,7 @@ const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((con
   return {
     name: 'plane',
     generator: (attrs, children) => {
-      const root = createCanvasElementContainer(attrs, division)
+      const root = createCanvasElementContainer(attrs, <Vector2>division)
 
       const selection = d3.select(root)
 
@@ -57,7 +57,7 @@ const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((con
 
       // Children
       children().forEach((child) => {
-        d3.select(root).append(() => child)
+        d3.select(root).append(() => <HTMLElement>child)
       })
 
       return root
@@ -82,6 +82,7 @@ export const knowledge = definePrefabKnowledge((utils) => {
   utils.prop('domain')
     .describe('The domain of the plane')
     .type('[number, number]')
+  utils.rule('`plane` must be used under a `canvas` element')
   utils.rule('The y coordinate of `canvas` is downward by default, but the y coordinate of `plane` is upward. The y coordinates of all subcomponents under the plane will be automatically flipped.')
 })
 

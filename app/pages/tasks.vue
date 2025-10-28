@@ -67,6 +67,22 @@ const getClassrooms = async () => {
 onMounted(async () => {
   getClassrooms()
 })
+
+const deleteClassroom = async (id: string) => {
+  const { data } = await $fetch(`/api/classroom/${id}`, {
+    method: 'DELETE',
+  })
+  if (data && 'id' in data) {
+    classrooms.value = classrooms.value.filter(c => c.id !== data.id)
+  }
+}
+
+const refreshClassroom = async (id: string) => {
+  const { data } = await $fetch(`/api/classroom/${id}/`)
+  if (data && 'classroom' in data) {
+    classrooms.value = classrooms.value.map(c => c.id === id ? { ...c, ...data.classroom } : c)
+  }
+}
 </script>
 
 
@@ -78,22 +94,43 @@ onMounted(async () => {
       </h1>
       <div class="flex flex-row w-full gap-2">
         <Input v-model="filter" />
-        <Button variant="accent" class="flex flex-row gap-2 w-30" @click="open = true">
-          <FontAwesomeIcon class="size-4" :icon="faPlus" />
+        <Button
+          variant="accent"
+          class="flex flex-row gap-2 w-30"
+          @click="open = true"
+        >
+          <FontAwesomeIcon
+            class="size-4"
+            :icon="faPlus"
+          />
           <span>Create</span>
         </Button>
       </div>
       <div class="w-full grid md:grid-cols-3 sm:grid-cols-1 gap-2">
-        <ClassroomCard v-for="c in classrooms" v-bind="c" :key="c.id" v-show="isFiltered(c.title)" />
+        <ClassroomCard
+          v-for="c in classrooms"
+          v-show="isFiltered(c.title)"
+          v-bind="c"
+          :key="c.id"
+          @delete="deleteClassroom"
+          @refresh="refreshClassroom"
+        />
       </div>
     </div>
     <Transition name="fade">
-      <dialog v-if="open" :open="open"
-        class="fixed w-screen h-screen inset-0 z-50 bg-transparent bg-opacity-50 backdrop-blur-sm">
-        <div class="flex min-h-screen items-center justify-center p-4" @click.self="open = false">
+      <dialog
+        v-if="open"
+        :open="open"
+        class="fixed w-screen h-screen inset-0 z-50 bg-transparent bg-opacity-50 backdrop-blur-sm"
+      >
+        <div
+          class="flex min-h-screen items-center justify-center p-4"
+          @click.self="open = false"
+        >
           <div
             class="w-full max-w-md p-6 bg-#1a1a1a rounded-lg border border-primary shadow-2xl transform transition-all"
-            @click.stop>
+            @click.stop
+          >
             <div class="flex flex-col mb-6">
               <h1 class="text-primary text-xl font-semibold mb-2">
                 Create Classroom Task
@@ -103,7 +140,11 @@ onMounted(async () => {
               </p>
             </div>
             <div class="flex flex-col gap-4 mb-6">
-              <Input placeholder="title (optional)" class="h-10" v-model="createTitle" />
+              <Input
+                v-model="createTitle"
+                placeholder="title (optional)"
+                class="h-10"
+              />
             </div>
             <div class="h-32">
               <TextArea v-model="createInput" />
@@ -114,13 +155,23 @@ onMounted(async () => {
             </div>
             <div class="flex items-center gap-3">
               <span class="text-sub text-sm">Model</span>
-              <Select v-model="createModel" :options="modelsSelect.map(m => ({ label: m, value: m }))" />
+              <Select
+                v-model="createModel"
+                :options="modelsSelect.map(m => ({ label: m, value: m }))"
+              />
             </div>
             <div class="flex justify-end gap-3 mt-6">
-              <Button variant="hover" @click="open = false">
+              <Button
+                variant="hover"
+                @click="open = false"
+              >
                 Cancel
               </Button>
-              <Button variant="accent" @click="create" :disable="createDisable">
+              <Button
+                variant="accent"
+                :disable="createDisable"
+                @click="create"
+              >
                 Create
               </Button>
             </div>

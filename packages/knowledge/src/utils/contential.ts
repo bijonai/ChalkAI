@@ -1,6 +1,6 @@
 import { PrefabKnowledge } from "../prefab";
 
-export const prefab = (prefab: PrefabKnowledge) => {
+export const prefabritize = (prefab: PrefabKnowledge) => {
   const header = `
   ## \`${prefab.name}\`
   > ${prefab.description}

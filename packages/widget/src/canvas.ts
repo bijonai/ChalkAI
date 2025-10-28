@@ -45,8 +45,6 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
         const bbox = root.getBBox()
         const canvasRect = canvas.getBoundingClientRect()
 
-        const x = attrs.domain ? attrs.domain[0] : bbox.x
-        const y = attrs.range ? attrs.range[0] : bbox.y
         const width = attrs.domain ? attrs.domain[1] - attrs.domain[0] : bbox.width
         const height = attrs.range ? attrs.range[1] - attrs.range[0] : bbox.height
 

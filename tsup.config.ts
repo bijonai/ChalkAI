@@ -1,11 +1,13 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  format: 'esm',
+  format: ['esm', 'cjs'],
   target: 'esnext',
   noExternal: [
     '@chalk-dsl/renderer-core',
     '@chalk-dsl/renderer-runtime',
+    '@chalk-dsl/x-parser',
+    '@chalk-dsl/x',
     '@chalk-dsl/knowledge',
     '@chalk-dsl/theme-default',
     '@chalk-dsl/utils-theme',
@@ -20,3 +22,5 @@ export default defineConfig({
     DEBUG: '*'
   }
 })
+
+

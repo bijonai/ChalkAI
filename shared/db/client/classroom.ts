@@ -31,6 +31,14 @@ export interface ClassroomInfo {
   status: ClassroomStatus,
 }
 
+export const deleteClassroom = async (id: string) => {
+  return await db
+    .delete(classroomTable)
+    .where(eq(classroomTable.id, id))
+    .returning({ id: classroomTable.id })
+    .then(r => r.at(0) ?? null) as ClassroomInfo | null
+}
+
 export const getClassroomInfo = async (id: string) => {
   return await db
     .select({

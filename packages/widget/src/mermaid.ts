@@ -5,11 +5,12 @@ import { registerPrefab } from "@chalk-dsl/renderer-runtime"
 import mmd from 'mermaid'
 import { toText } from "./code"
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MermaidAttributes {
   
 }
 
-const mermaid = definePrefab<'mermaid', MermaidAttributes>((context) => {
+const mermaid = definePrefab<'mermaid', MermaidAttributes>(() => {
   mmd.initialize({
     theme: 'base'
   })

@@ -1,4 +1,4 @@
-import { PrefabKnowledge, definePrefabKnowledge } from "@chalk-dsl/knowledge";
+import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { useSlot } from "@chalk-dsl/renderer-runtime";

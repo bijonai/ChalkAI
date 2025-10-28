@@ -3,18 +3,25 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {},
+  "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
     "@chalk-dsl/renderer-core": "workspace:*",
+    "@chalk-dsl/x": "workspace:*",
+    "@shikijs/rehype": "^3.14.0",
     "morphdom": "^2.7.7",
+    "rehype-katex": "^7.0.1",
+    "rehype-shiki": "^0.0.9",
     "rehype-stringify": "^10.0.1",
+    "remark-emoji": "^5.0.2",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
+    "shiki": "^3.13.0",
     "unified": "^11.0.5"
   }
 }

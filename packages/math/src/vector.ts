@@ -8,7 +8,7 @@ import * as d3 from 'd3'
 export const arrow = (
   x1: number, y1: number,
   x2: number, y2: number,
-  selection: d3.Selection<SVGGElement, unknown, null, any>,
+  selection: d3.Selection<SVGGElement, unknown, null, unknown>,
   color: string = theme.pallete('primary')
 ) => {
   selection.append('line')
@@ -67,7 +67,7 @@ export default vector
 
 export const knowledge = definePrefabKnowledge<VectorAttributes>((utils) => {
   utils.name('vector')
-  utils.description('A vector math widget')
+  utils.description('A vector under `canvas`')
   utils.prop('from')
     .describe('The starting point of the vector')
     .type('[number, number]')
@@ -78,6 +78,7 @@ export const knowledge = definePrefabKnowledge<VectorAttributes>((utils) => {
     .describe('The color of the vector')
     .type('string')
     .optional('primary')
+  utils.rule('`vector` must be used under a `canvas` element')
 })
 
 addPrefabKnowledge(knowledge)

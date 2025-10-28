@@ -1,4 +1,4 @@
-import { definePrefab, PrefabGenerator, registerPrefab } from "@chalk-dsl/renderer-core"
+import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core"
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { FormModelAttributes, modelKnowledge, parseModel } from "./shared";
@@ -57,7 +57,9 @@ export const slider = definePrefab<'slider', SliderAttributes>((context) => ({
     const syncModel = (val: number) => {
       if (attrs.model) {
         const { model } = parseModel(attrs.model)
-        model && (context[model] = val)
+        if (model) {
+          context[model] = val
+        }
       }
     }
     value.listener.push(syncModel)

@@ -1,5 +1,4 @@
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
-import { theme } from "@chalk-dsl/utils-theme";
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 
