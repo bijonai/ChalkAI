@@ -53,7 +53,7 @@ const func = definePrefab<'function', FunctionAttributes, { division: Vector2 }>
     name: 'function',
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs, context.division)
-      const { path, length } = curve(attrs.expr, attrs.domain, attrs.range ?? attrs.domain, context.division)
+      const { path } = curve(attrs.expr, attrs.domain, attrs.range ?? attrs.domain, context.division)
 
       d3.select(root).append('path')
         .attr('d', path)

@@ -1,4 +1,4 @@
-import { BaseChalkElement, Context, createAdhoc, defineStatement, effect, mergeContext, reactive, ref, registerStatement, StatementPostGenerator } from "@chalk-dsl/renderer-core";
+import { BaseChalkElement, Context, createAdhoc, defineStatement, effect, mergeContext, reactive, ref, registerStatement } from "@chalk-dsl/renderer-core";
 import { toArray } from "../renderer";
 import morph from 'morphdom'
 
@@ -25,7 +25,7 @@ export const forStatement = defineStatement((source) => {
       const [v, iterableSource] = source.split(' in ')
       console.log('v', v, iterableSource, source)
       const iterable = createAdhoc(context)(iterableSource) as Iterable<unknown>
-      delete element.statements['for']
+      delete element.statements!['for']
 
       console.log(element)
       const target: Node[] = resolve(iterable, v, element, res, context)

@@ -8,7 +8,7 @@ import * as d3 from 'd3'
 export const arrow = (
   x1: number, y1: number,
   x2: number, y2: number,
-  selection: d3.Selection<SVGGElement, unknown, null, any>,
+  selection: d3.Selection<SVGGElement, unknown, null, unknown>,
   color: string = theme.pallete('primary')
 ) => {
   selection.append('line')

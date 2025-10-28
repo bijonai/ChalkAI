@@ -1,4 +1,4 @@
-import { parseComponent, parseX } from "../src"
+import { parseComponent } from "../src"
 
 const content = `
 ---

@@ -1,8 +1,8 @@
 import { parseEntities } from 'parse-entities'
 
-export const TAG_START_REG = /^<(\p{ID_Start}[\p{ID_Continue}:.$@\-]*)/u
-export const DIRECTIVE_REG = /^<!(\p{ID_Start}[\p{ID_Continue}:.$@\-]*)/u
-export const TAG_END_REG = /^<\/(\p{ID_Start}[\p{ID_Continue}:.$@\-]*)/u
+export const TAG_START_REG = /^<(\p{ID_Start}[\p{ID_Continue}:.$@-]*)/u
+export const DIRECTIVE_REG = /^<!(\p{ID_Start}[\p{ID_Continue}:.$@-]*)/u
+export const TAG_END_REG = /^<\/(\p{ID_Start}[\p{ID_Continue}:.$@-]*)/u
 export const ATTR_NAME_REG = /^[\p{ID_Start}@:$#+\-_][\p{ID_Continue}@:$#\-+]*/u
 export const ATTR_UNQUOTED_VALUE_REG = /^[\p{ID_Continue}@:$#\-+]*/u
 export const WHITESPACE_REG = /^\s+/u

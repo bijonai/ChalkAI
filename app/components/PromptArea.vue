@@ -17,8 +17,12 @@ const content = defineModel<string>({ default: '' })
       <Button
         variant="accent"
         class="w-10 ml-auto flex flex-row gap-2 hover:w-20 hover:transition-all hover:duration-300 group"
-        @click="emit('submit', content)">
-        <FontAwesomeIcon class="size-4" :icon="faPaperPlane" />
+        @click="emit('submit', content)"
+      >
+        <FontAwesomeIcon
+          class="size-4"
+          :icon="faPaperPlane"
+        />
       </Button>
     </div>
   </div>

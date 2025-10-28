@@ -3,7 +3,6 @@ import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
 import { BaseCanvasElementAttributes, baseCanvasElementKnowledge, createCanvasElementContainer, fillableKnowledge, Fillable, Strokeable, strokeableKnowledge, Vector2 } from "./shared";
 import * as d3 from 'd3'
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
-import { theme } from "@chalk-dsl/utils-theme";
 
 export interface ArcAttributes
   extends BaseCanvasElementAttributes, Fillable, Strokeable {
@@ -18,6 +17,8 @@ const arc = definePrefab<'arc', ArcAttributes, { division: Vector2 }>((context) 
     generator: (attrs) => {
       const root = createCanvasElementContainer(attrs, context.division)
       console.log(context.division)
+      // TODO: yDivision
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [xDivision, yDivision] = context.division
 
       // State division

@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare",
     "playground": "pnpm --filter playground dev",
     "playground:build": "pnpm --filter playground build --outDir=../../dist",
+    "lint": "eslint . --ext .ts,.vue --fix",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

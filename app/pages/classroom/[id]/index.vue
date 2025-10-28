@@ -43,7 +43,10 @@ const debug = ref(true)
         'h-full w-1/2': !debug,
       }"
     >
-      <Debug :board="board" v-model:hide="debug" />
+      <Debug
+        v-model:hide="debug"
+        :board="board"
+      />
     </div>
     <div class="min-w-full max-w-full overflow-y-auto chalk-board flex flex-col items-center gap-10 px-36">
       <div
