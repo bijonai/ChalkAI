@@ -4,6 +4,8 @@ import * as d3 from 'd3'
 import { arrow } from "./vector"
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default"
+import { ruler } from "./axis"
+import { theme } from "@chalk-dsl/utils-theme"
 
 export interface PlaneAttributes extends BaseCanvasElementAttributes {
   range: Vector2
@@ -48,11 +50,34 @@ const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((con
         attrs.domain[0] * division[0], 0, attrs.domain[1] * division[0], 0,
         selection.append('g')
       )
+      ruler(
+        attrs.domain,
+        selection.append('g')
+          .attr('stroke', 'none')
+          .attr('fill', 'black'),
+      {
+        direction: 'x',
+        division: division[0],
+        offset: 20,
+        counter: (count: number) => count.toString(),
+      })
 
       // Y Axis
       arrow(
         0, attrs.range[0] * division[1], 0, attrs.range[1] * division[1],
         selection.append('g')
+      )
+      ruler(
+        attrs.range,
+        selection.append('g')
+          .attr('stroke', 'none')
+          .attr('fill', 'black'),
+        {
+          direction: 'y',
+          division: division[1],
+          offset: 20,
+          counter: (count: number) => count.toString(),
+        }
       )
 
       // Children
