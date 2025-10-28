@@ -32,7 +32,7 @@ onMounted(async () => {
 
 const { app: { buildId } } = useRuntimeConfig()
 const debug = ref(true)
-</script>
+</script> 
 
 <template>
   <div class="size-full flex flex-row">

@@ -77,7 +77,9 @@ export function parseXNode(node: BaseNode, parent: BaseChalkElement<string> | nu
     return element
   }
   else if (node.type === NodeType.TEXT) {
-    return (node as TextNode).content.trim()
+    const textNode = node as TextNode
+    // Don't trim text nodes - preserve whitespace for proper markdown rendering
+    return textNode.content
   }
   else if (node.type === NodeType.VALUE) {
     return `{{ ${(node as ValueNode).value} }}`
@@ -90,7 +92,9 @@ export function parseX(content: string, options: ParseOptions): (BaseChalkElemen
   return children.map((child) => parseXNode(child, null))
 }
 
-const COMPONENT_INFO_REG = /---.*?---/gms
+// Match YAML frontmatter: must start at beginning of line or string
+// This prevents matching markdown table separators like |------|------|
+const COMPONENT_INFO_REG = /^---\n[\s\S]*?\n---$/gm
 export function parseComponentInfo(content: string): { name: string, props: string[], refs: Record<string, string> } {
   const match = content.match(COMPONENT_INFO_REG)
   if (match) {

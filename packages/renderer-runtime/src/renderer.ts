@@ -23,12 +23,10 @@ export function createRenderer() {
 
   const addComponents = (...newComponents: (Component<string> | string)[]) => {
     const names: string[] = []
-    console.log(newComponents)
     for (const component of newComponents) {
       if (typeof component === 'string') {
         const parsed = parse(component)
         components.push(parsed)
-        console.log(parsed)
         names.push(parsed.name)
       } else {
         components.push(component)
@@ -90,8 +88,6 @@ export function createRenderer() {
       }
       preprocessElement(root)
     }
-
-    console.log(component)
 
     const refs = Object.entries(component.refs ?? {})
     const retryWaitlist: string[] = []
@@ -238,7 +234,6 @@ export function createRenderer() {
 
   const renderElement = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
     const pfbs = getRootSpace()
-    console.log(pfbs)
     const pfb = pfbs.get(element.name)
     if (!pfb) {
       return renderComponent(element, parsetype)
@@ -258,7 +253,6 @@ export function createRenderer() {
         maybePromise.then((definition) => {
           const parent = fragment.parentElement
           const nodes = toArray(renderPrefab(element, props, definition))
-          console.log(parent, nodes)
           for (const node of nodes) {
             if (!node || !parent) continue
             parent.insertBefore(node, parent.firstChild)
@@ -279,7 +273,6 @@ export function createRenderer() {
 
   const _renderValue = (source: string) => {
     const adhoc = createAdhoc(getActiveContext())
-    console.log(source, adhoc(source))
     return adhoc(source)
   }
 
@@ -289,7 +282,6 @@ export function createRenderer() {
       const value = source.replace(/\n*{{(.*?)}}\n*/g, (match, key) => {
         return String(_renderValue(key)).trim()
       })
-      console.log(value)
       text.innerHTML = parsetype === 'node' ? markdown(value) : value
     })
     return text
@@ -299,7 +291,6 @@ export function createRenderer() {
     if (typeof element === 'string') {
       return renderText(element, parsetype)
     }
-    console.log(element, getActiveContext())
     return renderElement(element, parsetype)
   }
 
