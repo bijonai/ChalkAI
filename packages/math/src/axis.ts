@@ -1,6 +1,10 @@
-import { Vector2 } from "@chalk-dsl/canvas"
+import { BaseCanvasElementAttributes, createCanvasElementContainer, Vector2 } from "@chalk-dsl/canvas"
+import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core"
 import { theme } from "@chalk-dsl/utils-theme"
 import * as d3 from 'd3'
+import { arrow } from "./vector"
+import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default"
 
 export interface RulerOptions {
   direction?: 'x' | 'y'
@@ -32,3 +36,66 @@ export const ruler = (
       .attr(['x', 'y'][Number(direction === 'x')], offset)
   }
 }
+
+export interface AxisAttributes extends BaseCanvasElementAttributes {
+  range: Vector2
+}
+
+const axis = definePrefab<'axis', AxisAttributes, { division: Vector2 }>((context) => {
+  return {
+    name: 'axis',
+    generator: (attrs) => {
+      const root = createCanvasElementContainer(attrs, context.division)
+      const [xDivision] = context.division
+      
+      arrow(
+        attrs.range[0] * xDivision, 0, attrs.range[1] * xDivision, 0,
+        d3.select(root).append('g')
+          .attr('stroke', 'none')
+          .attr('fill', 'black')
+      )
+      ruler(
+        attrs.range,
+        d3.select(root).append('g')
+          .attr('stroke', 'none')
+          .attr('fill', 'black'),
+        {
+          direction: 'x',
+          division: xDivision,
+          offset: 10,
+          counter: (count: number) => count.toString(),
+        }
+      )
+
+      const ticks = d3.select(root).append('g')
+        .attr('stroke', 'black')
+
+      for (let i = attrs.range[0]; i < attrs.range[1]; i++) {
+        ticks.append('line')
+          .attr('x1', i * xDivision)
+          .attr('y1', 0)
+          .attr('x2', i * xDivision)
+          .attr('y2', -5)
+      }
+
+      return root
+    }
+  }
+})
+
+registerPrefab('axis', axis)
+
+export default axis
+
+// ------
+
+export const knowledge = definePrefabKnowledge<AxisAttributes>((utils) => {
+  utils.name('axis')
+  utils.description('A axis under `canvas`')
+  utils.prop('range')
+    .describe('The range of the axis')
+    .type('[number, number]')
+  utils.rule('`axis` must be used under a `canvas` element')
+})
+
+addPrefabKnowledge(knowledge)

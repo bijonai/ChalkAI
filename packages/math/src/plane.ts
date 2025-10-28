@@ -5,7 +5,6 @@ import { arrow } from "./vector"
 import { definePrefabKnowledge } from "@chalk-dsl/knowledge"
 import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default"
 import { ruler } from "./axis"
-import { theme } from "@chalk-dsl/utils-theme"
 
 export interface PlaneAttributes extends BaseCanvasElementAttributes {
   range: Vector2
@@ -58,7 +57,7 @@ const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((con
       {
         direction: 'x',
         division: division[0],
-        offset: 20,
+        offset: 10,
         counter: (count: number) => count.toString(),
       })
 
@@ -75,7 +74,7 @@ const plane = definePrefab<'plane', PlaneAttributes, { division: Vector2 }>((con
         {
           direction: 'y',
           division: division[1],
-          offset: 20,
+          offset: 10,
           counter: (count: number) => count.toString(),
         }
       )
