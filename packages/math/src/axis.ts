@@ -96,6 +96,7 @@ export const knowledge = definePrefabKnowledge<AxisAttributes>((utils) => {
     .describe('The range of the axis')
     .type('[number, number]')
   utils.rule('`axis` must be used under a `canvas` element')
+  utils.rule('`axis` is a single line axis, not use it under a `plane` element')
 })
 
 addPrefabKnowledge(knowledge)
