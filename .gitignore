@@ -24,4 +24,4 @@ logs
 !.env.example
 
 # Test results
-result-*.json
+result-*.*

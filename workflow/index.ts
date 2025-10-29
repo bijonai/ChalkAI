@@ -15,7 +15,6 @@ export interface BaseWorkflowParams {
 
 export interface CoderParams extends BaseWorkflowParams {
   knowledge: Knowledge
-  dev?: string
   reasoning?: boolean
 }
 
@@ -38,7 +37,6 @@ export function createWorkflow(params: WorkflowParams) {
   const parse = createParser(params.board)
   if (params.coder.messages.length === 0) params.coder.messages.push(
     message.system(coder.system(params.knowledge, {
-      dev: params.coder.dev,
       reasoning: params.coder.reasoning,
     }))
   )
