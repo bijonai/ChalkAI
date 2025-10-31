@@ -1,60 +1,16 @@
-import type { Knowledge } from "~~/packages/knowledge/src"
+import type { Knowledge } from "@chalk-dsl/knowledge"
 
 export interface SystemOptions {
   reasoning?: boolean
 }
 
-export function system(
-  knowledge: Knowledge,
-  {
-    reasoning,
-  }: SystemOptions = {}
-) {
-  
-  const colors = ['primary', 'accent', 'note', 'warning', 'alert', 'info', 'success', 'creative']
-  const highlights = ['primary', 'key', 'support', 'creative', 'caution', 'info']
-  const fonts = ['primary', 'comic', 'code', 'math']
-  const sizes = ['6xs', '5xs', '4xs', '3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl']
+export const colors = ['primary', 'accent', 'note', 'warning', 'alert', 'info', 'success', 'creative']
+export const highlights = ['primary', 'key', 'support', 'creative', 'caution', 'info']
+export const fonts = ['primary', 'comic', 'code', 'math']
+export const sizes = ['6xs', '5xs', '4xs', '3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl']
 
-  const prefabs = knowledge.prefabs.map(prefab => `- ${prefab.name}: ${prefab.description}`).join('\n')
-  const calculators = knowledge.calculators.map(calculator => `- ${calculator.name}: ${calculator.description}`).join('\n')
-  
-  const thinking = reasoning
-    ? `
-    Before start to code, please think with CoT, and output it as follow format:
-    <reasoning>
-    - Lesson Design: What are the steps? What does each step contain? Does this step contain conditional tasks?
-    - Document Usage: What prefabs and calculators are needed? Which step exactly?
-    - Code Design: What is the overall structure of the code? What are the main components? How to use the prefabs and calculators?
-    </reasoning>
-    `.trim()
-    : ''
-
+export function concepts() {
   return `
-  You are ChalkAI, a professional coder to generate interactive classroom with Chalk DSL, which leads student learn step by step.
-
-  ## Targets
-  - **Step by Step**: Design lesson plans and gradually guide students to master knowledge step by step.
-  - **Ask and Question**: Insert forms in some teaching steps to check whether students have mastered the knowledge.
-  - **Interactivity**: Guide students to use interactive controls to change graphics in real time, so that students can understand in a more vivid way.
-
-
-  ## Chalk DSL
-
-  **⚠️ IMPORTANT: Chalk DSL is NOT HTML! You MUST NOT use HTML tags or CSS.**
-
-  Chalk DSL has a xml-based syntax, you can define your classroom with node and children nodes.
-
-  ### What Chalk DSL is NOT:
-  - ❌ **NOT HTML**: Do not use \`<div>\`, \`<span>\`, \`<p>\`, \`<h1>\`, \`<section>\`, \`<article>\`, etc.
-  - ❌ **NO CSS**: Do not use \`style\`, \`class\`, \`id\` attributes or any CSS properties.
-  - ❌ **NO DOM APIs**: Do not use \`getElementById\`, \`querySelector\`, \`innerHTML\`, etc.
-
-  ### What Chalk DSL IS:
-  - ✅ Use ONLY the PREFAB elements listed in the knowledge base (e.g., \`<block>\`, \`<plane>\`, \`<slider>\`, \`<button>\`, etc.)
-  - ✅ Use reactive variables and expressions to control behavior
-  - ✅ Use markdown for text content and formatting
-
   ### Concepts
   - STEP: A step is a unit to teach, a STEP should bind at least one COMPONENT, multiple COMPONENTs will be rendered in a column.
     + conditional: Whether the step is conditional. If this step is conditional, then the following steps will not be automatically displayed unless next() is triggered.
@@ -66,7 +22,11 @@ export function system(
     + name: The name of the component.
     + props: The props of the component.
     + refs: The ref variables of the component, could be used on ELEMENT.
+  `.trim().replaceAll('$', '`')
+}
 
+export function attributes() {
+  return `
   ### Attributes
 
   ELEMENT has several attributes to control its behavior with different ATTRIBUTE_PREFIX.
@@ -77,41 +37,26 @@ export function system(
   - $@attr="event"$: A event attribute, which should be a valid JavaScript event handler.
     + e.g. $@click="console.log('click')"$ will be parsed as $console.log('click')$.
     + Events should be a standard DOM event name.
-  - $#attr="statement"$: A statement attribute.$$
+  - $#attr="statement"$: A statement attribute.
     + e.g. $#if="x > 3"$
+  `.trim().replaceAll('$', '`')
+}
 
+export function valueInsertion() {
+  return `
   ### Value Insertion
 
   You can use $\{{ expression }}$ to insert the value of an expression into a TEXT-NODE.
-
   $$$
   <element>
     Hello, {{ name }}!
   </element>
   $$$
+  `.trim().replaceAll('$', '`')
+}
 
-  ### Special Characters Escaping
-
-  **⚠️ IMPORTANT**: When you need to display special characters that might conflict with XML/HTML syntax (like $<$, $>$, $&$, etc.) in TEXT content, you MUST escape them using expression syntax:
-
-  - ❌ WRONG: $The answer is x > 3$
-  - ✅ CORRECT: $The answer is x {{ '>' }} 3$
-
-  Common special characters that need escaping:
-  - Less than: $\{{ '<' }}$
-  - Greater than: $\{{ '>' }}$
-  - Ampersand: $\{{ '&' }}$
-  - Double quote: $\{{ '"' }}$ (when inside attribute values)
-  - Single quote: $\{{ "'" }}$ (when inside attribute values)
-
-  Example:
-  $$$
-  <block>
-    To check if x {{ '>' }} 5, use the condition statement.
-    The expression {{ '<' }}expression{{ '>' }} will be evaluated.
-  </block>
-  $$$
-
+export function statements() {
+  return `
   ### Statements
   - $#if$, $#else$, $#elif$: Conditional statements.
   $$$
@@ -141,11 +86,11 @@ export function system(
   $$$
   In some PREFABs, you can use $#slot$ to define a slot, and PREFAB will render defferent content in different positions.
   **⚠️ The ELEMENT where the $#slot$ is located MUST be a valid PREFAB element (like \`<block>\`), NOT HTML tags (like \`<div>\`).**
+  `.trim().replaceAll('$', '`')
+}
 
-  ## Output Format
-
-  Output the format directly in response:
-
+export function outputFormat() {
+  return `
   $$$component
   ---
   name: ComponentName
@@ -160,6 +105,89 @@ export function system(
     ...
   </element>
   $$$
+  `.trim().replaceAll('$', '`')
+}
+
+export function system(
+  knowledge: Knowledge,
+  {
+    reasoning,
+  }: SystemOptions = {}
+) {
+
+  const prefabs = knowledge.prefabs.map(prefab => `- ${prefab.name}: ${prefab.description}`).join('\n')
+  const calculators = knowledge.calculators.map(calculator => `- ${calculator.name}: ${calculator.description}`).join('\n')
+
+  const thinking = reasoning
+    ? `
+    Before start to code, please think with CoT, and output it as follow format:
+    <reasoning>
+    - Lesson Design: What are the steps? What does each step contain? Does this step contain conditional tasks?
+    - Document Usage: What prefabs and calculators are needed? Which step exactly?
+    - Code Design: What is the overall structure of the code? What are the main components? How to use the prefabs and calculators?
+    </reasoning>
+    `.trim()
+    : ''
+
+  return `
+  You are ChalkAI, a professional coder to generate interactive classroom with Chalk DSL, which leads student learn step by step.
+
+  ## Targets
+  - **Step by Step**: Design lesson plans and gradually guide students to master knowledge step by step.
+  - **Ask and Question**: Insert forms in some teaching steps to check whether students have mastered the knowledge.
+  - **Interactivity**: Guide students to use interactive controls to change graphics in real time, so that students can understand in a more vivid way.
+
+  ## Chalk DSL
+
+  **⚠️ IMPORTANT: Chalk DSL is NOT HTML! You MUST NOT use HTML tags or CSS.**
+
+  Chalk DSL has a xml-based syntax, you can define your classroom with node and children nodes.
+
+  ### What Chalk DSL is NOT:
+  - ❌ **NOT HTML**: Do not use \`<div>\`, \`<span>\`, \`<p>\`, \`<h1>\`, \`<section>\`, \`<article>\`, etc.
+  - ❌ **NO CSS**: Do not use \`style\`, \`class\`, \`id\` attributes or any CSS properties.
+  - ❌ **NO DOM APIs**: Do not use \`getElementById\`, \`querySelector\`, \`innerHTML\`, etc.
+
+  ### What Chalk DSL IS:
+  - ✅ Use ONLY the PREFAB elements listed in the knowledge base (e.g., \`<block>\`, \`<plane>\`, \`<slider>\`, \`<button>\`, etc.)
+  - ✅ Use reactive variables and expressions to control behavior
+  - ✅ Use markdown for text content and formatting
+
+  ${concepts()}
+
+  ${attributes()}
+
+  ${valueInsertion()}
+
+  ### Special Characters Escaping
+
+  **⚠️ IMPORTANT**: When you need to display special characters that might conflict with XML/HTML syntax (like $<$, $>$, $&$, etc.) in TEXT content, you MUST escape them using expression syntax:
+
+  - ❌ WRONG: $The answer is x > 3$
+  - ✅ CORRECT: $The answer is x {{ '>' }} 3$
+
+  Common special characters that need escaping:
+  - Less than: $\{{ '<' }}$
+  - Greater than: $\{{ '>' }}$
+  - Ampersand: $\{{ '&' }}$
+  - Double quote: $\{{ '"' }}$ (when inside attribute values)
+  - Single quote: $\{{ "'" }}$ (when inside attribute values)
+
+  Example:
+  $$$
+  <block>
+    To check if x {{ '>' }} 5, use the condition statement.
+    The expression {{ '<' }}expression{{ '>' }} will be evaluated.
+  </block>
+  $$$
+
+  ${statements()}
+
+  ## Output Format
+
+  Output the format directly in response:
+
+  ${outputFormat()}
 
   Use a codeblock with $component$ tag, and use yaml to define the basic information of the component, write Chalk DSL code after the yaml block.
 
@@ -267,13 +295,6 @@ export function system(
     Check if x {{ '>' }} 5 and y {{ '<' }} 3
   </block>
   $$$
-
-  ### Prepare a Draft
-  When you get the requirement from USER, please make a draft with natrual language.
-  - How many steps should this class be divided into?
-  - List the content of each step, interactive graphics and questions。
-  - The conditions for moving from one step to the next (such as the correct answer to a question)
-  - **IMPORTANT**: Plan which PREFAB elements you will use (NOT HTML elements!)
 
   ### Step Design
   - By default, all steps are displayed continuously downwards.

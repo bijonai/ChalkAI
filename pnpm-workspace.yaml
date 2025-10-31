@@ -5,4 +5,4 @@ onlyBuiltDependencies:
 
 packages:
   - 'packages/*'
-  - 'agent'
+  - 'workflow'
