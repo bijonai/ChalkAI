@@ -4,6 +4,7 @@ import { DEFAULT_API_KEY, DEFAULT_BASE_URL, MODELS, DEFAULT_KNOWLEDGE } from '#s
 import { response } from '#shared/server/response'
 import { ClassroomStatus } from '#shared/db/client/classroom'
 import { createEmptyBoard } from '~~/shared'
+import { Message } from 'xsai'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
@@ -36,21 +37,25 @@ export default defineEventHandler(async (event) => {
   await client.classroom.updateClassroomInfo(id, {
     title: body.title ?? 'Untitled',
   })
+  const coder: Message[] = []
+  const planner: Message[] = []
+  // const reviewer: Message[] = []
+
   const { start } = createWorkflow({
     board,
     coder: {
       apiKey: DEFAULT_API_KEY,
       baseURL: DEFAULT_BASE_URL,
       model: body.model ?? MODELS[0],
-      messages: [],
+      messages: coder,
       reasoning: body.reasoning ?? false,
       knowledge: data!,
     },
     planner: {
       apiKey: DEFAULT_API_KEY,
       baseURL: DEFAULT_BASE_URL,
-      model: body.model ?? MODELS[0],
-      messages: [],
+      model: MODELS[0],
+      messages: planner,
       knowledge: data!,
     },
     knowledge: data!,
@@ -63,6 +68,9 @@ export default defineEventHandler(async (event) => {
     await client.classroom.updateResult(id, result)
     await client.classroom.updateClassroomInfo(id, {
       status: ClassroomStatus.Completed,
+    })
+    await client.classroom.updateContext(id, {
+      planner, coder, reviewer: [],
     })
   }
   event.waitUntil(generate().catch(async (error) => {
