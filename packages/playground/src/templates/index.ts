@@ -16,6 +16,7 @@ import { plane } from "./math/plane"
 import { vector } from "./math/vector"
 import { mermaid } from "./widget/mermaid"
 import { axis } from "./math/axis"
+import { dot } from "./math/dot"
 
 export type Template = {
   id: string
@@ -69,6 +70,7 @@ export default [
       plane,
       vector,
       axis,
+      dot,
     ]
   }
 ] as Template[]

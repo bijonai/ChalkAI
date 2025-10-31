@@ -192,6 +192,9 @@ importers:
       d3:
         specifier: ^7.9.0
         version: 7.9.0
+      katex:
+        specifier: ^0.16.25
+        version: 0.16.25
 
   packages/pkg: {}
 
@@ -4100,6 +4103,10 @@ packages:
 
   katex@0.16.22:
     resolution: {integrity: sha512-XCHRdUw4lf3SKBaJe4EvgqIuWwkPSo9XoeO8GjQW94Bp7TWv9hNhzZjZ+OH9yf1UmLygb7DIT5GSFQiyt16zYg==}
+    hasBin: true
+
+  katex@0.16.25:
+    resolution: {integrity: sha512-woHRUZ/iF23GBP1dkDQMh1QBad9dmr8/PAwNA54VrSOVYgI12MAcE14TqnDdQOdzyEonGzMepYnqBMYdsoAr8Q==}
     hasBin: true
 
   keyv@4.5.4:
@@ -10362,6 +10369,10 @@ snapshots:
   jsonrepair@3.13.1: {}
 
   katex@0.16.22:
+    dependencies:
+      commander: 8.3.0
+
+  katex@0.16.25:
     dependencies:
       commander: 8.3.0
 
