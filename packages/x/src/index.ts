@@ -7,9 +7,9 @@ export function parseXAttribute(attribute: AttributeNode) {
   const type =
     attribute.name.startsWith(':') ? 'expression'
       // : attribute.name.startsWith('&') ? 'animation'
-        : attribute.name.startsWith('@') ? 'event'
-          : attribute.name.startsWith('#') ? 'statement'
-            : 'string'
+      : attribute.name.startsWith('@') ? 'event'
+        : attribute.name.startsWith('#') ? 'statement'
+          : 'string'
   switch (type) {
     case 'expression': {
       return {
@@ -101,12 +101,11 @@ export function parseComponentInfo(content: string): { name: string, props: stri
   if (match) {
     const info = match[0].trim().slice(3, -3)
     const { name, props, refs, animations } = load(info) as { name: string, props: string[], refs: Record<string, string>, animations: Record<string, string | string[]> }
-    console.log(animations)
     return {
       name,
       props,
       refs,
-      animations:
+      animations: animations ?
         Object.fromEntries(
           Object.entries(animations)
             .map(([key, value]) => [
@@ -115,8 +114,8 @@ export function parseComponentInfo(content: string): { name: string, props: stri
                 ? value.map(parseAnimation).filter((v) => v !== null)
                 : parseAnimation(value)]
             )
-          .filter(([, value]) => value !== null)
-        )
+            .filter(([, value]) => value !== null)
+        ) : {}
     }
   }
   return { name: '', props: [], refs: {}, animations: {} }
