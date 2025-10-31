@@ -11,6 +11,12 @@ export enum ClassroomStatus {
   Failed = 'failed',
 }
 
+export interface Context {
+  coder: Message[],
+  planner: Message[],
+  reviewer: Message[],
+}
+
 export const createClassroom = async () => {
   return await db
     .insert(classroomTable)
@@ -55,14 +61,14 @@ export const getClassroomInfo = async (id: string) => {
     .then(r => r.at(0) ?? null) as ClassroomInfo | null
 }
 
-export const getContext = async (id: string) => {
+export const getContext = async (id: string): Promise<Context | null> => {
   return await db
     .select({
       context: classroomTable.context,
     })
     .from(classroomTable)
     .where(eq(classroomTable.id, id))
-    .then(r => r.at(0) ?? null) as Message[] | null
+    .then(r => r.at(0) ?? null) as Context | null
 }
 
 export const getResult = async (id: string) => {
@@ -86,10 +92,16 @@ export const updateClassroomInfo = async (id: string, info: Partial<ClassroomInf
     .then(r => r.at(0)!)
 }
 
-export const updateContext = async (id: string, context: Message[]) => {
+export const updateContext = async (id: string, context: Context) => {
   return await db
     .update(classroomTable)
-    .set({ context })
+    .set({
+      context: {
+        coder: context.coder,
+        planner: context.planner,
+        reviewer: context.reviewer,
+      },
+    })
     .where(eq(classroomTable.id, id))
     .returning({ id: classroomTable.id })
     .then(r => r.at(0)!)
