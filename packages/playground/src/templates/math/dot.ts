@@ -8,7 +8,9 @@ refs:
   position: [0, 0]
 ---
 <canvas>
-  <dot :position="[0, 0]" color="primary" />
+  <polygon :points="[[0, 0], [0, 5], [5, 5], [5, 0]]" />
+  <dot :position="[0, 0]" color="primary" label="O"/>
+  <dot :position="[5, 0]" color="primary" label="A"/>
 </canvas>
 `.trim()
 
