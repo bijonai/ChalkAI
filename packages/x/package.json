@@ -11,6 +11,7 @@
   "dependencies": {
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/x-parser": "workspace:*",
+    "@chalk-dsl/animation": "workspace:*",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {

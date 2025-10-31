@@ -15,6 +15,9 @@ import { arc } from "./canvas/arc"
 import { plane } from "./math/plane"
 import { vector } from "./math/vector"
 import { mermaid } from "./widget/mermaid"
+import { axis } from "./math/axis"
+import { dot } from "./math/dot"
+import { block } from "./layout/block"
 
 export type Template = {
   id: string
@@ -28,6 +31,7 @@ export default [
     templates: [
       grid,
       columns,
+      block,
     ]
   },
   {

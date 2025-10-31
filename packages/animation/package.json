@@ -1,0 +1,15 @@
+{
+  "name": "@chalk-dsl/animation",
+  "version": "0.0.0",
+  "main": "index.js",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@chalk-dsl/renderer-core": "workspace:*"
+  },
+  "scripts": {
+    "test:parse": "tsx test/parse.test.ts"
+  },
+  "packageManager": "pnpm@10.8.1"
+}

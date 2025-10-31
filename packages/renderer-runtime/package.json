@@ -11,6 +11,7 @@
   "dependencies": {
     "@chalk-dsl/renderer-core": "workspace:*",
     "@chalk-dsl/x": "workspace:*",
+    "@chalk-dsl/animation": "workspace:*",
     "@shikijs/rehype": "^3.14.0",
     "morphdom": "^2.7.7",
     "rehype-katex": "^7.0.1",
