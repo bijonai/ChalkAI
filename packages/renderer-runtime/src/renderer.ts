@@ -267,7 +267,9 @@ export function createRenderer() {
   const renderText = (source: string, parsetype: PrefabParseType = 'node') => {
     const text = document.createElement('span')
     effect(() => {
-      const value = source.replace(/\n*{{(.*?)}}\n*/g, (match, key) => {
+      // We shouldn't remove newlines in some situations because it may affect markdown content.
+      const substitutionPattern = parsetype === 'node' ? /{{(.*?)}}/g : /\n*{{(.*?)}}\n*/g;
+      const value = source.replace(substitutionPattern, (match, key) => {
         return String(_renderValue(key)).trim()
       })
       if (parsetype === 'node') {
