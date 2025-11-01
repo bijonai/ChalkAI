@@ -6,10 +6,10 @@ export const block: Template = {
 ---
 name: block
 refs:
-  content: "0"
+  content: "10"
   state: "false"
 animations:
-  s: "{(x) => x * x}content<1000>(state ? 0 : 10)"
+  s: "content<1000>(0)"
 ---
 
 <canvas :range="[-10, 10]">

@@ -6,6 +6,6 @@ export const variableAnimation = defineAnimationPreset<[number, number?], object
   return (progress: number) => {
     const value = from + (to - from) * progress
     console.log(value, progress, from, to)
-    ;(<Record<string, number>>context)[preset] = value > to ? to : value
+    ;(<Record<string, number>>context)[preset] = value
   }
 })
