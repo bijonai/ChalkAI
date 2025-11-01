@@ -17,6 +17,8 @@ import { vector } from "./math/vector"
 import { mermaid } from "./widget/mermaid"
 import { axis } from "./math/axis"
 import { dot } from "./math/dot"
+import { d } from "./math/d"
+import { rect } from "./canvas/rect"
 
 export type Template = {
   id: string
@@ -61,7 +63,8 @@ export default [
   {
     id: 'canvas',
     templates: [
-      arc
+      arc,
+      rect,
     ]
   },
   {
@@ -71,6 +74,7 @@ export default [
       vector,
       axis,
       dot,
+      d,
     ]
   }
 ] as Template[]

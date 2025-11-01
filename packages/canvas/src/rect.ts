@@ -16,9 +16,8 @@ export const rect = definePrefab<'rect', RectAttributes, { division: Vector2 }>(
       const root = createCanvasElementContainer(attrs, context.division)
       const [xDivision, yDivision] = context.division
 
-      d3.select(root).append('rect')
-        .attr('width', attrs.width * xDivision)
-        .attr('height', attrs.height * yDivision)
+      d3.select(root).append('path')
+        .attr('d', `M0,0 L${attrs.width * xDivision},0 L${attrs.width * xDivision},${attrs.height * Math.abs(yDivision)} L0,${attrs.height * Math.abs(yDivision)} Z`)
 
       return root
     }
