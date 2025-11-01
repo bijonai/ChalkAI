@@ -99,3 +99,5 @@ export const strokeableKnowledge = definePrefabKnowledge((utils) => {
   //   .type('number')
   //   .optional('1')
 })
+
+

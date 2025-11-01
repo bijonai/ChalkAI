@@ -36,37 +36,36 @@ export function createRenderer() {
     return names as [string, ...string[]]
   }
 
-  const preprocessElement = (element: BaseChalkElement<string>, parent?: BaseChalkElement<string>) => {
+  const preprocessElement = (elements: (BaseChalkElement<string> | string)[], parent?: BaseChalkElement<string>) => {
     // Merge consecutive string children with newline separators
-    if (element.children && element.children.length > 0) {
-      const mergedChildren: (BaseChalkElement<string> | string)[] = []
-      let currentStringGroup: string[] = []
+    const mergedChildren: (BaseChalkElement<string> | string)[] = []
+    let currentStringGroup: string[] = []
 
-      for (const child of element.children) {
-        if (typeof child === 'string') {
-          currentStringGroup.push(child)
-        } else {
-          // If we have accumulated string children, merge them
-          if (currentStringGroup.length > 0) {
-            mergedChildren.push(currentStringGroup.join('\n'))
-            currentStringGroup = []
-          }
-          // Process non-string child recursively
-          preprocessElement(child, element)
-          mergedChildren.push(child)
+    for (const child of elements) {
+      if (typeof child === 'string') {
+        currentStringGroup.push(child)
+      } else {
+        // If we have accumulated string children, merge them
+        if (currentStringGroup.length > 0) {
+          mergedChildren.push(currentStringGroup.join(''))
+          currentStringGroup = []
         }
+        // Process non-string child recursively
+        if (typeof child === 'object' && child !== null && 'children' in child) {
+          child.children = preprocessElement(child.children ?? [], child)
+        }
+        mergedChildren.push(child)
       }
-
-      // Handle any remaining string children at the end
-      if (currentStringGroup.length > 0) {
-        mergedChildren.push(currentStringGroup.join('\n'))
-      }
-
-      element.children = mergedChildren
     }
 
-    element.parent = parent
+    // Handle any remaining string children at the end
+    if (currentStringGroup.length > 0) {
+      mergedChildren.push(currentStringGroup.join(''))
+    }
+
+    return mergedChildren
   }
+
 
   const renderComponent = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
@@ -77,14 +76,7 @@ export function createRenderer() {
     if (!component.root) {
       return document.createTextNode('')
     }
-    const roots = toArray(component.root)
-    for (const root of roots) {
-      if (typeof root === 'string') {
-        continue
-      }
-      preprocessElement(root)
-    }
-
+    const roots = preprocessElement(toArray(component.root))
     const refs = Object.entries(component.refs ?? {})
     const retryWaitlist: string[] = []
     const resolve = (key: string, value: string, retrying: boolean = false) => {
@@ -241,7 +233,7 @@ export function createRenderer() {
     setValue(Attributes, props)
     setValue(Origin, element)
 
-    
+
     const maybePromise = pfb.prefab(getActiveContext(), errors.addError)
     if (maybePromise instanceof Promise) {
       const fragment = document.createElement('div')
@@ -258,9 +250,9 @@ export function createRenderer() {
       return fragment
     }
     return renderPrefab(element, props, maybePromise, pfb.type)
-    
+
   }
-  
+
   const renderValue = (source: string) => {
     const [, _] = source.split('{{')
     const [key] = _.split('}}')
@@ -326,7 +318,7 @@ export function createRenderer() {
     element.append(...toArray(root))
     mount()
   }
-  
+
   return {
     ...errors,
     render,

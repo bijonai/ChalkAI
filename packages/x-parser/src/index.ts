@@ -371,6 +371,7 @@ export function parseAttributes(context: ParserContext): AttributeNode[] {
 }
 
 export function parseElement(context: ParserContext): ElementNode {
+  const startIdx = context.idx
   const element = parseTag(context)
 
   element.attributes.forEach((attr) => {
@@ -398,6 +399,15 @@ export function parseElement(context: ParserContext): ElementNode {
           'MISMATCHED_CLOSING_TAG',
         )
       }
+    }
+    else {
+      // Reached EOF without finding closing tag
+      throw new UnclosedTagError(
+        `Unclosed tag <${element.tag}>`,
+        context,
+        startIdx,
+        element.tag,
+      )
     }
   }
   finally {
@@ -494,13 +504,53 @@ export function parseChildren(context: ParserContext) {
           throw new ParserError('Unexpected closing tag', context, 'UNEXPECTED_CLOSING_TAG')
         }
         else if (/\p{ID_Start}/u.test(context.char(1))) {
-          node = parseElement(context)
+          try {
+            node = parseElement(context)
+          }
+          catch (error) {
+            if (error instanceof UnclosedTagError) {
+              // Reset context to the start of the unclosed tag
+              context.idx = error.startIdx
+              // Find the end of the opening tag (the '>' character)
+              const tagEndIdx = context.indexOf('>')
+              if (tagEndIdx === -1) {
+                // No closing '>' found, treat rest as text
+                const raw = context.remaining()
+                context.advance(raw.length)
+                node = {
+                  type: NodeType.TEXT,
+                  content: parseEntities(raw),
+                  raw,
+                }
+              }
+              else {
+                // Include the entire opening tag as text
+                const raw = context.remaining(tagEndIdx + 1)
+                context.advance(raw.length)
+                node = {
+                  type: NodeType.TEXT,
+                  content: parseEntities(raw),
+                  raw,
+                }
+              }
+            }
+            else {
+              throw error
+            }
+          }
         }
         else if (context.char(1) == '>') {
           node = parseFragment(context)
         }
         else {
-          throw new ParserError('Invalid opening tag name', context, 'INVALID_TAG_NAME')
+          // Invalid tag name or standalone '<', treat as single character text
+          const raw = context.char(0)
+          context.advance(1)
+          node = {
+            type: NodeType.TEXT,
+            content: parseEntities(raw),
+            raw,
+          }
         }
       }
       else if (context.startsWith('{{')) {
@@ -567,6 +617,17 @@ export class ParserError extends Error {
       + `Ancestors:\n${getAncestorsPreview(context)}`
       + `Preview:\n${preview}\n`,
     )
+  }
+}
+
+export class UnclosedTagError extends ParserError {
+  constructor(
+    message: string,
+    context: ParserContext,
+    public startIdx: number,
+    public tagName: string,
+  ) {
+    super(message, context, 'UNCLOSED_TAG')
   }
 }
 
