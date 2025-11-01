@@ -24,12 +24,16 @@ export const forStatement = defineStatement((source) => {
     pre(context, element, res) {
       const [v, iterableSource] = source.split(' in ')
       console.log('v', v, iterableSource, source)
-      const iterable = createAdhoc(context)(iterableSource) as Iterable<unknown>
       delete element.statements!['for']
 
       console.log(element)
-      const target: Node[] = resolve(iterable, v, element, res, context)
+      // Initial render
+      const initialIterable = createAdhoc(context)(iterableSource) as Iterable<unknown>
+      const target: Node[] = resolve(initialIterable, v, element, res, context)
+
       effect(() => {
+        // Re-compute iterable inside effect to track reactive changes
+        const iterable = createAdhoc(context)(iterableSource) as Iterable<unknown>
         const nodes = resolve(iterable, v, element, res, context)
         if (nodes.length === 0) {
           target.length = 0
@@ -46,9 +50,11 @@ export const forStatement = defineStatement((source) => {
             }
           }
           if (target.length < nodes.length) {
+            const lastNode = target.at(-1)
+            const insertPosition = lastNode ? lastNode.nextSibling : null
             nodes.slice(target.length, nodes.length).forEach(node => {
+              parent.insertBefore(node, insertPosition)
               target.push(node)
-              parent.insertBefore(node, target.at(-1)!.nextSibling)
             })
           }
         }
