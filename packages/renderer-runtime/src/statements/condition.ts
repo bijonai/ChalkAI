@@ -1,6 +1,5 @@
-import { createAdhoc, defineStatement, effect, registerStatement, ref, type Ref, BaseChalkElement, AnimationItem } from "@chalk-dsl/renderer-core"
+import { createAdhoc, defineStatement, effect, registerStatement, ref, type Ref, BaseChalkElement } from "@chalk-dsl/renderer-core"
 import { createDelegate } from "../delegate"
-import { createAnimate } from "../animation"
 
 // 条件块状态管理
 const conditionBlockStates = new WeakMap<HTMLElement, {
@@ -78,24 +77,8 @@ function setupElementInteractions(
     return _delegate
   }
 
-  // 动画处理
-  const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
-    const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
-    for (const [key, value] of Object.entries(animations)) {
-      const animate = () => createAnimate(context, { node, prefab: element.name })(value)
-      if (key === '$start') {
-        // 对于 $start 动画，我们可能需要特殊处理
-        animate()
-        break
-      }
-      results[key as keyof T] = animate
-    }
-    return results
-  }
-
   // 绑定事件和动画
   delegate(node, element.events ?? {})
-  delegate(node, resolveAnimations(element.animations ?? {}))
 }
 
 export const ifStatement = defineStatement((source) => {

@@ -1,5 +1,3 @@
-import { AnimationItem } from "./animation"
-
 export type AttributeValue = string | number | boolean | null | undefined | object | ComputedAttributeValue | AttributeValue[]
 export type ComputedAttributeValue = `{{${string}}}`
 export type EventValue = string
@@ -14,7 +12,6 @@ export type BaseChalkElement<
   events?: Record<string, EventValue>
   statements?: Record<string, StatementValue>
   children?: (BaseChalkElement<string> | string)[]
-  animations?: Record<string, AnimationItem[]>
   id?: string
   parent?: BaseChalkElement<string>
 }

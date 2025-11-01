@@ -1,4 +1,5 @@
-import { BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
+import { parseAnimation } from "@chalk-dsl/animation";
+import { Animation, BaseChalkElement, Component } from "@chalk-dsl/renderer-core";
 import { AttributeNode, BaseNode, ElementNode, NodeType, parse, ParseOptions, TextNode, ValueNode } from "@chalk-dsl/x-parser";
 import { load } from 'js-yaml'
 
@@ -6,9 +7,9 @@ export function parseXAttribute(attribute: AttributeNode) {
   const type =
     attribute.name.startsWith(':') ? 'expression'
       // : attribute.name.startsWith('&') ? 'animation'
-        : attribute.name.startsWith('@') ? 'event'
-          : attribute.name.startsWith('#') ? 'statement'
-            : 'string'
+      : attribute.name.startsWith('@') ? 'event'
+        : attribute.name.startsWith('#') ? 'statement'
+          : 'string'
   switch (type) {
     case 'expression': {
       return {
@@ -95,18 +96,29 @@ export function parseX(content: string, options: ParseOptions): (BaseChalkElemen
 // Match YAML frontmatter: must start at beginning of line or string
 // This prevents matching markdown table separators like |------|------|
 const COMPONENT_INFO_REG = /^---\n[\s\S]*?\n---$/gm
-export function parseComponentInfo(content: string): { name: string, props: string[], refs: Record<string, string> } {
+export function parseComponentInfo(content: string): { name: string, props: string[], refs: Record<string, string>, animations: Record<string, Animation[] | Animation> } {
   const match = content.match(COMPONENT_INFO_REG)
   if (match) {
     const info = match[0].trim().slice(3, -3)
-    const { name, props, refs } = load(info) as { name: string, props: string[], refs: Record<string, string> }
+    const { name, props, refs, animations } = load(info) as { name: string, props: string[], refs: Record<string, string>, animations: Record<string, string | string[]> }
     return {
       name,
       props,
       refs,
+      animations: animations ?
+        Object.fromEntries(
+          Object.entries(animations)
+            .map(([key, value]) => [
+              key,
+              Array.isArray(value)
+                ? value.map(parseAnimation).filter((v) => v !== null)
+                : parseAnimation(value)]
+            )
+            .filter(([, value]) => value !== null)
+        ) : {}
     }
   }
-  return { name: '', props: [], refs: {} }
+  return { name: '', props: [], refs: {}, animations: {} }
 }
 
 export function parseComponent(content: string, options: ParseOptions): Component<string> {
@@ -115,10 +127,12 @@ export function parseComponent(content: string, options: ParseOptions): Componen
     props: [],
     refs: {},
   }
-  const { name, props, refs } = parseComponentInfo(content)
+  const { name, props, refs, animations } = parseComponentInfo(content)
   component.name = name
   component.props = props
   component.refs = refs
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component.animations = animations as unknown as any
   const template = content.replace(COMPONENT_INFO_REG, '').trim()
   component.root = parseX(template, options)
   return component

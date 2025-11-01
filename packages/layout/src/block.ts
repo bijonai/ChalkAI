@@ -36,10 +36,11 @@ const convertDirectionToCssValue = (direction: string | number | Direction): str
   }
 }
 
-export const block = definePrefab<'block', BlockAttributes>(() => {
+export const block = definePrefab<'block', BlockAttributes>((context) => {
   return {
     name: 'block',
     generator: (props, children) => {
+      console.log(context)
       const block = document.createElement('div')
       block.style.width = props.width ? theme.size(props.width) : '100%'
       block.style.height = props.height ? theme.size(props.height) : 'auto'

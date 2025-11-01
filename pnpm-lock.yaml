@@ -136,6 +136,12 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0(eslint@9.35.0(jiti@2.5.1))
 
+  packages/animation:
+    dependencies:
+      '@chalk-dsl/renderer-core':
+        specifier: workspace:*
+        version: link:../renderer-core
+
   packages/canvas:
     dependencies:
       '@chalk-dsl/form':
@@ -273,6 +279,9 @@ importers:
 
   packages/renderer-runtime:
     dependencies:
+      '@chalk-dsl/animation':
+        specifier: workspace:*
+        version: link:../animation
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:../renderer-core
@@ -340,6 +349,9 @@ importers:
 
   packages/x:
     dependencies:
+      '@chalk-dsl/animation':
+        specifier: workspace:*
+        version: link:../animation
       '@chalk-dsl/renderer-core':
         specifier: workspace:*
         version: link:../renderer-core

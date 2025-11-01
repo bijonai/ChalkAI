@@ -3,7 +3,7 @@ import { AttributeValue } from "./element";
 
 export type Animation = {
   preset: string
-  params: Record<string, AttributeValue>
+  params: AttributeValue[]
   duration: number
   easing?: string
   delay?: number
@@ -11,13 +11,14 @@ export type Animation = {
 
 export type ParallelAnimation = Animation[]
 export type AnimationItem = Animation | ParallelAnimation
+export type Easing = (progress: number) => number
 
 export type AnimationPresetContext<Ctx extends RawContext = RawContext> = {
   node: Node | null
   context: Ctx
   duration: number
   delay: number
-  easing: string
+  easing: Easing
   prefab?: string
   preset: string
 }
@@ -29,20 +30,20 @@ export type AnimationPresetGenerator =
  * IF return false, it will be ignored.
  */
 export type AnimationPreset<
-  Params extends RawContext = RawContext,
+  Params extends unknown[] = unknown[],
   Ctx extends RawContext = RawContext,
 > = (params: Params, context: AnimationPresetContext<Ctx>)
     => AnimationPresetGenerator | void | boolean
   
-export const defineAnimationPreset = <Params extends RawContext, Ctx extends RawContext>(preset: AnimationPreset<Params, Ctx>) => {
+export const defineAnimationPreset = <Params extends unknown[], Ctx extends RawContext>(preset: AnimationPreset<Params, Ctx>) => {
   return preset
 }
 
 export type AnimationPresetSpace = Map<string, AnimationPreset[]>
 const animationPresets: AnimationPresetSpace = new Map()
-export const registerAnimationPreset = <T extends RawContext>(name: string, preset: AnimationPreset<T, T>) => {
+export const registerAnimationPreset = <T extends unknown[]>(name: string, preset: AnimationPreset<T, T>) => {
   const presets = animationPresets.get(name) || []
-  presets.push(preset as AnimationPreset<RawContext, RawContext>)
+  presets.push(preset as AnimationPreset<unknown[], RawContext>)
   animationPresets.set(name, presets)
 }
 export const getAnimationPreset = (name: string) => {
