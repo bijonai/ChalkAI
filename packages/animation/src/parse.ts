@@ -15,16 +15,24 @@ const DURATION_AND_DELAY_MATCH_REG = /<([^>]+)>/
 const PARAMS_MATCH_REG = /\(([^)]+)\)/
 
 export const parseAnimation = (source: string): Animation | null => {
-  const [, _durationAndDelay] = source.match(DURATION_AND_DELAY_MATCH_REG) ?? []
+  const [, easing] = source.match(EASING_MATCH_REG) ?? []
+
+  let remaining = source.replace(EASING_MATCH_REG, '')
+
+  const [, _durationAndDelay] = remaining.match(DURATION_AND_DELAY_MATCH_REG) ?? []
   if (!_durationAndDelay) return null
   const [duration, delay] = _durationAndDelay.split(',').map(Number)
-  const [, _params] = source.match(PARAMS_MATCH_REG) ?? []
+
+  remaining = remaining.replace(DURATION_AND_DELAY_MATCH_REG, '')
+
+  const [, _params] = remaining.match(PARAMS_MATCH_REG) ?? []
   const params: string[] = []
   if (_params) {
     params.push(..._params.split(',').map(s => s.trim()))
   }
-  const name = source.replace(EASING_MATCH_REG, '').replace(DURATION_AND_DELAY_MATCH_REG, '').replace(PARAMS_MATCH_REG, '').trim()
-  const [, easing] = source.match(EASING_MATCH_REG) ?? []
+
+  const name = remaining.replace(PARAMS_MATCH_REG, '').trim()
+
   return {
     duration,
     delay,

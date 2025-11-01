@@ -1,4 +1,4 @@
-import { Animation, AnimationPreset, AnimationPresetContext, AnimationPresetGenerator, getAnimationPreset, RawContext, toProp } from "@chalk-dsl/renderer-core"
+import { Animation, AnimationPreset, AnimationPresetContext, AnimationPresetGenerator, createAdhoc, Easing, getAnimationPreset, RawContext, toProp } from "@chalk-dsl/renderer-core"
 import { variableAnimation } from "./variable"
 import { runRaf } from "./raf"
 
@@ -17,12 +17,13 @@ export function createAnimate({ node, prefab, context, animations }: AnimateOpti
   const animate = (animation: Animation) => {
     const presets = getAnimationPreset(animation.preset)
     const params = animation.params.map((param, index) => toProp(`:p${index}`, param, context))
+    const easing: Easing = animation.easing ? createAdhoc(context)(animation.easing) as Easing : ((progress) => progress)
     const ctx: AnimationPresetContext = {
       node: node ?? null,
       prefab,
       delay: animation.delay ?? 0,
       duration: animation.duration,
-      easing: animation.easing ?? 'linear',
+      easing,
       context,
       preset: animation.preset,
     }
@@ -30,7 +31,7 @@ export function createAnimate({ node, prefab, context, animations }: AnimateOpti
     const callback = preset(params, ctx)
     return new Promise((resolve) => {
       if (typeof callback !== 'function') resolve(void 0)
-      runRaf(<AnimationPresetGenerator>callback, animation.duration, resolve)
+      runRaf(<AnimationPresetGenerator>callback, animation.duration, easing, resolve)
     })
   }
 

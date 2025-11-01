@@ -11,13 +11,14 @@ export type Animation = {
 
 export type ParallelAnimation = Animation[]
 export type AnimationItem = Animation | ParallelAnimation
+export type Easing = (progress: number) => number
 
 export type AnimationPresetContext<Ctx extends RawContext = RawContext> = {
   node: Node | null
   context: Ctx
   duration: number
   delay: number
-  easing: string
+  easing: Easing
   prefab?: string
   preset: string
 }

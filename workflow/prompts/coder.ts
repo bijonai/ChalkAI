@@ -89,6 +89,12 @@ export function statements() {
   `.trim().replaceAll('$', '`')
 }
 
+export function animation() {
+  return `
+  
+  `.trim().replaceAll('$', '`')
+}
+
 export function outputFormat() {
   return `
   $$$component
