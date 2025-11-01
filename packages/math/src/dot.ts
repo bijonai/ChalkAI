@@ -26,6 +26,7 @@ const dot = definePrefab<'dot', DotAttributes, { division: Vector2 }>((context) 
         .append('circle')
         .attr('r', 5)
         .attr('fill', theme.pallete(attrs.color ?? 'primary'))
+        .attr('fill-opacity', '1.0')
       return root
     },
   }
