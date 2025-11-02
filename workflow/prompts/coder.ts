@@ -91,7 +91,32 @@ export function statements() {
 
 export function animation() {
   return `
-  
+  # Animation
+
+  ## Syntax
+  $\{easing}name<duration, delay>(...params)$
+  - easing: optional, default to $(progress) => progress$.
+  - name: required, the name of the animation.
+  - duration: required, in seconds.
+  - delay: optional, in seconds.
+  - params: optional, list of parameters.
+
+  ## Variable Animation
+  Use a reactive variable as the name of the animation
+  - $x<1>(100)$: $x$ will be animated from itself to 100 in 1 second.
+  - $x<1, 0.5>(10, 100)$: $x$ will be animated from 10 to 100 in 1 second with a delay of 0.5 seconds.
+  - $\{(x) => x * x}<1>(100)$: $x$ will be animated from itself to 100 in 1 second with easing function $(x) => x * x$.
+
+  ## Animation Group
+  - An animation should be defined in a component as a group so that you can call them.
+  - An animation group could have one or more animations.
+  - Animations in a group will be called in order.
+
+  ## Call Animation
+  use $animate('animation_group_name')$ to call an animation group.
+  - support multiple animations: $animate('animation_group_name1', 'animation_group_name2')$
+  - support parallel animations: $animate('animation_group_name1', ['animation_group_name2', 'animation_group_name3'])$
+    + animation_group_name2 and animation_group_name3 will be called in parallel.
   `.trim().replaceAll('$', '`')
 }
 
@@ -104,6 +129,11 @@ export function outputFormat() {
   refs:
     ref_name1: "expression"
     ref_name2: "expression"
+  animations:
+    group1: "name<duration, delay>(...params)"
+    group2:
+      - "name<duration, delay>(...params)"
+      - "name<duration, delay>(...params)"
   ---
   <element>
     <child/>
@@ -189,6 +219,8 @@ export function system(
 
   ${statements()}
 
+  ${animation()}
+
   ## Output Format
 
   Output the format directly in response:
@@ -198,8 +230,8 @@ export function system(
   Use a codeblock with $component$ tag, and use yaml to define the basic information of the component, write Chalk DSL code after the yaml block.
 
   **⚠️ IMPORTANT YAML RULES:**
-  - **ALWAYS** wrap ref expressions in double quotes (e.g., $ref_name: "0"$, $count: "x + 1"$)
-  - **NEVER** output raw expressions without quotes (e.g., ❌ $ref_name: x + 1$ will cause YAML parsing errors)
+  - **ALWAYS** wrap ref expressions and animation syntax in double quotes (e.g., $ref_name: "0"$, $count: "x + 1"$, $group1: "name<duration, delay>(...params)"$)
+  - **NEVER** output raw expressions without quotes (e.g., ❌ $ref_name: x + 1$ will cause YAML parsing errors, ❌ $group1: name<duration, delay>(...params)$ will cause YAML parsing errors)
   - Even simple values should be quoted for consistency (e.g., $x: "0"$, $flag: "true"$)
 
   ## Tools

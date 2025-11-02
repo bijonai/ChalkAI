@@ -37,7 +37,7 @@ const main = async () => {
 
   const now = Date.now()
   const content = await plan(
-    '设计一个交互式课堂，内容关于三角函数'
+    '设计一个交互式课堂，内容关于牛顿第二定律'
   )
   writeFileSync(`result-${now}.md`, content)
   const result = await code(content)
