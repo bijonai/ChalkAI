@@ -19,6 +19,7 @@ import { axis } from "./math/axis"
 import { dot } from "./math/dot"
 import { d } from "./math/d"
 import { rect } from "./canvas/rect"
+import { parameter } from "./math/parameter"
 
 export type Template = {
   id: string
@@ -75,6 +76,7 @@ export default [
       axis,
       dot,
       d,
+      parameter,
     ]
   }
 ] as Template[]
