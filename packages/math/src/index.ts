@@ -1,7 +1,13 @@
 import './plane'
 import './function'
 import './vector'
+import './axis'
+import './dot'
+import './parameter'
 
 export { default as plane } from './plane'
 export { default as function } from './function'
 export { default as vector } from './vector'
+export { default as axis } from './axis'
+export { default as dot } from './dot'
+export { default as parameter } from './parameter'

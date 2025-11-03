@@ -10,7 +10,7 @@ const currentId = ref<string | undefined>(router.currentRoute.value.params.id as
 </script>
 
 <template>
-  <div class="container-common min-w-64 w-1/4 flex flex-col gap-1 text-sm">
+  <div class="container-common min-w-64 w-1/4 flex flex-col gap-1 text-sm overflow-y-auto">
     <div
       v-for="template in templates"
       :key="template.id"

@@ -2,89 +2,31 @@ import type { Template } from "..";
 
 export const test1: Template = {
   id: 'test1',
-  content: {
-    "name": "GridLayout",
-    "props": [],
-    "root": {
-      "name": "grid",
-      "attrs": {
-        "rows": 3,
-        "columns": 2,
-        "gap": 10,
-        "width": "100%",
-        "height": "400px",
-        "padding": 20
-      },
-      "children": [
-        {
-          "name": "block",
-          "attrs": {
-            "padding": 15
-          },
-          "children": [
-            "Row 1, Column 1"
-          ],
-          "animations": {},
-          "id": "cell-1-1"
-        },
-        {
-          "name": "block",
-          "attrs": {
-            "padding": 15
-          },
-          "children": [
-            "Row 1, Column 2"
-          ],
-          "animations": {},
-          "id": "cell-1-2"
-        },
-        {
-          "name": "block",
-          "attrs": {
-            "padding": 15
-          },
-          "children": [
-            "Row 2, Column 1"
-          ],
-          "animations": {},
-          "id": "cell-2-1"
-        },
-        {
-          "name": "block",
-          "attrs": {
-            "padding": 15
-          },
-          "children": [
-            "Row 2, Column 2"
-          ],
-          "animations": {},
-          "id": "cell-2-2"
-        },
-        {
-          "name": "block",
-          "attrs": {
-            "padding": 15
-          },
-          "children": [
-            "Row 3, Column 1"
-          ],
-          "animations": {},
-          "id": "cell-3-1"
-        },
-        {
-          "name": "block",
-          "attrs": {
-            "padding": 15
-          },
-          "children": [
-            "Row 3, Column 2"
-          ],
-          "animations": {},
-          "id": "cell-3-2"
-        }
-      ],
-      "animations": {},
-      "id": "main-grid"
-    }
-  }
+  content: `
+---
+name: Test 1 - 未闭合标签测试
+props: []
+refs:
+  answer2: 'null'
+---
+测试未闭合标签：<x> 应该显示为文本
+
+带属性的未闭合标签：<x attr="value"> 也应该显示为文本
+
+单独的小于号：1 < 2 应该正常显示
+
+单独的大于号：3 > 2 应该正常显示
+
+比较运算：1 {{ '<' }} 2 && 3 {{ '>' }} 2 应该正常显示
+
+正常的标签：<block>这应该正常解析</block>
+
+<chooser model="answer2" title="问题 2" :margin="{ top: 20 }">
+  <block #slot="content">下列哪个说法是**正确的**？</block>
+  <block #slot="option:A">x < 8</block>
+  <block #slot="option:B">x > 8</block>
+  <block #slot="option:C">$\sqrt{5}$ 是有理数</block>
+  <block #slot="option:D">有理数不能是负数</block>
+</chooser>`
+    .trim()
 }
