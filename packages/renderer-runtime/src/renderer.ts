@@ -39,7 +39,8 @@ export function createRenderer() {
     return names as [string, ...string[]]
   }
 
-  const preprocessElement = (elements: (BaseChalkElement<string> | string)[]) => {
+  const preprocessElement = (elements: (BaseChalkElement<string> | string)[], parent?: BaseChalkElement<string>) => {
+    // Merge consecutive string children with newline separators
     const mergedChildren: (BaseChalkElement<string> | string)[] = []
     let currentStringGroup: string[] = []
 
@@ -49,12 +50,12 @@ export function createRenderer() {
       } else {
         // If we have accumulated string children, merge them
         if (currentStringGroup.length > 0) {
-          mergedChildren.push(currentStringGroup.join('\n'))
+          mergedChildren.push(currentStringGroup.join(''))
           currentStringGroup = []
         }
         // Process non-string child recursively
         if (typeof child === 'object' && child !== null && 'children' in child) {
-          child.children = preprocessElement(child.children ?? [])
+          child.children = preprocessElement(child.children ?? [], child)
         }
         mergedChildren.push(child)
       }
@@ -62,11 +63,12 @@ export function createRenderer() {
 
     // Handle any remaining string children at the end
     if (currentStringGroup.length > 0) {
-      mergedChildren.push(currentStringGroup.join('\n'))
+      mergedChildren.push(currentStringGroup.join(''))
     }
 
     return mergedChildren
   }
+
 
   const renderComponent = (element: BaseChalkElement<string>, parsetype: PrefabParseType = 'node'): Node | Node[] | null => {
     const component = components.find((component) => component.name === element.name)
@@ -227,7 +229,7 @@ export function createRenderer() {
     setValue(Attributes, props)
     setValue(Origin, element)
 
-    
+
     const maybePromise = pfb.prefab(getActiveContext(), errors.addError)
     if (maybePromise instanceof Promise) {
       const fragment = document.createElement('div')
@@ -244,9 +246,9 @@ export function createRenderer() {
       return fragment
     }
     return renderPrefab(element, props, maybePromise, pfb.type)
-    
+
   }
-  
+
   const renderValue = (source: string) => {
     const [, _] = source.split('{{')
     const [key] = _.split('}}')
@@ -261,7 +263,9 @@ export function createRenderer() {
   const renderText = (source: string, parsetype: PrefabParseType = 'node') => {
     const text = document.createElement('span')
     effect(() => {
-      const value = source.replace(/\n*{{(.*?)}}\n*/g, (match, key) => {
+      // We shouldn't remove newlines in some situations because it may affect markdown content.
+      const substitutionPattern = parsetype === 'node' ? /{{(.*?)}}/g : /\n*{{(.*?)}}\n*/g;
+      const value = source.replace(substitutionPattern, (match, key) => {
         return String(_renderValue(key)).trim()
       })
       if (parsetype === 'node') {
@@ -312,7 +316,7 @@ export function createRenderer() {
     element.append(...toArray(root))
     mount()
   }
-  
+
   return {
     ...errors,
     render,

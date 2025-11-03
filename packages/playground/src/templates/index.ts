@@ -15,7 +15,11 @@ import { arc } from "./canvas/arc"
 import { plane } from "./math/plane"
 import { vector } from "./math/vector"
 import { mermaid } from "./widget/mermaid"
-import { block } from "./layout/block"
+import { axis } from "./math/axis"
+import { dot } from "./math/dot"
+import { d } from "./math/d"
+import { rect } from "./canvas/rect"
+import { parameter } from "./math/parameter"
 
 export type Template = {
   id: string
@@ -61,7 +65,8 @@ export default [
   {
     id: 'canvas',
     templates: [
-      arc
+      arc,
+      rect,
     ]
   },
   {
@@ -69,6 +74,10 @@ export default [
     templates: [
       plane,
       vector,
+      axis,
+      dot,
+      d,
+      parameter,
     ]
   }
 ] as Template[]

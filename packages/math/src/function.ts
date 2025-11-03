@@ -57,7 +57,7 @@ const func = definePrefab<'function', FunctionAttributes, { division: Vector2 }>
 
       d3.select(root).append('path')
         .attr('d', path)
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 2)
         .attr('stroke', theme.pallete(attrs.color))
       return root
     },
