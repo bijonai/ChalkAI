@@ -33,6 +33,7 @@ export default [
     templates: [
       grid,
       columns,
+      block,
     ]
   },
   {

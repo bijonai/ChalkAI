@@ -1,10 +1,10 @@
-import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, AnimationItem, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorContext, PrefabDefinition, RawContext, PrefabParseType } from "@chalk-dsl/renderer-core"
+import { Component, createContext, BaseChalkElement, createAdhoc, effect, mergeContext, toProps, reactive, getRootSpace, ref, createErrorContainer, getStatement, StatementPreGenerator, StatementPostGenerator, Attributes, Origin, PrefabGeneratorContext, PrefabDefinition, RawContext, PrefabParseType } from "@chalk-dsl/renderer-core"
 import { ElementNotFoundError } from "./error"
 import { createDelegate } from "./delegate"
-import { createAnimate } from "./animation"
 import { createMarkdown } from "./builtins/markdown"
 import patch from 'morphdom'
 import { createParser } from "./parser"
+import { createAnimate } from "@chalk-dsl/animation"
 
 export const toArray = <T>(value: T | T[]): T[] => Array.isArray(value) ? value : [value]
 
@@ -21,11 +21,14 @@ export function createRenderer() {
   }
   const components: Component<string>[] = []
 
+  let availableAnimations: Record<string, Animation | Animation[]> = {}
+
   const addComponents = (...newComponents: (Component<string> | string)[]) => {
     const names: string[] = []
     for (const component of newComponents) {
       if (typeof component === 'string') {
         const parsed = parse(component)
+        console.log(parsed)
         components.push(parsed)
         names.push(parsed.name)
       } else {
@@ -76,6 +79,9 @@ export function createRenderer() {
     if (!component.root) {
       return document.createTextNode('')
     }
+    if (component.animations) {
+      availableAnimations = component.animations
+    } else availableAnimations = {}
     const roots = preprocessElement(toArray(component.root))
     const refs = Object.entries(component.refs ?? {})
     const retryWaitlist: string[] = []
@@ -182,27 +188,17 @@ export function createRenderer() {
     const node = generator(
       { ...defaults, ...props },
       () => children, generatorContext)
-    const resolveAnimations = <T extends Record<string, AnimationItem[]>>(animations: T) => {
-      const results: Record<keyof T, () => void> = {} as Record<keyof T, () => void>
-      for (const [key, value] of Object.entries(animations)) {
-        const animate = () => createAnimate(getActiveContext(), { node, prefab: name })(value)
-        if (key === '$start') {
-          beginAnimations.push(animate)
-          break
-        }
-        results[key as keyof T] = animate
-      }
-      return results
-    }
     for (const { post } of statementResolvers) {
       if (!post) continue
       return post(getActiveContext(), element, node)
     }
+  
+    const animate = createAnimate({ node, prefab: name, context: getActiveContext(), animations: availableAnimations })
+    setValue('animate', animate)
 
     delegate(node, element.events)
-    delegate(node, resolveAnimations(element.animations ?? {}))
 
-    effect(() => {
+    const update = () => {
       element.attrs ??= {}
       element.events ??= {}
       element.children ??= []
@@ -212,10 +208,10 @@ export function createRenderer() {
       }
       const newNode = generator({ ...defaults, ...attrs }, () => children, fakeContext)
       delegate(newNode, element.events)
-      delegate(newNode, resolveAnimations(element.animations ?? {}))
       patch(node, newNode)
       return newNode
-    })
+    }
+    effect(update)
 
     return node
   }
