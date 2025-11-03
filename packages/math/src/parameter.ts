@@ -1,4 +1,6 @@
 import { BaseCanvasElementAttributes, createCanvasElementContainer, Vector2 } from "@chalk-dsl/canvas";
+import { definePrefabKnowledge } from "@chalk-dsl/knowledge";
+import { addPrefabKnowledge } from "@chalk-dsl/knowledge/default";
 import { definePrefab, registerPrefab } from "@chalk-dsl/renderer-core";
 import { theme } from "@chalk-dsl/utils-theme";
 import * as d3 from 'd3'
@@ -76,3 +78,27 @@ const parameter = definePrefab<'parameter', ParameterAttributes>((context) => {
 
 export default parameter
 registerPrefab('parameter', parameter)
+
+// ------
+
+export const knowledge = definePrefabKnowledge<ParameterAttributes>((utils) => {
+  utils.name('parameter')
+  utils.description('A parameter')
+  utils.prop('expr')
+    .describe('The expression of the parameter')
+    .type('(t: number) => [number, number]')
+  utils.prop('domain')
+    .describe('The domain of the parameter')
+    .type('[number, number]')
+  utils.prop('range')
+    .describe('The range of the parameter')
+    .type('[number, number]')
+  utils.prop('color')
+    .describe('The color of the parameter')
+    .type('string')
+    .optional('primary')
+  utils.rule('`parameter` must be used under a `plane` element')
+  utils.rule('`plane` element must be used under a `canvas` element')
+})
+
+addPrefabKnowledge(knowledge)
