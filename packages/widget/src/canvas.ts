@@ -42,22 +42,23 @@ const canvas = definePrefab<'canvas', CanvasAttributes>((context) => {
       container.style.alignItems = 'center'
 
       mount(() => {
+        const CANVAS_PADDING = 10
         const bbox = root.getBBox()
         const canvasRect = canvas.getBoundingClientRect()
 
         const width = attrs.domain ? attrs.domain[1] - attrs.domain[0] : bbox.width
         const height = attrs.range ? attrs.range[1] - attrs.range[0] : bbox.height
 
-        root.setAttribute('transform', `translate(${width / 2}, ${height / 2})`);
+        root.setAttribute('transform', `translate(${canvasRect.width / 2 + CANVAS_PADDING}, ${height / 2 + CANVAS_PADDING})`);
 
-        canvas.style.height = `${height}px`
+        canvas.style.height = `${height + CANVAS_PADDING * 2}px`
 
-        container.style.minWidth = `${width}px`
-        container.style.minHeight = `${height}px`
+        container.style.minWidth = `${width + CANVAS_PADDING * 2}px`
+        container.style.minHeight = `${height + CANVAS_PADDING * 2}px`
 
         canvas.setAttribute('width', String(canvasRect.width))
       })
-      
+
       return container
     },
     defaults: {
